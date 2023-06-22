@@ -14,7 +14,7 @@ selected_options = sys.argv[1:]
 logging.debug(f"Selected options: {selected_options}")
 
 # Set the path to the script
-script_path = './NonSteamLaunchers.sh'
+script_path = './backend/src/NonSteamLaunchers.sh'
 
 # Log the script path for debugging
 logging.debug(f"Script path: {script_path}")
