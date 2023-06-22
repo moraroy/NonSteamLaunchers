@@ -1,6 +1,6 @@
 {
-  "name": "Example Plugin",
-  "author": "John Doe",
+  "name": "NonSteamLaunchers",
+  "author": "moraroy",
   "flags": ["debug", "_root"],
   "publish": {
     "tags": ["template", "root"],

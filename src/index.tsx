@@ -12,37 +12,19 @@ import {
   staticClasses,
 } from "decky-frontend-lib";
 import { VFC } from "react";
-import { FaShip } from "react-icons/fa";
-
+import { FaRocket, FaShip } from "react-icons/fa";
 import logo from "../assets/logo.png";
+import { OptionsList } from './OptionsList';
+import React, {useState, useEffect } from "react";
+import { FaBoxOpen } from "react-icons/fa";
 
-// interface AddMethodArgs {
-//   left: number;
-//   right: number;
-// }
-
-const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
-  // const [result, setResult] = useState<number | undefined>();
-
-  // const onClick = async () => {
-  //   const result = await serverAPI.callPluginMethod<AddMethodArgs, number>(
-  //     "add",
-  //     {
-  //       left: 2,
-  //       right: 2,
-  //     }
-  //   );
-  //   if (result.success) {
-  //     setResult(result.result);
-  //   }
-  // };
-
+const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return (
     <PanelSection title="Panel Section">
       <PanelSectionRow>
         <ButtonItem
           layout="below"
-          onClick={(e) =>
+          onClick={(e: React.MouseEvent) =>
             showContextMenu(
               <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
                 <MenuItem onSelected={() => {}}>Item #1</MenuItem>
@@ -53,7 +35,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
             )
           }
         >
-          Server says yolo
+          Find Games w/BoilR
         </ButtonItem>
       </PanelSectionRow>
 
@@ -74,6 +56,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
           Router
         </ButtonItem>
       </PanelSectionRow>
+
+      {/* Render the OptionsList component here */}
+      <OptionsList serverAPI={serverAPI} />
     </PanelSection>
   );
 };
@@ -95,9 +80,9 @@ export default definePlugin((serverApi: ServerAPI) => {
   });
 
   return {
-    title: <div className={staticClasses.Title}>Example Plugin</div>,
+    title: <div className={staticClasses.Title}>NonSteamLaunchers</div>,
     content: <Content serverAPI={serverApi} />,
-    icon: <FaShip />,
+    icon: <FaRocket />,
     onDismount() {
       serverApi.routerHook.removeRoute("/decky-plugin-test");
     },
