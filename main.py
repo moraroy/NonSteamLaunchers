@@ -2,9 +2,10 @@ import os
 import logging
 import sys
 import subprocess
-import decky_plugin
-import asyncio
 import re
+import decky_plugin
+
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
