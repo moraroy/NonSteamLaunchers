@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os
 import logging
 import sys
@@ -20,10 +19,7 @@ class Plugin:
     async def add(self, left, right):
         return left + right
 
-    # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
-    async def _main(self):
-        decky_plugin.logger.info("Hello World!")
-        print("Hello World!")
+    
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
@@ -58,7 +54,7 @@ class Plugin:
         logging.basicConfig(level=logging.DEBUG)
 
         # Set the path to the executethescript.py script
-        script_path = './backend/src/runnsl.py'
+        script_path = './runnsl.py'
 
         # Change the permissions of the executethescript.py script to make it executable
         os.chmod(script_path, 0o755)
