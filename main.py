@@ -61,7 +61,7 @@ class Plugin:
         logging.basicConfig(level=logging.DEBUG)
 
         # Set the path to the executethescript.py script
-        script_path = './backend/src/runnsl.py'
+        script_path = '/workspaces/decky-plugin-template/backend/src/runnsl.py'
 
         # Change the permissions of the executethescript.py script to make it executable
         os.chmod(script_path, 0o755)
