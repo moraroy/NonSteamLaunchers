@@ -94,12 +94,3 @@ class Plugin:
         else:
             return "Installation failed"
 
-
-        
-async def run_main():
-    plugin = Plugin()
-    selected_options = {"epicGames": True} # Set this to the desired selected options
-    result = await plugin.install(selected_options)
-    print(result)
-
-asyncio.run(run_main())
