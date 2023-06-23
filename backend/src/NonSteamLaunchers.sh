@@ -2746,11 +2746,9 @@ fi
 
 
 # Close all instances of Steam
-killall steam &
+killall steam
 
 
-# Wait for the steam process to exit
-while pgrep steam > /dev/null; do sleep 1; done
 
 
 

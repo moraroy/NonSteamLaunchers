@@ -3,11 +3,7 @@ import logging
 import sys
 import subprocess
 import re
-import asyncio
 import decky_plugin
-
-
-
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -61,7 +57,7 @@ class Plugin:
         logging.basicConfig(level=logging.DEBUG)
 
         # Set the path to the executethescript.py script
-        script_path = 'backend/src/runnsl.py'
+        script_path = './backend/src/runnsl.py'
 
         # Change the permissions of the executethescript.py script to make it executable
         os.chmod(script_path, 0o755)
@@ -83,17 +79,13 @@ class Plugin:
         logging.debug(f"selected_options_list: {selected_options_list}")
         print(f"selected_options_list: {selected_options_list}")
 
-        # Run the executethescript.py script with the selected options
-        command = f"{script_path} {' '.join(selected_options_list)}"
+        # Run the executethescript.py script with the selected options using subprocess.run()
+        command = [sys.executable, script_path] + selected_options_list
         logging.debug(f"Running command: {command}")
         print(f"Running command: {command}")
-        exit_code = os.system(command)
+        
+        result = subprocess.run(command)
+        
+        exit_code = result.returncode
+        
         logging.debug(f"Command exit code: {exit_code}")
-        print(f"Command exit code: {exit_code}")
-
-        # Return a result indicating whether the installation was successful or not
-        if exit_code == 0:
-            return "Installation successful"
-        else:
-            return "Installation failed"
-
