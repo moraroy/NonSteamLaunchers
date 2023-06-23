@@ -3,7 +3,9 @@ import logging
 import sys
 import subprocess
 import re
+import asyncio
 import decky_plugin
+
 
 
 
