@@ -100,10 +100,8 @@
       const [options, setOptions] = React.useState({
           epicGames: false,
           gogGalaxy: false,
-      });
-      const [progress, setProgress] = React.useState({
-          epicGames: 0,
-          gogGalaxy: 0,
+          origin: false,
+          uplay: false,
       });
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
@@ -137,8 +135,6 @@
           }
       };
       return (window.SP_REACT.createElement("form", null,
-          window.SP_REACT.createElement("progress", { value: progress.epicGames, max: 100 }),
-          window.SP_REACT.createElement("progress", { value: progress.gogGalaxy, max: 100 }),
           window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.epicGames ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('epicGames') },
               window.SP_REACT.createElement("span", { className: "checkmark" }, options.epicGames ? '✓' : ''),
               ' ',
@@ -148,6 +144,16 @@
               window.SP_REACT.createElement("span", { className: "checkmark" }, options.gogGalaxy ? '✓' : ''),
               ' ',
               "Gog Galaxy"),
+          window.SP_REACT.createElement("br", null),
+          window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.origin ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('origin') },
+              window.SP_REACT.createElement("span", { className: "checkmark" }, options.origin ? '✓' : ''),
+              ' ',
+              "Origin"),
+          window.SP_REACT.createElement("br", null),
+          window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.uplay ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('uplay') },
+              window.SP_REACT.createElement("span", { className: "checkmark" }, options.uplay ? '✓' : ''),
+              ' ',
+              "Uplay"),
           window.SP_REACT.createElement("br", null),
           window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"),
           window.SP_REACT.createElement("style", null, `

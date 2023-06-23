@@ -12,11 +12,9 @@ import {
   staticClasses,
 } from "decky-frontend-lib";
 import { VFC } from "react";
-import { FaRocket, FaShip } from "react-icons/fa";
+import { FaRocket } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import { OptionsList } from './OptionsList';
-import React, {useState, useEffect } from "react";
-import { FaBoxOpen } from "react-icons/fa";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return (

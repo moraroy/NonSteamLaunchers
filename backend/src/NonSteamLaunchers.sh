@@ -2745,7 +2745,7 @@ fi
 
 
 # Detach script from Steam process
-nohup sh -c 'sleep 10; /usr/bin/steam' &
+nohup sh -c 'sleep 10; /usr/bin/steam'
 
 # Close all instances of Steam
 killall steam

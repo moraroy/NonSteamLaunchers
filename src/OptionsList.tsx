@@ -23,11 +23,8 @@ export const OptionsList: React.FC<OptionsListProps> = ({ serverAPI }) => {
   const [options, setOptions] = useState({
     epicGames: false,
     gogGalaxy: false,
-  });
-
-  const [progress, setProgress] = useState({
-    epicGames: 0,
-    gogGalaxy: 0,
+    origin: false,
+    uplay: false,
   });
 
   const handleButtonClick = (name: string) => {
@@ -67,12 +64,9 @@ export const OptionsList: React.FC<OptionsListProps> = ({ serverAPI }) => {
       }
     }
   }
+
   return (
     <form>
-      {/* Render progress bars outside of the buttons here */}
-      <progress value={progress.epicGames} max={100} />
-      <progress value={progress.gogGalaxy} max={100} />
-
       <ButtonItem
         className={options.epicGames ? 'selected' : ''}
         layout="below"
@@ -90,6 +84,26 @@ export const OptionsList: React.FC<OptionsListProps> = ({ serverAPI }) => {
       >
         <span className="checkmark">{options.gogGalaxy ? '✓' : ''}</span>{' '}
         Gog Galaxy
+      </ButtonItem>
+      <br />
+
+      <ButtonItem
+        className={options.origin ? 'selected' : ''}
+        layout="below"
+        onClick={() => handleButtonClick('origin')}
+      >
+        <span className="checkmark">{options.origin ? '✓' : ''}</span>{' '}
+        Origin
+      </ButtonItem>
+      <br />
+
+      <ButtonItem
+        className={options.uplay ? 'selected' : ''}
+        layout="below"
+        onClick={() => handleButtonClick('uplay')}
+      >
+        <span className="checkmark">{options.uplay ? '✓' : ''}</span>{' '}
+        Uplay
       </ButtonItem>
       <br />
 
