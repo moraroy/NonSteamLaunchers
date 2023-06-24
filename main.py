@@ -4,6 +4,7 @@ import sys
 import subprocess
 import re
 import decky_plugin
+import asyncio
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -86,3 +87,14 @@ class Plugin:
         exit_code = result.returncode
         
         logging.debug(f"Command exit code: {exit_code}")
+        
+
+async def run_main():
+        plugin = Plugin()
+        # Set this to the desired selected options
+        selected_options = {"epicGames": True}
+        result = await plugin.install(selected_options)
+        print(result)
+
+asyncio.run(run_main())
+
