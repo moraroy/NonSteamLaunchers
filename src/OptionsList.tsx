@@ -51,7 +51,7 @@ export const OptionsList: React.FC<OptionsListProps> = ({ serverAPI }) => {
     console.log('Calling install method on serverAPI object with selected options:', selectedOptionsMapping);
   
     // Call a method in your backend with the selected options
-    const response = await serverAPI.callPluginMethod('install', {selected_options: selectedOptionsMapping});
+    const response = serverAPI.callPluginMethod('install', {selected_options: selectedOptionsMapping});
   
     // Handle the response from your backend here
     console.log(response);
