@@ -3,6 +3,8 @@ import logging
 import sys
 import subprocess
 import re
+
+from nbconvert import ExporterNameError, export
 import decky_plugin
 import asyncio
 
@@ -97,4 +99,3 @@ async def run_main():
         print(result)
 
 asyncio.run(run_main())
-
