@@ -3,10 +3,12 @@ import logging
 import sys
 import subprocess
 import re
-
-from nbconvert import ExporterNameError, export
 import decky_plugin
 import asyncio
+
+
+# Get environment variable
+settingsDir = os.environ["DECKY_PLUGIN_SETTINGS_DIR"]
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
