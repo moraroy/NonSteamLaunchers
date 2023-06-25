@@ -22,7 +22,7 @@ import logging
 Constants
 """
 
-HOME: str = os.getenv("HOME", default="")
+HOME: str = "/home/deck" #os.getenv("HOME", default="/home/deck")
 """
 The home directory of the effective user running the process.
 Environment variable: `HOME`.
@@ -30,7 +30,7 @@ If `root` was specified in the plugin's flags it will be `/root` otherwise the u
 e.g.: `/home/deck`
 """
 
-USER: str = os.getenv("USER", default="")
+USER: str = "deck" #os.getenv("USER", default="")
 """
 The effective username running the process.
 Environment variable: `USER`.
@@ -38,86 +38,84 @@ It would be `root` if `root` was specified in the plugin's flags otherwise the u
 e.g.: `deck`
 """
 
-DECKY_VERSION: str = os.getenv("DECKY_VERSION", default="")
+DECKY_VERSION: str = "v2.10.1" #os.getenv("DECKY_VERSION", default="")
 """
 The version of the decky loader.
 Environment variable: `DECKY_VERSION`.
 e.g.: `v2.5.0-pre1`
 """
 
-DECKY_USER: str = os.getenv("DECKY_USER", default="")
+DECKY_USER: str = "deck" #os.getenv("DECKY_USER", default="")
 """
 The user whose home decky resides in.
 Environment variable: `DECKY_USER`.
 e.g.: `deck`
 """
 
-DECKY_USER_HOME: str = os.getenv("DECKY_USER_HOME", default="")
+DECKY_USER_HOME: str = "/home/deck" #os.getenv("DECKY_USER_HOME", default="")
 """
 The home of the user where decky resides in.
 Environment variable: `DECKY_USER_HOME`.
 e.g.: `/home/deck`
 """
 
-DECKY_HOME: str = os.getenv("DECKY_HOME", default="")
+DECKY_HOME: str = "/home/deck/homebrew" #os.getenv("DECKY_HOME", default="")
 """
 The root of the decky folder.
 Environment variable: `DECKY_HOME`.
 e.g.: `/home/deck/homebrew`
 """
 
-DECKY_PLUGIN_SETTINGS_DIR: str = os.getenv(
-    "DECKY_PLUGIN_SETTINGS_DIR", default="")
+DECKY_PLUGIN_SETTINGS_DIR: str = "/home/deck/homebrew/settings/nonsteamlaunchers" #os.getenv("DECKY_PLUGIN_SETTINGS_DIR", default="")
 """
 The recommended path in which to store configuration files (created automatically).
 Environment variable: `DECKY_PLUGIN_SETTINGS_DIR`.
 e.g.: `/home/deck/homebrew/settings/decky-plugin-template`
 """
 
-DECKY_PLUGIN_RUNTIME_DIR: str = os.getenv(
-    "DECKY_PLUGIN_RUNTIME_DIR", default="")
+DECKY_PLUGIN_RUNTIME_DIR: str = "/home/deck/homebrew/data/nonsteamlaunchers" #os.getenv("DECKY_PLUGIN_RUNTIME_DIR", default="")
 """
 The recommended path in which to store runtime data (created automatically).
 Environment variable: `DECKY_PLUGIN_RUNTIME_DIR`.
 e.g.: `/home/deck/homebrew/data/decky-plugin-template`
 """
 
-DECKY_PLUGIN_LOG_DIR: str = os.getenv("DECKY_PLUGIN_LOG_DIR", default="")
+DECKY_PLUGIN_LOG_DIR: str = "/home/deck/homebrew/logs/nonsteamlaunchers" #os.getenv("DECKY_PLUGIN_LOG_DIR", default="")
 """
 The recommended path in which to store persistent logs (created automatically).
 Environment variable: `DECKY_PLUGIN_LOG_DIR`.
 e.g.: `/home/deck/homebrew/logs/decky-plugin-template`
 """
 
-DECKY_PLUGIN_DIR: str = os.getenv("DECKY_PLUGIN_DIR", default="")
+DECKY_PLUGIN_DIR: str = "/home/deck/homebrew/plugins/nonsteamlaunchers" #os.getenv("DECKY_PLUGIN_DIR", default="")
 """
 The root of the plugin's directory.
 Environment variable: `DECKY_PLUGIN_DIR`.
 e.g.: `/home/deck/homebrew/plugins/decky-plugin-template`
 """
 
-DECKY_PLUGIN_NAME: str = os.getenv("DECKY_PLUGIN_NAME", default="")
+DECKY_PLUGIN_NAME: str = "NonSteamLaunchers" #os.getenv("DECKY_PLUGIN_NAME", default="")
 """
 The name of the plugin as specified in the 'plugin.json'.
 Environment variable: `DECKY_PLUGIN_NAME`.
 e.g.: `Example Plugin`
 """
 
-DECKY_PLUGIN_VERSION: str = os.getenv("DECKY_PLUGIN_VERSION", default="")
+DECKY_PLUGIN_VERSION: str = "0.0.1" #os.getenv("DECKY_PLUGIN_VERSION", default="")
 """
 The version of the plugin as specified in the 'package.json'.
 Environment variable: `DECKY_PLUGIN_VERSION`.
 e.g.: `0.0.1`
 """
 
-DECKY_PLUGIN_AUTHOR: str = os.getenv("DECKY_PLUGIN_AUTHOR", default="")
+DECKY_PLUGIN_AUTHOR: str = "moraroy" #os.getenv("DECKY_PLUGIN_AUTHOR", default="")
 """
 The author of the plugin as specified in the 'plugin.json'.
 Environment variable: `DECKY_PLUGIN_AUTHOR`.
 e.g.: `John Doe`
 """
 
-DECKY_PLUGIN_LOG: str = os.path.join(DECKY_PLUGIN_LOG_DIR, "plugin.log")
+DECKY_PLUGIN_LOG: str = "/home/deck/homebrew/logs/nonsteamlaunchers/plugin.log" #os.path.join(DECKY_PLUGIN_LOG_DIR, "plugin.log")
 """
 The path to the plugin's main logfile.
 Environment variable: `DECKY_PLUGIN_LOG`.
