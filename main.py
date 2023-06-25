@@ -3,8 +3,11 @@ import logging
 import sys
 import subprocess
 import re
-import decky_plugin
 import asyncio
+try:
+    import decky_plugin
+except ImportError:
+    pass
 
 
 # Set up logging
@@ -97,4 +100,6 @@ async def run_main():
         result = await plugin.install(selected_options)
         print(result)
 
-asyncio.run(run_main())
+if __name__ in "__main__":
+    import codespaces_debugging as decky_plugin
+    asyncio.run(run_main())
