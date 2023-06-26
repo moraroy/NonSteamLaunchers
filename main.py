@@ -25,7 +25,9 @@ class Plugin:
         return left + right
 
     
-
+    async def _main(self):
+        decky_plugin.logger.info('main was called')
+    
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
         decky_plugin.logger.info("Goodbye World!")
@@ -107,5 +109,5 @@ async def run_main():
         print(result)
 
 if __name__ in "__main__":
-    import codespaces_debugging as decky_plugin
+    
     asyncio.run(run_main())
