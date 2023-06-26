@@ -61,7 +61,7 @@ class Plugin:
         logging.basicConfig(level=logging.DEBUG)
     
         # Set the path to the runnsl.py script
-        script_path = './defaults/runnsl.py'
+        script_path = os.path.join(decky_plugin.DECKY_PLUGIN_DIR, 'runnsl.py')
     
         # Change the permissions of the runnsl.py script to make it executable
         os.chmod(script_path, 0o755)
@@ -108,6 +108,6 @@ async def run_main():
         result = await plugin.install(selected_options)
         print(result)
 
-if __name__ in "__main__":
+if __name__ == "__main__":
     
     asyncio.run(run_main())
