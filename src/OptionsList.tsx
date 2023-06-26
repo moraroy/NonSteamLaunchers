@@ -50,18 +50,22 @@ export const OptionsList: React.FC<OptionsListProps> = ({ serverAPI }) => {
     // Add a print statement before calling the install method on the serverAPI object
     console.log('Calling install method on serverAPI object with selected options:', selectedOptionsMapping);
   
-    // Call a method in your backend with the selected options
-    const response = await serverAPI.callPluginMethod('install', {selected_options: selectedOptionsMapping});
+    try {
+      // Call a method in your backend with the selected options
+      const response = await serverAPI.callPluginMethod('install', {selected_options: selectedOptionsMapping});
   
-    // Handle the response from your backend here
-    console.log(response);
-    
-    if (typeof response === 'string') {
-      if (response === "Installation successful") {
-        alert("Installation successful!");
-      } else if (response === "Installation failed") {
-        alert("Installation failed.");
+      // Handle the response from your backend here
+      console.log(response);
+  
+      if (typeof response === 'string') {
+        if (response === "Installation successful") {
+          alert("Installation successful!");
+        } else if (response === "Installation failed") {
+          alert("Installation failed.");
+        }
       }
+    } catch (error) {
+      console.error('Error calling install method on serverAPI object:', error);
     }
   }
 
