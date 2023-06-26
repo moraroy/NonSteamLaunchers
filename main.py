@@ -61,7 +61,7 @@ class Plugin:
         logging.basicConfig(level=logging.DEBUG)
     
         # Set the path to the runnsl.py script
-        script_path = './runnsl.py'
+        script_path = './defaults/runnsl.py'
     
         # Change the permissions of the runnsl.py script to make it executable
         os.chmod(script_path, 0o755)
