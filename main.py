@@ -1,17 +1,21 @@
+import codespaces_debugging as decky_plugin
 import os
 import logging
 import sys
 import subprocess
 import re
+import asyncio
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
+
 
 def camel_to_title(s):
     # Split the string into words using a regular expression
     words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)', s)
     # Convert the first character of each word to uppercase and join the words with spaces
     return ' '.join(word.capitalize() for word in words)
+
 
 class Plugin:
     # A normal method. It can be called from JavaScript using call_plugin_function("method_1", argument1, argument2)
@@ -90,6 +94,7 @@ class Plugin:
             return f"runnsl.py ran successfully with options: {selected_options_list}"
         else:
             return f"runnsl.py failed to run successfully with options: {selected_options_list}"
+
 
 if __name__ == "__main__":
     plugin = Plugin()
