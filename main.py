@@ -107,5 +107,5 @@ if __name__ == "__main__":
     result = asyncio.run(plugin.install(selected_options))
     print(result)
 
-if __name__ == "__main__":   
+
     asyncio.run(run_main())
