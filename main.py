@@ -5,6 +5,10 @@ import sys
 import subprocess
 import re
 import asyncio
+try:
+    import decky_plugin
+except ImportError:
+    pass
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -102,3 +106,6 @@ if __name__ == "__main__":
     selected_options = {"epicGames": True}
     result = asyncio.run(plugin.install(selected_options))
     print(result)
+
+if __name__ == "__main__":   
+    asyncio.run(run_main())
