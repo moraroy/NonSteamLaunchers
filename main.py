@@ -3,8 +3,6 @@ import logging
 import sys
 import subprocess
 import re
-except ImportError:
-    pass
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
