@@ -3,12 +3,8 @@ import logging
 import sys
 import subprocess
 import re
-import asyncio
-try:
-    import decky_plugin
 except ImportError:
     pass
-
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -24,10 +20,9 @@ class Plugin:
     async def add(self, left, right):
         return left + right
 
-    
     async def _main(self):
         decky_plugin.logger.info('main was called')
-    
+
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
         decky_plugin.logger.info("Goodbye World!")
@@ -55,21 +50,20 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
-
     async def install(self, selected_options):
         # Set up logging
         logging.basicConfig(level=logging.DEBUG)
-    
+
         # Set the path to the runnsl.py script
         script_path = os.path.join('runnsl.py')
-    
+
         # Change the permissions of the runnsl.py script to make it executable
         os.chmod(script_path, 0o755)
-    
+
         # Log the script_path for debugging
         logging.debug(f"script_path: {script_path}")
         print(f"script_path: {script_path}")
-    
+
         # Convert the selected options mapping to a list of strings
         selected_options_list = []
         for option, is_selected in selected_options.items():
@@ -78,36 +72,29 @@ class Plugin:
                 if ' ' in selected_option:
                     selected_option = f'"{selected_option}"'
                 selected_options_list.append(selected_option)
-    
+
         # Log the selected_options_list for debugging
         logging.debug(f"selected_options_list: {selected_options_list}")
         print(f"selected_options_list: {selected_options_list}")
-    
+
         # Run the runnsl.py script with the selected options using subprocess.run()
         command = [sys.executable, script_path] + selected_options_list
         logging.debug(f"Running command: {command}")
         print(f"Running command: {command}")
-    
+
         result = subprocess.run(command)
-    
+
         exit_code = result.returncode
-    
+
         logging.debug(f"Command exit code: {exit_code}")
-    
+
         if exit_code == 0:
-            return "runnsl.py ran successfully"
+            return f"runnsl.py ran successfully with options: {selected_options_list}"
         else:
-            return "runnsl.py failed to run successfully"
-
-        
-
-async def run_main():
-        plugin = Plugin()
-        # Set this to the desired selected options
-        selected_options = {"epicGames": True}
-        result = await plugin.install(selected_options)
-        print(result)
+            return f"runnsl.py failed to run successfully with options: {selected_options_list}"
 
 if __name__ == "__main__":
-    
-    asyncio.run(run_main())
+    plugin = Plugin()
+    selected_options = {"epicGames": True}
+    result = asyncio.run(plugin.install(selected_options))
+    print(result)
