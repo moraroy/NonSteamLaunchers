@@ -53,6 +53,7 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
     async def install(self, selected_options):
+        decky_plugin.logger.info('main was called')
         # Set up logging
         logging.basicConfig(level=logging.DEBUG)
 
