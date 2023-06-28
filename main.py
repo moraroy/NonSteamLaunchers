@@ -84,14 +84,12 @@ class Plugin:
         logging.debug(f"selected_options_list: {selected_options_list}")
         print(f"selected_options_list: {selected_options_list}")
 
-        # Run the runnsl.py script with the selected options using subprocess.run()
+         # Run the runnsl.py script with the selected options using subprocess.Popen
         command = [sys.executable, script_path] + selected_options_list
-        logging.debug(f"Running command: {command}")
-        print(f"Running command: {command}")
+        process = subprocess.Popen(command)
 
-        result = subprocess.run(command)
-
-        exit_code = result.returncode
+        # Wait for the script to complete and get the exit code
+        exit_code = process.wait()
 
         logging.debug(f"Command exit code: {exit_code}")
 
