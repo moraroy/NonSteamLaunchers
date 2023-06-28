@@ -108,4 +108,4 @@ if __name__ == "__main__":
     print(result)
 
 
-    asyncio.run(run_main())
+    asyncio.run(plugin._main())
