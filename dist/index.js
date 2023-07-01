@@ -88,6 +88,8 @@
           origin: false,
           uplay: false,
       });
+      // Add a new state variable to keep track of the progress and status of the operation
+      const [progress, setProgress] = React.useState({ percent: 0, status: '' });
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -95,6 +97,8 @@
           }));
       };
       const handleInstallClick = async () => {
+          // Update the progress state variable to indicate that the operation has started
+          setProgress({ percent: 0, status: 'Calling serverAPI...' });
           // Access the current state of the options variable here
           console.log(options);
           // Set the selected options
@@ -111,6 +115,8 @@
               const response = await serverAPI.callPluginMethod('install', {
                   selected_options: selectedOptionsMapping,
               });
+              // Update the progress state variable to indicate that the operation has completed successfully
+              setProgress({ percent: 100, status: 'Installation successful!' });
               // Handle the response from your backend here
               console.log(response);
               if (typeof response === 'string') {
@@ -123,6 +129,8 @@
               }
           }
           catch (error) {
+              // Update the progress state variable to indicate that an error occurred
+              setProgress({ percent: 100, status: 'Installation failed.' });
               console.error('Error calling install method on serverAPI object:', error);
           }
       };
@@ -154,20 +162,23 @@
                   "Uplay"),
               window.SP_REACT.createElement("br", null),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install")),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
+              window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
+              window.SP_REACT.createElement("div", null, progress.status)),
           window.SP_REACT.createElement("style", null, `
-           .checkmark {
-             color: green;
-           }
-           .selected {
-             background-color: #eee;
-           }
-           progress {
-             display: block;
-             width: 100%;
-             margin-top: 5px;
-             height: 20px; /* Change the height of the progress bar here */
-           }
-         `)));
+            .checkmark {
+              color: green;
+            }
+            .selected {
+              background-color: #eee;
+            }
+            progress {
+              display: block;
+              width: 100%;
+              margin-top: 5px;
+              height: 20px; /* Change the height of the progress bar here */
+            }
+          `)));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {

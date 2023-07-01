@@ -20,6 +20,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     uplay: false,
   });
 
+  // Add a new state variable to keep track of the progress and status of the operation
+  const [progress, setProgress] = useState({ percent: 0, status: '' });
+
   const handleButtonClick = (name: string) => {
     setOptions((prevOptions) => ({
       ...prevOptions,
@@ -28,6 +31,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   };
 
   const handleInstallClick = async () => {
+    // Update the progress state variable to indicate that the operation has started
+    setProgress({ percent: 0, status: 'Calling serverAPI...' });
+
     // Access the current state of the options variable here
     console.log(options);
 
@@ -45,12 +51,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       'Calling install method on serverAPI object with selected options:',
       selectedOptionsMapping
     );
-
     try {
       // Call a method in your backend with the selected options
       const response = await serverAPI.callPluginMethod('install', {
         selected_options: selectedOptionsMapping,
       });
+
+      // Update the progress state variable to indicate that the operation has completed successfully
+      setProgress({ percent: 100, status: 'Installation successful!' });
 
       // Handle the response from your backend here
       console.log(response);
@@ -63,6 +71,8 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         }
       }
     } catch (error) {
+      // Update the progress state variable to indicate that an error occurred
+      setProgress({ percent: 100, status: 'Installation failed.' });
       console.error('Error calling install method on serverAPI object:', error);
     }
   };
@@ -135,21 +145,27 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         </ButtonItem>
       </PanelSectionRow>
 
+      {/* Render the progress bar and status message */}
+      <PanelSectionRow>
+        <progress value={progress.percent} max={100} />
+        <div>{progress.status}</div>
+      </PanelSectionRow>
+
       <style>
         {`
-           .checkmark {
-             color: green;
-           }
-           .selected {
-             background-color: #eee;
-           }
-           progress {
-             display: block;
-             width: 100%;
-             margin-top: 5px;
-             height: 20px; /* Change the height of the progress bar here */
-           }
-         `}
+            .checkmark {
+              color: green;
+            }
+            .selected {
+              background-color: #eee;
+            }
+            progress {
+              display: block;
+              width: 100%;
+              margin-top: 5px;
+              height: 20px; /* Change the height of the progress bar here */
+            }
+          `}
       </style>
     </PanelSection>
   );
@@ -162,3 +178,4 @@ export default definePlugin((serverApi: ServerAPI) => {
     icon: <FaRocket />,
   };
 });
+
