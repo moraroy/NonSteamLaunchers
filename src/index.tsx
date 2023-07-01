@@ -36,6 +36,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
     // Access the current state of the options variable here
     console.log(options);
+    setProgress((prevProgress) => ({
+      ...prevProgress,
+      status: prevProgress.status + '\nAccessing current state of options...',
+    }));
 
     // Set the selected options
     const selectedOptions = Object.keys(options).filter((key) => options[key]);
@@ -51,6 +55,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       'Calling install method on serverAPI object with selected options:',
       selectedOptionsMapping
     );
+    setProgress((prevProgress) => ({
+      ...prevProgress,
+      status:
+        prevProgress.status +
+        '\nCalling install method on serverAPI object with selected options: ' +
+        JSON.stringify(selectedOptionsMapping),
+    }));
+
     try {
       // Call a method in your backend with the selected options
       const response = await serverAPI.callPluginMethod('install', {
@@ -62,6 +74,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
       // Handle the response from your backend here
       console.log(response);
+      setProgress((prevProgress) => ({
+        ...prevProgress,
+        status: prevProgress.status + '\nResponse from backend: ' + response,
+      }));
 
       if (typeof response === 'string') {
         if (response === 'Installation successful') {
@@ -78,96 +94,101 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   };
 
   return (
-    <PanelSection title="Panel Section">
-      <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={(e: React.MouseEvent) =>
-            showContextMenu(
-              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #3</MenuItem>
-              </Menu>,
-              e.currentTarget ?? window
-            )
-          }
-        >
-          Find Games w/BoilR
-        </ButtonItem>
-      </PanelSectionRow>
-
-      {/* Render the options here */}
-      <PanelSectionRow>
-        <ButtonItem
-          className={options.epicGames ? 'selected' : ''}
-          layout="below"
-          onClick={() => handleButtonClick('epicGames')}
-        >
-          <span className="checkmark">{options.epicGames ? '✓' : ''}</span>{' '}
-          Epic Games
-        </ButtonItem>
-        <br />
-
-        <ButtonItem
-          className={options.gogGalaxy ? 'selected' : ''}
-          layout="below"
-          onClick={() => handleButtonClick('gogGalaxy')}
-        >
-          <span className="checkmark">{options.gogGalaxy ? '✓' : ''}</span>{' '}
-          Gog Galaxy
-        </ButtonItem>
-        <br />
-
-        <ButtonItem
-          className={options.origin ? 'selected' : ''}
-          layout="below"
-          onClick={() => handleButtonClick('origin')}
-        >
-          <span className="checkmark">{options.origin ? '✓' : ''}</span>{' '}
-          Origin
-        </ButtonItem>
-        <br />
-
-        <ButtonItem
-          className={options.uplay ? 'selected' : ''}
-          layout="below"
-          onClick={() => handleButtonClick('uplay')}
-        >
-          <span className="checkmark">{options.uplay ? '✓' : ''}</span>{' '}
-          Uplay
-        </ButtonItem>
-        <br />
-
-        {/* Add an Install button here using a ButtonItem component */}
-        <ButtonItem layout="below" onClick={handleInstallClick}>
-          Install
-        </ButtonItem>
-      </PanelSectionRow>
-
+    <>
       {/* Render the progress bar and status message */}
       <PanelSectionRow>
         <progress value={progress.percent} max={100} />
         <div>{progress.status}</div>
       </PanelSectionRow>
 
+      <PanelSection>
+        <PanelSectionRow>
+          <ButtonItem
+            layout="below"
+            onClick={(e: React.MouseEvent) =>
+              showContextMenu(
+                <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
+                  <MenuItem onSelected={() => {}}>Item #1</MenuItem>
+                  <MenuItem onSelected={() => {}}>Item #2</MenuItem>
+                  <MenuItem onSelected={() => {}}>Item #3</MenuItem>
+                </Menu>,
+                e.currentTarget ?? window
+              )
+            }
+          >
+            Find Games w/BoilR
+          </ButtonItem>
+        </PanelSectionRow>
+
+        {/* Render the options here */}
+        <PanelSectionRow>
+          <ButtonItem
+            className={options.epicGames ? 'selected' : ''}
+            layout="below"
+            onClick={() => handleButtonClick('epicGames')}
+          >
+            <span className="checkmark">{options.epicGames ? '✓' : ''}</span>{' '}
+            Epic Games
+          </ButtonItem>
+          <br />
+
+          <ButtonItem
+            className={options.gogGalaxy ? 'selected' : ''}
+            layout="below"
+            onClick={() => handleButtonClick('gogGalaxy')}
+          >
+            <span className="checkmark">{options.gogGalaxy ? '✓' : ''}</span>{' '}
+            Gog Galaxy
+          </ButtonItem>
+          <br />
+
+          <ButtonItem
+            className={options.origin ? 'selected' : ''}
+            layout="below"
+            onClick={() => handleButtonClick('origin')}
+          >
+            <span className="checkmark">{options.origin ? '✓' : ''}</span>{' '}
+            Origin
+          </ButtonItem>
+          <br />
+
+          <ButtonItem
+            className={options.uplay ? 'selected' : ''}
+            layout="below"
+            onClick={() => handleButtonClick('uplay')}
+          >
+            <span className="checkmark">{options.uplay ? '✓' : ''}</span>{' '}
+            Uplay
+          </ButtonItem>
+          <br />
+
+          {/* Add an Install button here using a ButtonItem component */}
+          <ButtonItem layout="below" onClick={handleInstallClick}>
+            Install
+          </ButtonItem>
+        </PanelSectionRow>
+      </PanelSection>
+
       <style>
         {`
-            .checkmark {
-              color: green;
-            }
-            .selected {
-              background-color: #eee;
-            }
-            progress {
-              display: block;
-              width: 100%;
-              margin-top: 5px;
-              height: 20px; /* Change the height of the progress bar here */
-            }
-          `}
+              .checkmark {
+                color: green;
+              }
+              .selected {
+                background-color: #eee;
+              }
+              progress {
+                display: block;
+                width: 100%;
+                margin-top: 5px;
+                height: 20px; /* Change the height of the progress bar here */
+              }
+              pre {
+                white-space: pre-wrap;
+              }
+            `}
       </style>
-    </PanelSection>
+    </>
   );
 };
 
@@ -178,4 +199,5 @@ export default definePlugin((serverApi: ServerAPI) => {
     icon: <FaRocket />,
   };
 });
+
 

@@ -101,6 +101,10 @@
           setProgress({ percent: 0, status: 'Calling serverAPI...' });
           // Access the current state of the options variable here
           console.log(options);
+          setProgress((prevProgress) => ({
+              ...prevProgress,
+              status: prevProgress.status + '\nAccessing current state of options...',
+          }));
           // Set the selected options
           const selectedOptions = Object.keys(options).filter((key) => options[key]);
           // Convert the selected options to a mapping
@@ -110,6 +114,12 @@
           }
           // Add a print statement before calling the install method on the serverAPI object
           console.log('Calling install method on serverAPI object with selected options:', selectedOptionsMapping);
+          setProgress((prevProgress) => ({
+              ...prevProgress,
+              status: prevProgress.status +
+                  '\nCalling install method on serverAPI object with selected options: ' +
+                  JSON.stringify(selectedOptionsMapping),
+          }));
           try {
               // Call a method in your backend with the selected options
               const response = await serverAPI.callPluginMethod('install', {
@@ -119,6 +129,10 @@
               setProgress({ percent: 100, status: 'Installation successful!' });
               // Handle the response from your backend here
               console.log(response);
+              setProgress((prevProgress) => ({
+                  ...prevProgress,
+                  status: prevProgress.status + '\nResponse from backend: ' + response,
+              }));
               if (typeof response === 'string') {
                   if (response === 'Installation successful') {
                       alert('Installation successful!');
@@ -134,51 +148,55 @@
               console.error('Error calling install method on serverAPI object:', error);
           }
       };
-      return (window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Panel Section" },
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },
-                      window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #1"),
-                      window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #2"),
-                      window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #3")), e.currentTarget ?? window) }, "Find Games w/BoilR")),
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.epicGames ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('epicGames') },
-                  window.SP_REACT.createElement("span", { className: "checkmark" }, options.epicGames ? '✓' : ''),
-                  ' ',
-                  "Epic Games"),
-              window.SP_REACT.createElement("br", null),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.gogGalaxy ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('gogGalaxy') },
-                  window.SP_REACT.createElement("span", { className: "checkmark" }, options.gogGalaxy ? '✓' : ''),
-                  ' ',
-                  "Gog Galaxy"),
-              window.SP_REACT.createElement("br", null),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.origin ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('origin') },
-                  window.SP_REACT.createElement("span", { className: "checkmark" }, options.origin ? '✓' : ''),
-                  ' ',
-                  "Origin"),
-              window.SP_REACT.createElement("br", null),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.uplay ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('uplay') },
-                  window.SP_REACT.createElement("span", { className: "checkmark" }, options.uplay ? '✓' : ''),
-                  ' ',
-                  "Uplay"),
-              window.SP_REACT.createElement("br", null),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install")),
+      return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },
+                          window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #1"),
+                          window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #2"),
+                          window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #3")), e.currentTarget ?? window) }, "Find Games w/BoilR")),
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.epicGames ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('epicGames') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.epicGames ? '✓' : ''),
+                      ' ',
+                      "Epic Games"),
+                  window.SP_REACT.createElement("br", null),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.gogGalaxy ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('gogGalaxy') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.gogGalaxy ? '✓' : ''),
+                      ' ',
+                      "Gog Galaxy"),
+                  window.SP_REACT.createElement("br", null),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.origin ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('origin') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.origin ? '✓' : ''),
+                      ' ',
+                      "Origin"),
+                  window.SP_REACT.createElement("br", null),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.uplay ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('uplay') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.uplay ? '✓' : ''),
+                      ' ',
+                      "Uplay"),
+                  window.SP_REACT.createElement("br", null),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"))),
           window.SP_REACT.createElement("style", null, `
-            .checkmark {
-              color: green;
-            }
-            .selected {
-              background-color: #eee;
-            }
-            progress {
-              display: block;
-              width: 100%;
-              margin-top: 5px;
-              height: 20px; /* Change the height of the progress bar here */
-            }
-          `)));
+              .checkmark {
+                color: green;
+              }
+              .selected {
+                background-color: #eee;
+              }
+              progress {
+                display: block;
+                width: 100%;
+                margin-top: 5px;
+                height: 20px; /* Change the height of the progress bar here */
+              }
+              pre {
+                white-space: pre-wrap;
+              }
+            `)));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {
