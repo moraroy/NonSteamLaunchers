@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -9,8 +9,8 @@ dependencies:
     specifier: ^0.1.4
     version: 0.1.4
   decky-frontend-lib:
-    specifier: ^3.21.5
-    version: 3.21.5
+    specifier: ^3.21.8
+    version: 3.21.8
   react-icons:
     specifier: ^4.4.0
     version: 4.9.0
@@ -514,8 +514,8 @@ packages:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
     dev: true
 
-  /decky-frontend-lib@3.21.5:
-    resolution: {integrity: sha512-reqm1XK4P97dc5Lu143GIW05i5LteT2UKAC1dsR84Bm8rxOCrLy7nGhN59Kuc7YT2mLqu4n4Ym3DN2JJt3ZaFA==}
+  /decky-frontend-lib@3.21.8:
+    resolution: {integrity: sha512-I45KWzoTSakUcsN7drHhiOc+rYKYygIsuYTHqc8DbpPDJvUx6xlU4t7D2TMrj9o/xS/V3WY9N/pX8eF6AcGT1g==}
     dev: false
 
   /deepmerge@4.3.1:
