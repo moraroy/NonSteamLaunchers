@@ -70,6 +70,3 @@ if __name__ == "__main__":
     selected_options = {"epicGames": True}
     result = asyncio.run(plugin.install(selected_options))
     print(result)
-
-
-    asyncio.run(plugin._main())
