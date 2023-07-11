@@ -125,19 +125,21 @@
               const response = await serverAPI.callPluginMethod('install', {
                   selected_options: selectedOptionsMapping,
               });
+              // Wait for the response Promise to resolve
+              const resolvedResponse = await response;
               // Update the progress state variable to indicate that the operation has completed successfully
               setProgress({ percent: 100, status: 'Installation successful!' });
-              // Handle the response from your backend here
-              console.log(response);
+              // Handle the resolved response from your backend here
+              console.log(resolvedResponse);
               setProgress((prevProgress) => ({
                   ...prevProgress,
-                  status: prevProgress.status + '\nResponse from backend: ' + response,
+                  status: prevProgress.status + '\nResponse from backend: ' + resolvedResponse,
               }));
-              if (typeof response === 'string') {
-                  if (response === 'Installation successful') {
+              if (typeof resolvedResponse === 'string') {
+                  if (resolvedResponse === 'Installation successful') {
                       alert('Installation successful!');
                   }
-                  else if (response === 'Installation failed') {
+                  else if (resolvedResponse === 'Installation failed') {
                       alert('Installation failed.');
                   }
               }
