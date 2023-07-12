@@ -127,21 +127,22 @@
               });
               // Wait for the response Promise to resolve
               const resolvedResponse = await response;
-              // Update the progress state variable to indicate that the operation has completed successfully
-              setProgress({ percent: 100, status: 'Installation successful!' });
+              const result = resolvedResponse.result;
               // Handle the resolved response from your backend here
-              console.log(resolvedResponse);
+              console.log(result);
               setProgress((prevProgress) => ({
                   ...prevProgress,
-                  status: prevProgress.status + '\nResponse from backend: ' + resolvedResponse,
+                  status: prevProgress.status + '\nResponse from backend: ' + result,
               }));
-              if (typeof resolvedResponse === 'string') {
-                  if (resolvedResponse === 'Installation successful') {
-                      alert('Installation successful!');
-                  }
-                  else if (resolvedResponse === 'Installation failed') {
-                      alert('Installation failed.');
-                  }
+              if (result === true) {
+                  // Update the progress state variable to indicate that the operation has completed successfully
+                  setProgress({ percent: 100, status: 'Installation successful!' });
+                  alert('Installation successful!');
+              }
+              else {
+                  // Update the progress state variable to indicate that an error occurred
+                  setProgress({ percent: 100, status: 'Installation failed.' });
+                  alert('Installation failed.');
               }
           }
           catch (error) {

@@ -60,9 +60,9 @@ class Plugin:
         logging.debug(f"Command exit code: {exit_code}")
 
         if exit_code == 0:
-            return f"runnsl.py ran successfully with options: {selected_options_list}"
+            return True
         else:
-            return f"runnsl.py failed to run successfully with options: {selected_options_list}"
+            return False
 
 
 if __name__ == "__main__":
