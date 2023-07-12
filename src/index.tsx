@@ -65,7 +65,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
     try {
       // Call a method in your backend with the selected options
-      const response = await serverAPI.callPluginMethod('install', {
+      const response = await serverAPI.callPluginMethod("install", {
         selected_options: selectedOptionsMapping,
       });
 
