@@ -35,7 +35,7 @@ class Plugin:
         os.chmod(script_path, 0o755)
 
         # Log the script_path for debugging
-        logging.debug(f"script_path: {script_path}")
+        decky_plugin.logger.info(f"script_path: {script_path}")
         print(f"script_path: {script_path}")
 
         # Convert the selected options mapping to a list of strings
@@ -48,7 +48,7 @@ class Plugin:
                 selected_options_list.append(selected_option)
 
         # Log the selected_options_list for debugging
-        logging.debug(f"selected_options_list: {selected_options_list}")
+        decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
         print(f"selected_options_list: {selected_options_list}")
 
          # Run the runnsl.py script with the selected options using subprocess.Popen
@@ -58,7 +58,7 @@ class Plugin:
         # Wait for the script to complete and get the exit code
         exit_code = process.wait()
 
-        logging.debug(f"Command exit code: {exit_code}")
+        decky_plugin.logger.info(f"Command exit code: {exit_code}")
 
         if exit_code == 0:
             return True
