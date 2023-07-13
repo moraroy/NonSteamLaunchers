@@ -11,6 +11,7 @@ import {
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
+import jsesc from 'jsesc';
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [options, setOptions] = useState({
@@ -66,34 +67,31 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     try {
       // Use the executeInTab method to run a Python file
       const pythonFile = `
-  import os
-  import json
-  
-  def run():
-    # Convert the selected options to a JSON string
-    selected_options_json = '${JSON.stringify(
-      selectedOptionsMapping,
-      (_, value) =>
-        typeof value === 'string'
-          ? value.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
-          : value
-    )}'
-    
-    # Parse the JSON string to get a dictionary of the selected options
-    selected_options = json.loads(selected_options_json)
-    
-    # Set an environment variable with the selected options
-    os.environ['SELECTED_OPTIONS'] = selected_options_json
-    
-    # Run the main.py file with the selected options as an environment variable
-    os.system("python3 main.py")
-  
-  if __name__ == "__main__":
-    run()
-  `;
-  
+import os
+import json
+
+def run():
+  # Convert the selected options to a JSON string
+  selected_options_json = '${jsesc(
+    JSON.stringify(selectedOptionsMapping),
+    { quotes: 'double' }
+  )}'
+
+  # Parse the JSON string to get a dictionary of the selected options
+  selected_options = json.loads(selected_options_json)
+
+  # Set an environment variable with the selected options
+  os.environ['SELECTED_OPTIONS'] = selected_options_json
+
+  # Run the main.py file with the selected options as an environment variable
+  os.system("python3 main.py")
+
+if __name__ == "__main__":
+  run()
+`;
+
       await serverAPI.executeInTab("my_tab_id", true, pythonFile);
-  
+
       // Update the progress state variable to indicate that the operation has completed successfully
       setProgress({ percent: 100, status: 'Installation successful!' });
       alert('Installation successful!');

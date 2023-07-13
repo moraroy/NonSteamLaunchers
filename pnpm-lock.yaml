@@ -11,6 +11,9 @@ dependencies:
   decky-frontend-lib:
     specifier: ^3.21.8
     version: 3.21.8
+  jsesc:
+    specifier: ^3.0.2
+    version: 3.0.2
   react-icons:
     specifier: ^4.4.0
     version: 4.9.0
@@ -34,6 +37,9 @@ devDependencies:
   '@rollup/plugin-typescript':
     specifier: ^8.3.3
     version: 8.5.0(rollup@2.79.1)(tslib@2.5.2)(typescript@4.9.5)
+  '@types/jsesc':
+    specifier: ^3.0.1
+    version: 3.0.1
   '@types/react':
     specifier: 16.14.0
     version: 16.14.0
@@ -212,6 +218,10 @@ packages:
 
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
+    dev: true
+
+  /@types/jsesc@3.0.1:
+    resolution: {integrity: sha512-F2g93pJlhV0RlW9uSUAM/hIxywlwlZcuRB/nZ82GaMPaO8mdexYbJ8Qt3UGbUS1M19YFQykEetrWW004M+vPCg==}
     dev: true
 
   /@types/json-schema@7.0.12:
@@ -712,6 +722,12 @@ packages:
   /js-yaml@0.3.7:
     resolution: {integrity: sha512-/7PsVDNP2tVe2Z1cF9kTEkjamIwz4aooDpRKmN1+g/9eePCgcxsv4QDvEbxO0EH+gdDD7MLyDoR6BASo3hH51g==}
     engines: {node: '> 0.4.11'}
+    dev: false
+
+  /jsesc@3.0.2:
+    resolution: {integrity: sha512-xKqzzWXDttJuOcawBt4KnKHHIf5oQ/Cxax+0PWFG+DFDgHNAdi+TXECADI+RYiFUMmx8792xsMbbgXj4CwnP4g==}
+    engines: {node: '>=6'}
+    hasBin: true
     dev: false
 
   /jsmin@1.0.1:
