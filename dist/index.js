@@ -128,7 +128,9 @@
   
   def run():
     # Convert the selected options to a JSON string
-    selected_options_json = '${JSON.stringify(selectedOptionsMapping)}'
+    selected_options_json = '${JSON.stringify(selectedOptionsMapping, (_, value) => typeof value === 'string'
+                ? value.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
+                : value)}'
     
     # Parse the JSON string to get a dictionary of the selected options
     selected_options = json.loads(selected_options_json)
@@ -137,7 +139,7 @@
     os.environ['SELECTED_OPTIONS'] = selected_options_json
     
     # Run the main.py file with the selected options as an environment variable
-    os.system("python main.py")
+    os.system("python3 main.py")
   
   if __name__ == "__main__":
     run()
