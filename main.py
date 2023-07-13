@@ -76,8 +76,8 @@ class Plugin:
 if __name__ == "__main__":
     # Get the selected options from the environment variable
     selected_options_json = os.environ.get('SELECTED_OPTIONS')
-    if selected_options_json:
-        selected_options = json.loads(selected_options_json)
+    if selected_options_json and json.loads(selected_options_json):
+    selected_options = json.loads(selected_options_json)
     else:
         selected_options = {}
 
