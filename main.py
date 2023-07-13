@@ -53,17 +53,23 @@ class Plugin:
 
          # Run the runnsl.py script with the selected options using subprocess.Popen
         command = [sys.executable, script_path] + selected_options_list
+
+        # Log the command for debugging
+        decky_plugin.logger.info(f"Running command: {command}")
+
         process = subprocess.Popen(command)
 
         # Wait for the script to complete and get the exit code
         exit_code = process.wait()
 
+        # Log the exit code for debugging
         decky_plugin.logger.info(f"Command exit code: {exit_code}")
 
         if exit_code == 0:
             return True
         else:
             return False
+
 
 
 if __name__ == "__main__":
