@@ -69,6 +69,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       const pythonFile = `
 import os
 import json
+import subprocess
 
 def run():
   # Convert the selected options to a JSON string
@@ -84,7 +85,10 @@ def run():
   os.environ['SELECTED_OPTIONS'] = selected_options_json
 
   # Run the main.py file with the selected options as an environment variable
-  os.system("python3 main.py")
+  process = subprocess.Popen(["python3", "main.py"])
+
+  # Wait for the process to complete
+  process.wait()
 
 if __name__ == "__main__":
   run()
