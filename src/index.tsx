@@ -8,9 +8,9 @@ import {
   ServerAPI,
   showContextMenu,
   staticClasses,
-} from 'decky-frontend-lib';
-import { useState, VFC } from 'react';
-import { FaRocket } from 'react-icons/fa';
+} from "decky-frontend-lib";
+import { useState, VFC } from "react";
+import { FaRocket } from "react-icons/fa";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [options, setOptions] = useState({
@@ -65,7 +65,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
     try {
       // Call a method in your backend with the selected options
-      const response = await serverAPI.callPluginMethod('install', {
+      const response = await serverAPI.callPluginMethod("install", {
         selected_options: selectedOptionsMapping,
       });
 

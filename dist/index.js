@@ -122,7 +122,7 @@
           }));
           try {
               // Call a method in your backend with the selected options
-              const response = await serverAPI.callPluginMethod('install', {
+              const response = await serverAPI.callPluginMethod("install", {
                   selected_options: selectedOptionsMapping,
               });
               // Wait for the response Promise to resolve
