@@ -121,29 +121,31 @@
                   JSON.stringify(selectedOptionsMapping),
           }));
           try {
-              // Call a method in your backend with the selected options
-              const response = await serverAPI.callPluginMethod("install", {
-                  selected_options: selectedOptionsMapping,
-              });
-              // Wait for the response Promise to resolve
-              const resolvedResponse = response;
-              const result = resolvedResponse.result;
-              // Handle the resolved response from your backend here
-              console.log(result);
-              setProgress((prevProgress) => ({
-                  ...prevProgress,
-                  status: prevProgress.status + '\nResponse from backend: ' + result,
-              }));
-              if (result === true) {
-                  // Update the progress state variable to indicate that the operation has completed successfully
-                  setProgress({ percent: 100, status: 'Installation successful!' });
-                  alert('Installation successful!');
-              }
-              else {
-                  // Update the progress state variable to indicate that an error occurred
-                  setProgress({ percent: 100, status: 'Installation failed.' });
-                  alert('Installation failed.');
-              }
+              // Use the executeInTab method to run a Python file
+              const pythonFile = `
+  import os
+  import json
+  
+  def run():
+    # Convert the selected options to a JSON string
+    selected_options_json = '${JSON.stringify(selectedOptionsMapping)}'
+    
+    # Parse the JSON string to get a dictionary of the selected options
+    selected_options = json.loads(selected_options_json)
+    
+    # Set an environment variable with the selected options
+    os.environ['SELECTED_OPTIONS'] = selected_options_json
+    
+    # Run the main.py file with the selected options as an environment variable
+    os.system("python main.py")
+  
+  if __name__ == "__main__":
+    run()
+  `;
+              await serverAPI.executeInTab("my_tab_id", true, pythonFile);
+              // Update the progress state variable to indicate that the operation has completed successfully
+              setProgress({ percent: 100, status: 'Installation successful!' });
+              alert('Installation successful!');
           }
           catch (error) {
               // Update the progress state variable to indicate that an error occurred

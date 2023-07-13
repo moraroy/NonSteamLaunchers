@@ -6,6 +6,7 @@ import sys
 import subprocess
 import re
 import asyncio
+import json
 try:
     import decky_plugin
 except ImportError:
@@ -73,7 +74,13 @@ class Plugin:
 
 
 if __name__ == "__main__":
+    # Get the selected options from the environment variable
+    selected_options_json = os.environ.get('SELECTED_OPTIONS')
+    if selected_options_json:
+        selected_options = json.loads(selected_options_json)
+    else:
+        selected_options = {}
+
     plugin = Plugin()
-    selected_options = {"epicGames": True}
     result = asyncio.run(plugin.install(selected_options))
     print(result)
