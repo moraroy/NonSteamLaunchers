@@ -11,7 +11,6 @@ import {
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
-import jsesc from 'jsesc';
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [options, setOptions] = useState({
@@ -45,52 +44,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     // Set the selected options
     const selectedOptions = Object.keys(options).filter((key) => options[key]);
 
-    // Convert the selected options to a mapping
-    const selectedOptionsMapping = {};
-    for (const option of selectedOptions) {
-      selectedOptionsMapping[option] = true;
-    }
-
-    // Add a print statement before calling the install method on the serverAPI object
-    console.log(
-      'Calling install method on serverAPI object with selected options:',
-      selectedOptionsMapping
-    );
-    setProgress((prevProgress) => ({
-      ...prevProgress,
-      status:
-        prevProgress.status +
-        '\nCalling install method on serverAPI object with selected options: ' +
-        JSON.stringify(selectedOptionsMapping),
-    }));
+    // Convert the selected options to a list of command-line arguments
+    const selectedOptionsArgs = selectedOptions.map(option => {
+      const words = option.split(/(?=[A-Z])/);
+      return words.join(' ');
+    });
 
     try {
-      // Use the executeInTab method to run a Python file
-      const pythonFile = `
-import os
-import json
-
-def run():
-  # Convert the selected options to a JSON string
-  selected_options_json = '${jsesc(
-    JSON.stringify(selectedOptionsMapping),
-    { quotes: 'double' }
-  )}'
-
-  # Parse the JSON string to get a dictionary of the selected options
-  selected_options = json.loads(selected_options_json)
-
-  # Set an environment variable with the selected options
-  os.environ['SELECTED_OPTIONS'] = selected_options_json
-
-  # Run the main.py file with the selected options as an environment variable
-  os.system("python3 main.py")
-
-if __name__ == "__main__":
-  run()
-`;
-
-      await serverAPI.executeInTab("my_tab_id", true, pythonFile);
+      // Run the main.py script with the selected options as command-line arguments
+      await serverAPI.executeInTab("my_tab_id", true, `python3 main.py ${selectedOptionsArgs.join(' ')}`);
 
       // Update the progress state variable to indicate that the operation has completed successfully
       setProgress({ percent: 100, status: 'Installation successful!' });

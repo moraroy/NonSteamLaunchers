@@ -72,14 +72,14 @@ class Plugin:
             return False
 
 
-
 if __name__ == "__main__":
-    # Get the selected options from the environment variable
-    selected_options_json = os.environ.get('SELECTED_OPTIONS')
-    if selected_options_json and json.loads(selected_options_json):
-    selected_options = json.loads(selected_options_json)
-    else:
-        selected_options = {}
+    # Get the selected options from command-line arguments
+    args = sys.argv[1:]
+    selected_options = {}
+    for arg in args:
+      key = ''.join([word.capitalize() for word in arg.split()])
+      key = key[0].lower() + key[1:]
+      selected_options[key] = True
 
     plugin = Plugin()
     result = asyncio.run(plugin.install(selected_options))
