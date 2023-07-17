@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import codespaces_debugging as decky_plugin
+#import codespaces_debugging as decky_plugin
 import os
 import logging
 import sys
@@ -23,7 +23,7 @@ def camel_to_title(s):
     return ' '.join(word.capitalize() for word in words)
 
 
-class NonSteamLaunchers:
+class Plugin:
     async def install(self, selected_options):
         decky_plugin.logger.info('install was called')
         # Set up logging
@@ -70,7 +70,12 @@ class NonSteamLaunchers:
             return True
         else:
             return False
+        
 
 
-def setup(api):
-    api.add_plugin(NonSteamLaunchers())
+if __name__ == "__main__":
+    plugin = Plugin()
+    selected_options = {"epicGames": True}
+    result = asyncio.run(plugin.install(selected_options))
+    print(result)
+
