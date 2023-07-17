@@ -68,9 +68,13 @@ class Plugin:
         else:
             return False
 
+    async def _main(self):
+      selected_options = {"epicGames": True}
+      result = self.install(selected_options)
+      print(result)
+
 if __name__ == "__main__":
     plugin = Plugin()
     selected_options = {"epicGames": True}
     result = plugin.install(selected_options)
     print(result)
-
