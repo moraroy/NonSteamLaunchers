@@ -109,10 +109,17 @@
           const selectedOptions = Object.keys(options).filter((key) => options[key]);
           try {
               // Call the install method on the server-side plugin with the selected options
-              await serverAPI.callPluginMethod('install', { selectedOptions });
-              // Update the progress state variable to indicate that the operation has completed successfully
-              setProgress({ percent: 100, status: 'Installation successful!' });
-              alert('Installation successful!');
+              const result = await serverAPI.callPluginMethod('install', { selectedOptions });
+              if (result) {
+                  // Update the progress state variable to indicate that the operation has completed successfully
+                  setProgress({ percent: 100, status: 'Installation successful!' });
+                  alert('Installation successful!');
+              }
+              else {
+                  // Update the progress state variable to indicate that an error occurred
+                  setProgress({ percent: 100, status: 'Installation failed.' });
+                  alert('Installation failed.');
+              }
           }
           catch (error) {
               // Update the progress state variable to indicate that an error occurred
