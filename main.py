@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import codespaces_debugging as decky_plugin
 import os
 import logging
@@ -7,10 +6,6 @@ import subprocess
 import re
 import asyncio
 import json
-try:
-    import decky_plugin
-except ImportError:
-    pass
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -23,7 +18,7 @@ def camel_to_title(s):
     return ' '.join(word.capitalize() for word in words)
 
 
-class Plugin:
+class NonSteamLaunchers:
     async def install(self, selected_options):
         decky_plugin.logger.info('install was called')
         # Set up logging
@@ -72,15 +67,5 @@ class Plugin:
             return False
 
 
-if __name__ == "__main__":
-    # Get the selected options from command-line arguments
-    args = sys.argv[1:]
-    selected_options = {}
-    for arg in args:
-      key = ''.join([word.capitalize() for word in arg.split()])
-      key = key[0].lower() + key[1:]
-      selected_options[key] = True
-
-    plugin = Plugin()
-    result = asyncio.run(plugin.install(selected_options))
-    print(result)
+def setup(api):
+    api.add_plugin(NonSteamLaunchers())
