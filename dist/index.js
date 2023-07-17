@@ -114,7 +114,7 @@
           });
           try {
               // Run the main.py script with the selected options as command-line arguments
-              await serverAPI.executeInTab("my_tab_id", true, `python3 main.py ${selectedOptionsArgs.join(' ')}`);
+              await serverAPI.executeInTab("1", true, `python3 main.py ${selectedOptionsArgs.join(' ')}`);
               // Update the progress state variable to indicate that the operation has completed successfully
               setProgress({ percent: 100, status: 'Installation successful!' });
               alert('Installation successful!');
