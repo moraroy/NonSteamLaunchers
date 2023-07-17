@@ -5,16 +5,14 @@ import logging
 import sys
 import subprocess
 import re
-import asyncio
+
 try:
     import decky_plugin
 except ImportError:
     pass
 
-
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
-
 
 def camel_to_title(s):
     # Split the string into words using a regular expression
@@ -22,9 +20,8 @@ def camel_to_title(s):
     # Convert the first character of each word to uppercase and join the words with spaces
     return ' '.join(word.capitalize() for word in words)
 
-
 class Plugin:
-    async def install(self, selected_options):
+    def install(self, selected_options):
         decky_plugin.logger.info('install was called')
         # Set up logging
         logging.basicConfig(level=logging.DEBUG)
@@ -70,12 +67,10 @@ class Plugin:
             return True
         else:
             return False
-        
-
 
 if __name__ == "__main__":
     plugin = Plugin()
     selected_options = {"epicGames": True}
-    result = asyncio.run(plugin.install(selected_options))
+    result = plugin.install(selected_options)
     print(result)
 
