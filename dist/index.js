@@ -107,14 +107,9 @@
           }));
           // Set the selected options
           const selectedOptions = Object.keys(options).filter((key) => options[key]);
-          // Convert the selected options to a list of command-line arguments
-          const selectedOptionsArgs = selectedOptions.map(option => {
-              const words = option.split(/(?=[A-Z])/);
-              return words.join(' ');
-          });
           try {
-              // Run the main.py script with the selected options as command-line arguments
-              await serverAPI.executeInTab("1", true, `python3 main.py ${selectedOptionsArgs.join(' ')}`);
+              // Call the install method on the server-side plugin with the selected options
+              await serverAPI.callPluginMethod('install', { selectedOptions });
               // Update the progress state variable to indicate that the operation has completed successfully
               setProgress({ percent: 100, status: 'Installation successful!' });
               alert('Installation successful!');
@@ -122,7 +117,7 @@
           catch (error) {
               // Update the progress state variable to indicate that an error occurred
               setProgress({ percent: 100, status: 'Installation failed.' });
-              console.error('Error calling install method on serverAPI object:', error);
+              console.error('Error calling install method on server-side plugin:', error);
           }
       };
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
