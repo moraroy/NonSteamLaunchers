@@ -1,11 +1,16 @@
-import codespaces_debugging as decky_plugin
+#!/usr/bin/env python3
+#import codespaces_debugging as decky_plugin
 import os
 import logging
 import sys
 import subprocess
 import re
 import asyncio
-import json
+try:
+    import decky_plugin
+except ImportError:
+    pass
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
