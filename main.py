@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#import codespaces_debugging as decky_plugin
+import codespaces_debugging as decky_plugin
 import os
 import logging
 import sys
