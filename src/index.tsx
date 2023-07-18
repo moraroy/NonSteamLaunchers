@@ -33,11 +33,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const handleInstallClick = async () => {
     // Update the progress state variable to indicate that the operation has started
     setProgress({ percent: 0, status: 'Calling serverAPI...' });
-  
+
+    // Log the selected options for debugging
+    console.log(`Selected options: ${JSON.stringify(options)}`);
+
     try {
       // Call the _main method on the server-side plugin with the selected options
       const result = await serverAPI!.callPluginMethod("install", { selected_options: options });
-  
+
       if (result) {
         // Update the progress state variable to indicate that the operation has completed successfully
         setProgress({ percent: 100, status: 'Installation successful!' });
@@ -53,7 +56,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       console.error('Error calling _main method on server-side plugin:', error);
     }
   };
-  
 
   return (
     <>
