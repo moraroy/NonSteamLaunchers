@@ -86,7 +86,7 @@ Environment variable: `DECKY_PLUGIN_LOG_DIR`.
 e.g.: `/home/deck/homebrew/logs/decky-plugin-template`
 """
 
-DECKY_PLUGIN_DIR: '/home/deck/homebrew/plugins/NonSteamLaunchersDecky'
+DECKY_PLUGIN_DIR: str
 """
 The root of the plugin's directory.
 Environment variable: `DECKY_PLUGIN_DIR`.
