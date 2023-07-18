@@ -50,7 +50,7 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
-    async def install(self, selected_options, custom_website):
+    async def install(self, selected_options, custom_websites):
         decky_plugin.logger.info('install was called')
         
         # Convert the selected options mapping to a list of strings
@@ -74,8 +74,8 @@ class Plugin:
         # Log the script_path for debugging
         decky_plugin.logger.info(f"script_path: {script_path}")
 
-         # Run the NonSteamLaunchers.sh script with the selected options and custom website using subprocess.Popen
-        command = [script_path] + selected_options_list + [custom_website]
+         # Run the NonSteamLaunchers.sh script with the selected options and custom websites using subprocess.Popen
+        command = [script_path] + selected_options_list + custom_websites
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
@@ -92,5 +92,6 @@ class Plugin:
             return True
         else:
             return False
+
 
 
