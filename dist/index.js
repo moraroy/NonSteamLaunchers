@@ -100,8 +100,8 @@
           // Update the progress state variable to indicate that the operation has started
           setProgress({ percent: 0, status: 'Calling serverAPI...' });
           try {
-              // Call the install method on the server-side plugin with the selected options
-              const result = await serverAPI.callPluginMethod("_main", options);
+              // Call the _main method on the server-side plugin with the selected options
+              const result = await serverAPI.callPluginMethod("_main", { selected_options: options });
               if (result) {
                   // Update the progress state variable to indicate that the operation has completed successfully
                   setProgress({ percent: 100, status: 'Installation successful!' });
@@ -116,7 +116,7 @@
           catch (error) {
               // Update the progress state variable to indicate that an error occurred
               setProgress({ percent: 100, status: 'Installation failed.' });
-              console.error('Error calling install method on server-side plugin:', error);
+              console.error('Error calling _main method on server-side plugin:', error);
           }
       };
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
