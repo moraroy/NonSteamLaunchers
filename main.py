@@ -46,10 +46,13 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
         
-    async def _main(self, selected_options):
+    async def _main(self):
         decky_plugin.logger.info('install was called')
         # Set up logging
         logging.basicConfig(level=logging.DEBUG)
+
+         # Set the selected options for testing
+        selected_options = {'epicGames': True}
 
         # Set the path to the runnsl.py script
         script_path = os.path.join('runnsl.py')
