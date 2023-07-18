@@ -5,6 +5,7 @@ import sys
 import subprocess
 import re
 import decky_plugin
+from decky_plugin import DECKY_PLUGIN_DIR
 
 
 # Set up logging
@@ -55,7 +56,7 @@ class Plugin:
         selected_options = {'epicGames': True}
 
         # Set the path to the runnsl.py script
-        script_path = os.path.join('runnsl.py')
+        script_path = os.path.join(DECKY_PLUGIN_DIR, 'runnsl.py')
 
         # Change the permissions of the runnsl.py script to make it executable
         os.chmod(script_path, 0o755)
