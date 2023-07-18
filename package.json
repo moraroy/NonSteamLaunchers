@@ -54,5 +54,8 @@
         "react-dom"
       ]
     }
+  },
+  "decky": {
+    "main": "main.py"
   }
 }
