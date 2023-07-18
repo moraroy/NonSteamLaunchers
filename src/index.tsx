@@ -36,7 +36,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
     try {
       // Call the install method on the server-side plugin with the selected options
-      const result = await serverAPI!.callPluginMethod("install", options);
+      const result = await serverAPI.callPluginMethod("_main", options);
   
       if (result) {
         // Update the progress state variable to indicate that the operation has completed successfully

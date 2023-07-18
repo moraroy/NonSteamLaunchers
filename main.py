@@ -21,10 +21,6 @@ class Plugin:
     async def add(self, left, right):
         return left + right
 
-    # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
-    async def _main(self):
-        decky_plugin.logger.info("Hello World!")
-
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
         decky_plugin.logger.info("Goodbye World!")
@@ -50,7 +46,7 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
         
-    async def install(self, selected_options):
+    async def _main(self, selected_options):
         decky_plugin.logger.info('install was called')
         # Set up logging
         logging.basicConfig(level=logging.DEBUG)
