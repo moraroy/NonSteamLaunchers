@@ -3,6 +3,8 @@ import logging
 import subprocess
 import sys
 import os
+import decky_plugin
+from decky_plugin import DECKY_PLUGIN_DIR
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -14,7 +16,7 @@ selected_options = sys.argv[1:]
 logging.debug(f"Selected options: {selected_options}")
 
 # Set the path to the script
-script_path = './NonSteamLaunchers.sh'
+script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
 
 # Log the script path for debugging
 logging.debug(f"Script path: {script_path}")
