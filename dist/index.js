@@ -90,6 +90,8 @@
       });
       // Add a new state variable to keep track of the progress and status of the operation
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
+      // Add a new state variable to keep track of the custom website entered by the user
+      const [customWebsite, setCustomWebsite] = React.useState('');
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -107,8 +109,9 @@
           // Log the selected options for debugging
           console.log(`Selected options: ${JSON.stringify(options)}`);
           try {
-              // Call the _main method on the server-side plugin with the selected options
-              const result = await serverAPI.callPluginMethod("install", { selected_options: options });
+              // Split the customWebsite state variable into an array of strings using ',' as the delimiter and pass it to the server-side plugin when calling the install method
+              const customWebsites = customWebsite.split(',').map((website) => website.trim());
+              const result = await serverAPI.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
               if (result) {
                   // Update the progress state variable to indicate that the operation has completed successfully
                   setProgress({ percent: 100, status: 'Installation successful!' });
@@ -130,6 +133,10 @@
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
+              window.SP_REACT.createElement("label", null,
+                  "Custom Websites:",
+                  window.SP_REACT.createElement("input", { type: "text", value: customWebsite, onChange: (e) => setCustomWebsite(e.target.value) }))),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },

@@ -23,6 +23,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   // Add a new state variable to keep track of the progress and status of the operation
   const [progress, setProgress] = useState({ percent: 0, status: '' });
 
+  // Add a new state variable to keep track of the custom website entered by the user
+  const [customWebsite, setCustomWebsite] = useState('');
+
   const handleButtonClick = (name: string) => {
     setOptions((prevOptions) => ({
       ...prevOptions,
@@ -44,8 +47,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     console.log(`Selected options: ${JSON.stringify(options)}`);
 
     try {
-      // Call the _main method on the server-side plugin with the selected options
-      const result = await serverAPI!.callPluginMethod("install", { selected_options: options });
+      // Split the customWebsite state variable into an array of strings using ',' as the delimiter and pass it to the server-side plugin when calling the install method
+      const customWebsites = customWebsite.split(',').map((website) => website.trim());
+      const result = await serverAPI!.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
 
       if (result) {
         // Update the progress state variable to indicate that the operation has completed successfully
@@ -69,6 +73,13 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       <PanelSectionRow>
         <progress value={progress.percent} max={100} />
         <div>{progress.status}</div>
+      </PanelSectionRow>
+
+      <PanelSectionRow>
+        <label>
+          Custom Websites:
+          <input type="text" value={customWebsite} onChange={(e) => setCustomWebsite(e.target.value)} />
+        </label>
       </PanelSectionRow>
 
       <PanelSection>
