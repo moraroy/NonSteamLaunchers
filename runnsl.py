@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import subprocess
+import logging
 import sys
 import os
 import decky_plugin
