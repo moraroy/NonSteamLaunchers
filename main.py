@@ -7,6 +7,7 @@ import re
 import shutil
 import json
 import math
+import decky_plugin
 
 
 homeDir = os.environ['HOME']
