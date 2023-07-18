@@ -21,9 +21,10 @@ class Plugin:
      # A normal method. It can be called from JavaScript using call_plugin_function("method_1", argument1, argument2)
     async def add(self, left, right):
         return left + right
-    
-    async def _main(self)
-        return decky_plugin.logger.info("automatically called hi")
+
+    # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
+    async def _main(self):
+        decky_plugin.logger.info("Hello World!")
 
     # Function called first during the unload process, utilize this to handle your plugin being removed
     async def _unload(self):
@@ -50,13 +51,13 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
         
-    async def _install(self):
+    async def _install(self, selected_options):
         decky_plugin.logger.info('install was called')
         # Set up logging
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG
 
          # Set the selected options for testing
-        selected_options = {'epicGames': True}
+        #selected_options = {'epicGames': True}
 
         # Set the path to the runnsl.py script
         script_path = os.path.join(DECKY_PLUGIN_DIR, 'runnsl.py')
