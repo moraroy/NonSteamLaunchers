@@ -11,7 +11,7 @@ import decky_plugin
 
 
 homeDir = os.environ['HOME']
-pluginDir = os.environ['DECKY_PLUGIN_DIR']
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
