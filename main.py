@@ -51,10 +51,10 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
         
-    async def _install(self, selected_options):
+    async def install(self, selected_options):
         decky_plugin.logger.info('install was called')
         # Set up logging
-        logging.basicConfig(level=logging.DEBUG
+        logging.basicConfig(level=logging.DEBUG)
 
          # Set the selected options for testing
         #selected_options = {'epicGames': True}
