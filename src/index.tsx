@@ -31,8 +31,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   };
 
   const handleInstallClick = async () => {
+    // Construct a string that lists the selected launchers
+    const selectedLaunchers = Object.entries(options)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
+      .join(', ');
+
     // Update the progress state variable to indicate that the operation has started
-    setProgress({ percent: 0, status: 'Calling serverAPI...' });
+    setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
 
     // Log the selected options for debugging
     console.log(`Selected options: ${JSON.stringify(options)}`);
