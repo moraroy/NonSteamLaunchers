@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-import codespaces_debugging as decky_plugin
 import os
 import logging
 import sys
 import subprocess
 import re
+import shutil
+import json
+import math
 
-try:
-    import decky_plugin
-except ImportError:
-    pass
+
+homeDir = os.environ['HOME']
+pluginDir = os.environ['DECKY_PLUGIN_DIR']
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -67,14 +68,3 @@ class Plugin:
             return True
         else:
             return False
-
-    async def _main(self):
-      selected_options = {"epicGames": True}
-      result = self.install(selected_options)
-      print(result)
-
-if __name__ == "__main__":
-    plugin = Plugin()
-    selected_options = {"epicGames": True}
-    result = plugin.install(selected_options)
-    print(result)
