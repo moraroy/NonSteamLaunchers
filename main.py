@@ -5,6 +5,7 @@ import sys
 import subprocess
 import re
 import decky_plugin
+from decky_plugin import DECKY_PLUGIN_DIR
 
 
 # Set up logging
@@ -49,7 +50,7 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
         
-    async def install(self):
+    async def _install(self):
         decky_plugin.logger.info('install was called')
         # Set up logging
         logging.basicConfig(level=logging.DEBUG)
@@ -58,7 +59,7 @@ class Plugin:
         selected_options = {'epicGames': True}
 
         # Set the path to the runnsl.py script
-        script_path = os.path.join("runnsl.py")
+        script_path = os.path.join(DECKY_PLUGIN_DIR, 'runnsl.py')
 
         # Change the permissions of the runnsl.py script to make it executable
         os.chmod(script_path, 0o755)
@@ -81,7 +82,7 @@ class Plugin:
         print(f"selected_options_list: {selected_options_list}")
 
          # Run the runnsl.py script with the selected options using subprocess.Popen
-        command = [sys.executable, script_path] + selected_options_list
+        command = ['/usr/bin/python3', script_path] + selected_options_list
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
