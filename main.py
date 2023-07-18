@@ -83,7 +83,7 @@ class Plugin:
         print(f"selected_options_list: {selected_options_list}")
 
          # Run the runnsl.py script with the selected options using subprocess.Popen
-        command = [sys.executable, script_path] + selected_options_list
+        command = ['/usr/bin/env', 'python3', script_path] + selected_options_list
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
