@@ -7,7 +7,6 @@ import re
 import decky_plugin
 from decky_plugin import DECKY_PLUGIN_DIR
 
-
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,7 +17,7 @@ def camel_to_title(s):
     return ' '.join(word.capitalize() for word in words)
 
 class Plugin:
-     # A normal method. It can be called from JavaScript using call_plugin_function("method_1", argument1, argument2)
+    # A normal method. It can be called from JavaScript using call_plugin_function("method_1", argument1, argument2)
     async def add(self, left, right):
         return left + right
 
@@ -50,25 +49,10 @@ class Plugin:
         decky_plugin.migrate_runtime(
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
-        
+
     async def install(self, selected_options):
         decky_plugin.logger.info('install was called')
-        # Set up logging
-        logging.basicConfig(level=logging.DEBUG)
-
-         # Set the selected options for testing
-        #selected_options = {'epicGames': True}
-
-        # Set the path to the runnsl.py script
-        script_path = os.path.join(DECKY_PLUGIN_DIR, 'runnsl.py')
-
-        # Change the permissions of the runnsl.py script to make it executable
-        os.chmod(script_path, 0o755)
-
-        # Log the script_path for debugging
-        decky_plugin.logger.info(f"script_path: {script_path}")
-        print(f"script_path: {script_path}")
-
+        
         # Convert the selected options mapping to a list of strings
         selected_options_list = []
         for option, is_selected in selected_options.items():
@@ -80,10 +64,18 @@ class Plugin:
 
         # Log the selected_options_list for debugging
         decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
-        print(f"selected_options_list: {selected_options_list}")
 
-         # Run the runnsl.py script with the selected options using subprocess.Popen
-        command = ['/usr/bin/env', 'python3', script_path] + selected_options_list
+        # Set the path to the NonSteamLaunchers.sh script
+        script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
+
+        # Change the permissions of the NonSteamLaunchers.sh script to make it executable
+        os.chmod(script_path, 0o755)
+
+        # Log the script_path for debugging
+        decky_plugin.logger.info(f"script_path: {script_path}")
+
+         # Run the NonSteamLaunchers.sh script with the selected options using subprocess.Popen
+        command = [script_path] + selected_options_list
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
@@ -100,3 +92,4 @@ class Plugin:
             return True
         else:
             return False
+
