@@ -7,7 +7,7 @@ import {
   PanelSectionRow,
   ServerAPI,
   showContextMenu,
-  staticClasses
+  staticClasses,
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
@@ -18,18 +18,13 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     gogGalaxy: false,
     origin: false,
     uplay: false,
-    xboxGamePass: false,
-    geforceNow: false,
-    amazonLuna: false,
-    netflix: false,
-    hulu: false,
-    disneyPlus: false,
-    amazonPrimeVideo: false,
-    youtube: false
   });
 
   // Add a new state variable to keep track of the progress and status of the operation
   const [progress, setProgress] = useState({ percent: 0, status: '' });
+
+  // Add a new state variable to keep track of the custom website entered by the user
+  const [customWebsite, setCustomWebsite] = useState('');
 
   const handleButtonClick = (name: string) => {
     setOptions((prevOptions) => ({
@@ -39,27 +34,23 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   };
 
   const handleInstallClick = async () => {
-    // Display a pop-up window for entering custom websites
-    const customWebsite = window.prompt('Enter custom websites (separated by commas)');
-  
-    // Check if customWebsite is not null before calling the split method on it
-    const customWebsites = customWebsite ? customWebsite.split(',').map((website: string) => website.trim()) : [];
-  
     // Construct a string that lists the selected launchers
     const selectedLaunchers = Object.entries(options)
       .filter(([_, isSelected]) => isSelected)
       .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
       .join(', ');
-  
+
     // Update the progress state variable to indicate that the operation has started
     setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
-  
+
     // Log the selected options for debugging
     console.log(`Selected options: ${JSON.stringify(options)}`);
-  
+
     try {
-      const result = await serverAPI.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
-  
+      // Split the customWebsite state variable into an array of strings using ',' as the delimiter and pass it to the server-side plugin when calling the install method
+      const customWebsites = customWebsite.split(',').map((website) => website.trim());
+      const result = await serverAPI!.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
+
       if (result) {
         // Update the progress state variable to indicate that the operation has completed successfully
         setProgress({ percent: 100, status: 'Installation successful!' });
@@ -75,12 +66,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       console.error('Error calling _main method on server-side plugin:', error);
     }
   };
+
   return (
     <>
       {/* Render the progress bar and status message */}
       <PanelSectionRow>
         <progress value={progress.percent} max={100} />
         <div>{progress.status}</div>
+      </PanelSectionRow>
+
+      <PanelSectionRow>
+        <label>
+          Custom Websites:
+          <input type="text" value={customWebsite} onChange={(e) => setCustomWebsite(e.target.value)} />
+        </label>
       </PanelSectionRow>
 
       <PanelSection>
@@ -112,6 +111,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             <span className="checkmark">{options.epicGames ? '✓' : ''}</span>{' '}
             Epic Games
           </ButtonItem>
+          <br />
 
           <ButtonItem
             className={options.gogGalaxy ? 'selected' : ''}
@@ -119,127 +119,55 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             onClick={() => handleButtonClick('gogGalaxy')}
           >
             <span className="checkmark">{options.gogGalaxy ? '✓' : ''}</span>{' '}
-             Gog Galaxy
-           </ButtonItem>
+            Gog Galaxy
+          </ButtonItem>
+          <br />
 
-           <ButtonItem
-             className={options.origin ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick('origin')}
-           >
-             <span className="checkmark">{options.origin ? '✓' : ''}</span>{' '}
-             Origin
-           </ButtonItem>
+          <ButtonItem
+            className={options.origin ? 'selected' : ''}
+            layout="below"
+            onClick={() => handleButtonClick('origin')}
+          >
+            <span className="checkmark">{options.origin ? '✓' : ''}</span>{' '}
+            Origin
+          </ButtonItem>
+          <br />
 
-           <ButtonItem
-             className={options.uplay ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick('uplay')}
-           >
-             <span className="checkmark">{options.uplay ? '✓' : ''}</span>{' '}
-             Uplay
-           </ButtonItem>
+          <ButtonItem
+            className={options.uplay ? 'selected' : ''}
+            layout="below"
+            onClick={() => handleButtonClick('uplay')}
+          >
+            <span className="checkmark">{options.uplay ? '✓' : ''}</span>{' '}
+            Uplay
+          </ButtonItem>
+          <br />
 
-           <ButtonItem
-             className={options.xboxGamePass ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick('xboxGamePass')}
-           >
-             <span className="checkmark">{options.xboxGamePass ? '✓' : ''}</span>{' '}
-              Xbox Game Pass
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.geforceNow ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('geforceNow')}
-            >
-              <span className="checkmark">{options.geforceNow ? '✓' : ''}</span>{' '}
-              GeForce Now
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.amazonLuna ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('amazonLuna')}
-            >
-              <span className="checkmark">{options.amazonLuna ? '✓' : ''}</span>{' '}
-              Amazon Luna
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.netflix ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('netflix')}
-            >
-              <span className="checkmark">{options.netflix ? '✓' : ''}</span>{' '}
-              Netflix
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.hulu ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('hulu')}
-            >
-              <span className="checkmark">{options.hulu ? '✓' : ''}</span>{' '}
-              Hulu
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.disneyPlus ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('disneyPlus')}
-            >
-              <span className="checkmark">{options.disneyPlus ? '✓' : ''}</span>{' '}
-               Disney+
-             </ButtonItem>
-
-             <ButtonItem
-               className={options.amazonPrimeVideo ? 'selected' : ''}
-               layout="below"
-               onClick={() => handleButtonClick('amazonPrimeVideo')}
-             >
-               <span className="checkmark">{options.amazonPrimeVideo ? '✓' : ''}</span>{' '}
-                Amazon Prime Video
-              </ButtonItem>
-
-              <ButtonItem
-                className={options.youtube ? 'selected' : ''}
-                layout="below"
-                onClick={() => handleButtonClick('youtube')}
-              >
-                <span className="checkmark">{options.youtube ? '✓' : ''}</span>{' '}
-                Youtube
-              </ButtonItem>
-
-           {/* Add an Install button here using a ButtonItem component */}
-           <ButtonItem layout="below" onClick={handleInstallClick}>
-             Install
-           </ButtonItem>
+          {/* Add an Install button here using a ButtonItem component */}
+          <ButtonItem layout="below" onClick={handleInstallClick}>
+            Install
+          </ButtonItem>
         </PanelSectionRow>
       </PanelSection>
 
       <style>
         {`
-          .checkmark {
-            color: green;
-          }
-          .selected {
-            background-color: #eee;
-          }
-          progress {
-            display: block;
-            width: 100%;
-            margin-top: 5px;
-            height: 20px; /* Change the height of the progress bar here */
-          }
-          pre {
-            white-space: pre-wrap;
-          }
-          ButtonItem {
-            margin-bottom: 10px;
-          }
-        `}
+              .checkmark {
+                color: green;
+              }
+              .selected {
+                background-color: #eee;
+              }
+              progress {
+                display: block;
+                width: 100%;
+                margin-top: 5px;
+                height: 20px; /* Change the height of the progress bar here */
+              }
+              pre {
+                white-space: pre-wrap;
+              }
+            `}
       </style>
     </>
   );
