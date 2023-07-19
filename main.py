@@ -75,7 +75,7 @@ class Plugin:
         decky_plugin.logger.info(f"script_path: {script_path}")
 
          # Run the NonSteamLaunchers.sh script with the selected options and custom websites using subprocess.Popen
-        command = [script_path] + selected_options_list + custom_websites
+        command = [script_path] + selected_options_list + [website for website in custom_websites if website]
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
