@@ -87,11 +87,17 @@
           gogGalaxy: false,
           origin: false,
           uplay: false,
+          xboxGamePass: false,
+          geforceNow: false,
+          amazonLuna: false,
+          netflix: false,
+          hulu: false,
+          disneyPlus: false,
+          amazonPrimeVideo: false,
+          youtube: false
       });
       // Add a new state variable to keep track of the progress and status of the operation
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
-      // Add a new state variable to keep track of the custom website entered by the user
-      const [customWebsite, setCustomWebsite] = React.useState('');
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -99,6 +105,10 @@
           }));
       };
       const handleInstallClick = async () => {
+          // Display a pop-up window for entering custom websites
+          const customWebsite = window.prompt('Enter custom websites (separated by commas)');
+          // Check if customWebsite is not null before calling the split method on it
+          const customWebsites = customWebsite ? customWebsite.split(',').map((website) => website.trim()) : [];
           // Construct a string that lists the selected launchers
           const selectedLaunchers = Object.entries(options)
               .filter(([_, isSelected]) => isSelected)
@@ -109,8 +119,6 @@
           // Log the selected options for debugging
           console.log(`Selected options: ${JSON.stringify(options)}`);
           try {
-              // Split the customWebsite state variable into an array of strings using ',' as the delimiter and pass it to the server-side plugin when calling the install method
-              const customWebsites = customWebsite.split(',').map((website) => website.trim());
               const result = await serverAPI.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
               if (result) {
                   // Update the progress state variable to indicate that the operation has completed successfully
@@ -133,10 +141,6 @@
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
-              window.SP_REACT.createElement("label", null,
-                  "Custom Websites:",
-                  window.SP_REACT.createElement("input", { type: "text", value: customWebsite, onChange: (e) => setCustomWebsite(e.target.value) }))),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },
@@ -148,40 +152,71 @@
                       window.SP_REACT.createElement("span", { className: "checkmark" }, options.epicGames ? '✓' : ''),
                       ' ',
                       "Epic Games"),
-                  window.SP_REACT.createElement("br", null),
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.gogGalaxy ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('gogGalaxy') },
                       window.SP_REACT.createElement("span", { className: "checkmark" }, options.gogGalaxy ? '✓' : ''),
                       ' ',
                       "Gog Galaxy"),
-                  window.SP_REACT.createElement("br", null),
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.origin ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('origin') },
                       window.SP_REACT.createElement("span", { className: "checkmark" }, options.origin ? '✓' : ''),
                       ' ',
                       "Origin"),
-                  window.SP_REACT.createElement("br", null),
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.uplay ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('uplay') },
                       window.SP_REACT.createElement("span", { className: "checkmark" }, options.uplay ? '✓' : ''),
                       ' ',
                       "Uplay"),
-                  window.SP_REACT.createElement("br", null),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.xboxGamePass ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('xboxGamePass') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.xboxGamePass ? '✓' : ''),
+                      ' ',
+                      "Xbox Game Pass"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.geforceNow ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('geforceNow') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.geforceNow ? '✓' : ''),
+                      ' ',
+                      "GeForce Now"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.amazonLuna ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('amazonLuna') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.amazonLuna ? '✓' : ''),
+                      ' ',
+                      "Amazon Luna"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.netflix ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('netflix') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.netflix ? '✓' : ''),
+                      ' ',
+                      "Netflix"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.hulu ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('hulu') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.hulu ? '✓' : ''),
+                      ' ',
+                      "Hulu"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.disneyPlus ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('disneyPlus') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.disneyPlus ? '✓' : ''),
+                      ' ',
+                      "Disney+"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.amazonPrimeVideo ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('amazonPrimeVideo') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.amazonPrimeVideo ? '✓' : ''),
+                      ' ',
+                      "Amazon Prime Video"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.youtube ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('youtube') },
+                      window.SP_REACT.createElement("span", { className: "checkmark" }, options.youtube ? '✓' : ''),
+                      ' ',
+                      "Youtube"),
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"))),
           window.SP_REACT.createElement("style", null, `
-              .checkmark {
-                color: green;
-              }
-              .selected {
-                background-color: #eee;
-              }
-              progress {
-                display: block;
-                width: 100%;
-                margin-top: 5px;
-                height: 20px; /* Change the height of the progress bar here */
-              }
-              pre {
-                white-space: pre-wrap;
-              }
-            `)));
+          .checkmark {
+            color: green;
+          }
+          .selected {
+            background-color: #eee;
+          }
+          progress {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+            height: 20px; /* Change the height of the progress bar here */
+          }
+          pre {
+            white-space: pre-wrap;
+          }
+          ButtonItem {
+            margin-bottom: 10px;
+          }
+        `)));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {
