@@ -7,8 +7,7 @@ import {
   PanelSectionRow,
   ServerAPI,
   showContextMenu,
-  staticClasses,
-  ToggleField
+  staticClasses
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
@@ -31,9 +30,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
   // Add a new state variable to keep track of the progress and status of the operation
   const [progress, setProgress] = useState({ percent: 0, status: '' });
-
-  // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
-  const [separateAppIds, setSeparateAppIds] = useState(false);
 
   const handleButtonClick = (name: string) => {
     setOptions((prevOptions) => ({
@@ -62,11 +58,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     console.log(`Selected options: ${JSON.stringify(options)}`);
   
     try {
-      const result = await serverAPI.callPluginMethod("install", {
-        selected_options: options,
-        custom_websites: customWebsites,
-        separate_app_ids: separateAppIds
-      });
+      const result = await serverAPI.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
   
       if (result) {
         // Update the progress state variable to indicate that the operation has completed successfully
@@ -83,7 +75,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       console.error('Error calling _main method on server-side plugin:', error);
     }
   };
-  
   return (
     <>
       {/* Render the progress bar and status message */}
@@ -93,16 +84,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       </PanelSectionRow>
 
       <PanelSection>
-        {/* Add an Install button here using a ButtonItem component */}
-        <ButtonItem layout="below" onClick={handleInstallClick}>
-          Install
-        </ButtonItem>
-
-        {/* Add a toggle switch for the "Separate App IDs" option here */}
-        <PanelSectionRow>
-          <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
-        </PanelSectionRow>
-
         <PanelSectionRow>
           <ButtonItem
             layout="below"
@@ -230,6 +211,11 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
                 <span className="checkmark">{options.youtube ? '✓' : ''}</span>{' '}
                 Youtube
               </ButtonItem>
+
+           {/* Add an Install button here using a ButtonItem component */}
+           <ButtonItem layout="below" onClick={handleInstallClick}>
+             Install
+           </ButtonItem>
         </PanelSectionRow>
       </PanelSection>
 
