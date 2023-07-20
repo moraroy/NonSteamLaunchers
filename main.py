@@ -50,17 +50,31 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
-    async def install(self, selected_options, custom_websites):
+    async def install(self, selected_options, custom_websites, separate_app_ids):
         decky_plugin.logger.info('install was called')
-        
+
         # Convert the selected options mapping to a list of strings
         selected_options_list = []
         for option, is_selected in selected_options.items():
             if is_selected:
-                selected_option = camel_to_title(option)
-                if ' ' in selected_option:
-                    selected_option = f'"{selected_option}"'
-                selected_options_list.append(selected_option)
+                if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube']:
+                    # Streaming site or game service option
+                    selected_option = camel_to_title(option)
+                    if ' ' in selected_option:
+                        selected_option = f'"{selected_option}"'
+                    selected_options_list.append(selected_option)
+                else:
+                    # Launcher option
+                    selected_option = camel_to_title(option)
+                    if ' ' in selected_option:
+                        selected_option = f'"{selected_option}"'
+                    selected_options_list.append(selected_option)
+
+        # Add the separate App IDs option to the list of arguments
+        if separate_app_ids:
+            selected_options_list.append('true')
+        else:
+            selected_options_list.append('false')
 
         # Log the selected_options_list for debugging
         decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
