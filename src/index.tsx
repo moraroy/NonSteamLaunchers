@@ -7,7 +7,8 @@ import {
   PanelSectionRow,
   ServerAPI,
   showContextMenu,
-  staticClasses
+  staticClasses,
+  ToggleField
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
@@ -98,14 +99,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
         {/* Add a toggle switch for the "Separate App IDs" option here */}
         <PanelSectionRow>
-          <label>
-            <input
-              type="checkbox"
-              checked={separateAppIds}
-              onChange={(e) => setSeparateAppIds(e.target.checked)}
-            />
-            Separate App IDs
-          </label>
+          <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
         </PanelSectionRow>
 
         <PanelSectionRow>
