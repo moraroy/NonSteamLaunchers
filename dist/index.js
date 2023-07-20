@@ -98,6 +98,8 @@
       });
       // Add a new state variable to keep track of the progress and status of the operation
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
+      // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
+      const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -119,7 +121,11 @@
           // Log the selected options for debugging
           console.log(`Selected options: ${JSON.stringify(options)}`);
           try {
-              const result = await serverAPI.callPluginMethod("install", { selected_options: options, custom_websites: customWebsites });
+              const result = await serverAPI.callPluginMethod("install", {
+                  selected_options: options,
+                  custom_websites: customWebsites,
+                  separate_app_ids: separateAppIds
+              });
               if (result) {
                   // Update the progress state variable to indicate that the operation has completed successfully
                   setProgress({ percent: 100, status: 'Installation successful!' });
@@ -142,6 +148,11 @@
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"),
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
+                  window.SP_REACT.createElement("label", null,
+                      window.SP_REACT.createElement("input", { type: "checkbox", checked: separateAppIds, onChange: (e) => setSeparateAppIds(e.target.checked) }),
+                      "Separate App IDs")),
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },
                           window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #1"),
@@ -195,8 +206,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options.youtube ? 'selected' : '', layout: "below", onClick: () => handleButtonClick('youtube') },
                       window.SP_REACT.createElement("span", { className: "checkmark" }, options.youtube ? '✓' : ''),
                       ' ',
-                      "Youtube"),
-                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"))),
+                      "Youtube"))),
           window.SP_REACT.createElement("style", null, `
           .checkmark {
             color: green;

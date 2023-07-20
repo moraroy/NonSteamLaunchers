@@ -50,7 +50,7 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
-    async def install(self, selected_options, custom_websites):
+    async def install(self, selected_options, custom_websites, separate_app_ids):
         decky_plugin.logger.info('install was called')
         
         # Convert the selected options mapping to a list of strings
@@ -61,6 +61,9 @@ class Plugin:
                 if ' ' in selected_option:
                     selected_option = f'"{selected_option}"'
                 selected_options_list.append(selected_option)
+
+        if separate_app_ids:
+            selected_options_list.append('Separate App IDs')
 
         # Log the selected_options_list for debugging
         decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
@@ -89,6 +92,7 @@ class Plugin:
             return True
         else:
             return False
+
 
 
 
