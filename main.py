@@ -51,47 +51,59 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
     async def install(self, selected_options, custom_websites, separate_app_ids):
-        decky_plugin.logger.info('install was called')
-        
-        # Convert the selected options mapping to a list of strings
-        selected_options_list = []
-        for option, is_selected in selected_options.items():
-            if is_selected:
+    decky_plugin.logger.info('install was called')
+
+    # Convert the selected options mapping to a list of strings
+    selected_options_list = []
+    for option, is_selected in selected_options.items():
+        if is_selected:
+            if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube']:
+                # Streaming site or game service option
+                selected_option = camel_to_title(option)
+                if ' ' in selected_option:
+                    selected_option = f'"{selected_option}"'
+                selected_options_list.append(selected_option)
+            else:
+                # Launcher option
                 selected_option = camel_to_title(option)
                 if ' ' in selected_option:
                     selected_option = f'"{selected_option}"'
                 selected_options_list.append(selected_option)
 
-        if separate_app_ids:
-            selected_options_list.append('Separate App IDs')
+    # Add the separate App IDs option to the list of arguments
+    if separate_app_ids:
+        selected_options_list.append('true')
+    else:
+        selected_options_list.append('false')
 
-        # Log the selected_options_list for debugging
-        decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
+    # Log the selected_options_list for debugging
+    decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
 
-        # Set the path to the NonSteamLaunchers.sh script
-        script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
+    # Set the path to the NonSteamLaunchers.sh script
+    script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
 
-        # Change the permissions of the NonSteamLaunchers.sh script to make it executable
-        os.chmod(script_path, 0o755)
+    # Change the permissions of the NonSteamLaunchers.sh script to make it executable
+    os.chmod(script_path, 0o755)
 
-         # Run the NonSteamLaunchers.sh script with the selected options and custom websites using subprocess.Popen
-        command = [script_path] + selected_options_list + [website for website in custom_websites if website and website.strip() != '']
+     # Run the NonSteamLaunchers.sh script with the selected options and custom websites using subprocess.Popen
+    command = [script_path] + selected_options_list + [website for website in custom_websites if website and website.strip() != '']
 
-        # Log the command for debugging
-        decky_plugin.logger.info(f"Running command: {command}")
+    # Log the command for debugging
+    decky_plugin.logger.info(f"Running command: {command}")
 
-        process = subprocess.Popen(command)
+    process = subprocess.Popen(command)
 
-        # Wait for the script to complete and get the exit code
-        exit_code = process.wait()
+    # Wait for the script to complete and get the exit code
+    exit_code = process.wait()
 
-        # Log the exit code for debugging
-        decky_plugin.logger.info(f"Command exit code: {exit_code}")
+    # Log the exit code for debugging
+    decky_plugin.logger.info(f"Command exit code: {exit_code}")
 
-        if exit_code == 0:
-            return True
-        else:
-            return False
+    if exit_code == 0:
+        return True
+    else:
+        return False
+
 
 
 

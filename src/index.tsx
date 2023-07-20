@@ -83,6 +83,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       console.error('Error calling _main method on server-side plugin:', error);
     }
   };
+  
   return (
     <>
       {/* Render the progress bar and status message */}
