@@ -562,7 +562,9 @@ if [ ${#args[@]} -eq 0 ]; then
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
     selected_launchers="${args[0]}"
-    custom_websites+=("${args[@]:1}")
+    separate_app_ids="${args[1]}"
+    custom_websites+=("${args[@]:2}")
+
 fi
 
 # Print the selected launchers and custom websites
