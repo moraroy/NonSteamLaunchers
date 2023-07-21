@@ -83,6 +83,21 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       console.error('Error calling _main method on server-side plugin:', error);
     }
   };
+
+  const handleCreateWebsiteShortcutClick = async () => {
+    // Display a pop-up window for entering a website
+    const website = window.prompt('Enter website');
+  
+    if (website) {
+      try {
+        await serverAPI.callPluginMethod("createWebsiteShortcut", website);
+        alert('Website shortcut created successfully!');
+      } catch (error) {
+        console.error('Error calling createWebsiteShortcut method on server-side plugin:', error);
+        alert('Failed to create website shortcut.');
+      }
+    }
+  };
   
   return (
     <>
@@ -96,6 +111,11 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         {/* Add an Install button here using a ButtonItem component */}
         <ButtonItem layout="below" onClick={handleInstallClick}>
           Install
+        </ButtonItem>
+
+        {/* Add a Create Website Shortcut button here using a ButtonItem component */}
+        <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
+          Create Website Shortcut
         </ButtonItem>
 
         {/* Add a toggle switch for the "Separate App IDs" option here */}

@@ -143,12 +143,27 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
+      const handleCreateWebsiteShortcutClick = async () => {
+          // Display a pop-up window for entering a website
+          const website = window.prompt('Enter website');
+          if (website) {
+              try {
+                  await serverAPI.callPluginMethod("createWebsiteShortcut", website);
+                  alert('Website shortcut created successfully!');
+              }
+              catch (error) {
+                  console.error('Error calling createWebsiteShortcut method on server-side plugin:', error);
+                  alert('Failed to create website shortcut.');
+              }
+          }
+      };
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleCreateWebsiteShortcutClick }, "Create Website Shortcut"),
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
                   window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Separate App IDs", checked: separateAppIds, onChange: setSeparateAppIds })),
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
