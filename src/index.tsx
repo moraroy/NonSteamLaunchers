@@ -71,14 +71,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     youtube: false
   });
 
-  // Add a new state variable to keep track of the progress and status of the operation
-  const [progress, setProgress] = useState({ percent: 0, status: '' });
+   // Add a new state variable to keep track of the progress and status of the operation
+   const [progress, setProgress] = useState({ percent: 0, status: '' });
 
-  // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
-  const [separateAppIds, setSeparateAppIds] = useState(false);
+   // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
+   const [separateAppIds, setSeparateAppIds] = useState(false);
 
-  // Add a new state variable to keep track of whether the search modal is open or not
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+   // Add a new state variable to keep track of whether the search modal is open or not
+   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
    // Add a new state variable to keep track of which button was clicked
    const [clickedButton, setClickedButton] = useState('');
@@ -95,7 +95,19 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
    const handleInstallClick = async () => {
      console.log('handleInstallClick called'); // Add this line
-   
+
+     // Construct a string that lists the selected launchers
+     const selectedLaunchers = Object.entries(options)
+       .filter(([_, isSelected]) => isSelected)
+       .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
+       .join(', ');
+
+     // Update the progress state variable to indicate that the operation has started
+     setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
+
+     // Log the selected options for debugging
+     console.log(`Selected options: ${JSON.stringify(options)}`);
+
      try {
        const result = await serverAPI.callPluginMethod("install", {
          selected_options: options,

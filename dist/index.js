@@ -129,6 +129,15 @@
       };
       const handleInstallClick = async () => {
           console.log('handleInstallClick called'); // Add this line
+          // Construct a string that lists the selected launchers
+          const selectedLaunchers = Object.entries(options)
+              .filter(([_, isSelected]) => isSelected)
+              .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
+              .join(', ');
+          // Update the progress state variable to indicate that the operation has started
+          setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
+          // Log the selected options for debugging
+          console.log(`Selected options: ${JSON.stringify(options)}`);
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: options,
