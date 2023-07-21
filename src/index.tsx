@@ -121,10 +121,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
     if (website) {
       try {
-        await serverAPI.callPluginMethod("createWebsiteShortcut", website);
+        await serverAPI.callPluginMethod("install", {
+          selected_options: {},
+          custom_websites: [website],
+          separate_app_ids: false
+        });
         alert('Website shortcut created successfully!');
       } catch (error) {
-        console.error('Error calling createWebsiteShortcut method on server-side plugin:', error);
+        console.error('Error calling install method on server-side plugin:', error);
         alert('Failed to create website shortcut.');
       }
     }
