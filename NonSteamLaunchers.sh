@@ -574,7 +574,12 @@ else
     # Remove the "Separate App IDs" string from the args array if it's present
     args=("${args[@]/Separate App IDs}")
     
-    custom_websites+=("${args[@]:1}")
+    for arg in "${args[@]:1}"; do
+    if [[ "$arg" != "Separate App IDs" ]]; then
+        custom_websites+=("$arg")
+    fi
+done
+
 fi
 
 # Print the selected launchers and custom websites
