@@ -542,6 +542,9 @@ args=("$@")
 # Initialize an array to store the custom websites
 custom_websites=()
 
+# Initialize a variable to store whether the "Separate App IDs" option is selected or not
+separate_app_ids=false
+
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so prompt the user to enter custom websites separated by commas
@@ -562,15 +565,26 @@ if [ ${#args[@]} -eq 0 ]; then
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
     selected_launchers="${args[0]}"
+    
+    # Check if the "Separate App IDs" option is selected in the command line arguments
+    if [[ " ${args[@]} " =~ " Separate App IDs " ]]; then
+        separate_app_ids=true
+    fi
+    
+    # Remove the "Separate App IDs" string from the args array if it's present
+    args=("${args[@]/Separate App IDs}")
+    
     custom_websites+=("${args[@]:1}")
 fi
 
 # Print the selected launchers and custom websites
 echo "Selected launchers: $selected_launchers"
 echo "Custom websites: ${custom_websites[@]}"
+echo "Separate App IDs: $separate_app_ids"
 
 # Set the value of the options variable
 options="$selected_launchers"
+
 
 
 
