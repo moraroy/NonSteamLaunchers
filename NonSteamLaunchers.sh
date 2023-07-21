@@ -2674,49 +2674,49 @@ fi
 
 # Set Chrome options based on user's selection
 
-if [[ $options == *"Xbox Game Pass"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Xbox Game Pass"* ]]; then
     # User selected Xbox Game Pass
     chromedirectory="\"$chrome_path\""
     xboxchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.xbox.com/play --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"Netflix"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Netflix"* ]]; then
     # User selected Netflix
     chromedirectory="\"$chrome_path\""
     netlfixchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.netflix.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"GeForce Now"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"GeForce Now"* ]]; then
     # User selected GeForce Now
     chromedirectory="\"$chrome_path\""
     geforcechromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://play.geforcenow.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"Hulu"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Hulu"* ]]; then
     # User selected Hulu
     chromedirectory="\"$chrome_path\""
     huluchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.hulu.com/welcome --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"Disney+"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Disney+"* ]]; then
     # User selected Disney+
     chromedirectory="\"$chrome_path\""
     disneychromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.disneyplus.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"Amazon Prime Video"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Amazon Prime Video"* ]]; then
     # User selected Amazon Prime Video
     chromedirectory="\"$chrome_path\""
     amazonchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.amazon.com/primevideo --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"Youtube"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Youtube"* ]]; then
     # User selected Youtube
     chromedirectory="\"$chrome_path\""
     youtubechromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.youtube.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ $options == *"Amazon Luna"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Amazon Luna"* ]]; then
     # User selected Amazon Luna
     chromedirectory="\"$chrome_path\""
     lunachromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://luna.amazon.com/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
