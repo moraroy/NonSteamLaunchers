@@ -559,42 +559,18 @@ if [ ${#args[@]} -eq 0 ]; then
 
     # Display the main zenity window
     selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation" FALSE "Separate App IDs" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
-   else
-    # Initialize an array to store the selected launchers
-    selected_launchers=()
-
-    # Initialize an array to store the selected streaming sites or game services
-    selected_streaming_services=()
-
-    # Iterate over each command line argument
-    for arg in "${args[@]}"; do
-        # Check if the argument is a valid launcher name
-        if [[ "$arg" == "Epic Games" || "$arg" == "GOG Galaxy" || "$arg" == "Uplay" || "$arg" == "Origin" || "$arg" == "Battle.net" || "$arg" == "Amazon Games" || "$arg" == "EA App" || "$arg" == "Legacy Games" || "$arg" == "Itch.io" || "$arg" == "Humble Games" || "$arg" == "IndieGala" || "$arg" == "Rockstar Games Launcher" || "$arg" == "Glyph Launcher" || "$arg" == "Minecraft Launcher" || "$arg" == "PS Plus Collection Launcher" || "$arg" == "DMM Games Launcher" ]]; then
-            # The argument is a valid launcher name, so add it to the selected_launchers array
-            selected_launchers+=("$arg")
-        elif [[ "$arg" == "Xbox Game Pass" || "$arg" == "GeForce Now" || "$arg" == "Amazon Luna" || "$arg" == "Netflix" || "$arg" == "Hulu" || "$arg" == "Disney+" || "$arg" == "Amazon Prime Video" || "$arg" == "Youtube" ]]; then
-            # The argument is a valid streaming site or game service name, so add it to the selected_streaming_services array
-            selected_streaming_services+=("$arg")
-        elif [[ "$arg" == "true" ]]; then
-            separate_app_ids="$arg"
-        elif [[ "$arg" == "false" ]]; then
-            separate_app_ids="$arg"
-
-        else
-            # The argument is not a valid launcher name, streaming site or game service name, or separate app ids option, so treat it as a custom website
-            custom_websites+=("$arg")
-        fi
-        done
+else
+    # Command line arguments were provided, so set the value of the options variable using the command line arguments
+    selected_launchers="${args[0]}"
+    custom_websites+=("${args[@]:1}")
 fi
 
-
-# Print the selected launchers, streaming sites or game services, and custom websites
-echo "Selected launchers: ${selected_launchers[@]}"
-echo "Selected streaming sites or game services: ${selected_streaming_services[@]}"
+# Print the selected launchers and custom websites
+echo "Selected launchers: $selected_launchers"
 echo "Custom websites: ${custom_websites[@]}"
 
 # Set the value of the options variable
-options=("${selected_launchers[@]}" "${selected_streaming_services[@]}")
+options="$selected_launchers"
 
 
 
@@ -2447,7 +2423,7 @@ echo "99"
 echo "# Checking if Chrome is installed...please wait..."
 
 # Check if user selected any of the options
-if [[ "${selected_streaming_services[@]}" == *"Netflix"* ]] || [[ "${selected_streaming_services[@]}" == *"Xbox Game Pass"* ]] || [[ "${selected_streaming_services[@]}" == *"Geforce Now"* ]] || [[ "${selected_streaming_services[@]}" == *"Amazon Luna"* ]] || [[ "${selected_streaming_services[@]}" == *"Hulu"* ]] || [[ "${selected_streaming_services[@]}" == *"Disney+"* ]] || [[ "${selected_streaming_services[@]}" == *"Amazon Prime Video"* ]] || [[ "${selected_streaming_services[@]}" == *"Youtube"* ]]; then
+if [[ $options == *"Netflix"* ]] || [[ $options == *"Xbox Game Pass"* ]] || [[ $options == *"Geforce Now"* ]] || [[ $options == *"Amazon Luna"* ]] || [[ $options == *"Hulu"* ]] || [[ $options == *"Disney+"* ]] || [[ $options == *"Amazon Prime Video"* ]] || [[ $options == *"Youtube"* ]]; then
     # User selected one of the options
     echo "User selected one of the options"
 
@@ -2469,7 +2445,6 @@ fi
 
 #wait for Google Chrome to finish
 wait
-
 
 
 
@@ -2676,49 +2651,49 @@ fi
 
 # Set Chrome options based on user's selection
 
-if [[ "${selected_streaming_services[@]}" == *"Xbox Game Pass"* ]]; then
+if [[ $options == *"Xbox Game Pass"* ]]; then
     # User selected Xbox Game Pass
     chromedirectory="\"$chrome_path\""
     xboxchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.xbox.com/play --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"Netflix"* ]]; then
+if [[ $options == *"Netflix"* ]]; then
     # User selected Netflix
     chromedirectory="\"$chrome_path\""
     netlfixchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.netflix.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"GeForce Now"* ]]; then
+if [[ $options == *"GeForce Now"* ]]; then
     # User selected GeForce Now
     chromedirectory="\"$chrome_path\""
     geforcechromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://play.geforcenow.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"Hulu"* ]]; then
+if [[ $options == *"Hulu"* ]]; then
     # User selected Hulu
     chromedirectory="\"$chrome_path\""
     huluchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.hulu.com/welcome --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"Disney+"* ]]; then
+if [[ $options == *"Disney+"* ]]; then
     # User selected Disney+
     chromedirectory="\"$chrome_path\""
     disneychromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.disneyplus.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"Amazon Prime Video"* ]]; then
+if [[ $options == *"Amazon Prime Video"* ]]; then
     # User selected Amazon Prime Video
     chromedirectory="\"$chrome_path\""
     amazonchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.amazon.com/primevideo --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"Youtube"* ]]; then
+if [[ $options == *"Youtube"* ]]; then
     # User selected Youtube
     chromedirectory="\"$chrome_path\""
     youtubechromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.youtube.com --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
-if [[ "${selected_streaming_services[@]}" == *"Amazon Luna"* ]]; then
+if [[ $options == *"Amazon Luna"* ]]; then
     # User selected Amazon Luna
     chromedirectory="\"$chrome_path\""
     lunachromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://luna.amazon.com/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
