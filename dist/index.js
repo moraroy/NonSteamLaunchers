@@ -166,7 +166,12 @@
           // Set the clickedButton state variable to 'createWebsiteShortcut'
           setClickedButton('createWebsiteShortcut');
           // Open the search modal to prompt the user for a website
-          setIsSearchModalOpen(true);
+          deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", setModalResult: (result) => {
+                  if (clickedButton === 'createWebsiteShortcut') {
+                      // Handle result for createWebsiteShortcut button
+                      setCustomWebsites([...customWebsites, result]);
+                  }
+              } }), deckyFrontendLib.findSP());
       };
       // Create an array of objects representing each option, with properties for the option name and label
       const optionsData = [

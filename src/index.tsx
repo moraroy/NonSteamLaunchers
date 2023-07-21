@@ -1,6 +1,7 @@
 import {
   ButtonItem,
   definePlugin,
+  findSP, // Import the findSP function here
   Menu,
   MenuItem,
   ModalRoot,
@@ -9,6 +10,7 @@ import {
   PanelSectionRow,
   ServerAPI,
   showContextMenu,
+  showModal, // Import the showModal function here
   staticClasses,
   TextField,
   ToggleField
@@ -138,7 +140,18 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      setClickedButton('createWebsiteShortcut');
 
      // Open the search modal to prompt the user for a website
-     setIsSearchModalOpen(true);
+     showModal(
+       <SearchModal
+         promptText="Enter website"
+         setModalResult={(result) => {
+           if (clickedButton === 'createWebsiteShortcut') {
+             // Handle result for createWebsiteShortcut button
+             setCustomWebsites([...customWebsites, result]);
+           }
+         }}
+       />,
+       findSP()
+     );
    };
    
     // Create an array of objects representing each option, with properties for the option name and label
@@ -228,6 +241,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            promptText={"Enter website"}
          />
        )}
+
 
        <style>
          {`
