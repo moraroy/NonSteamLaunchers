@@ -70,12 +70,6 @@ class Plugin:
                         selected_option = f'"{selected_option}"'
                     selected_options_list.append(selected_option)
 
-        # Add the separate App IDs option to the list of arguments
-        if separate_app_ids:
-            selected_options_list.append('true')
-        else:
-            selected_options_list.append('false')
-
         # Log the selected_options_list for debugging
         decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
 
@@ -85,7 +79,7 @@ class Plugin:
         # Change the permissions of the NonSteamLaunchers.sh script to make it executable
         os.chmod(script_path, 0o755)
 
-        # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
+         # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
         command = [script_path] + selected_options_list + [website for website in custom_websites if website and website.strip() != ''] + [str(separate_app_ids).lower()]
 
         # Log the command for debugging
