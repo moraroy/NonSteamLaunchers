@@ -592,7 +592,7 @@ echo "Selected streaming sites or game services: ${selected_streaming_services[@
 echo "Custom websites: ${custom_websites[@]}"
 
 # Set the value of the options variable
-options="$selected_launchers"
+options=("${selected_launchers[@]}" "${selected_streaming_services[@]}")
 
 
 
