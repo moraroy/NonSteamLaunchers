@@ -575,9 +575,11 @@ if [ ${#args[@]} -eq 0 ]; then
         elif [[ "$arg" == "Xbox Game Pass" || "$arg" == "GeForce Now" || "$arg" == "Amazon Luna" || "$arg" == "Netflix" || "$arg" == "Hulu" || "$arg" == "Disney+" || "$arg" == "Amazon Prime Video" || "$arg" == "Youtube" ]]; then
             # The argument is a valid streaming site or game service name, so add it to the selected_streaming_services array
             selected_streaming_services+=("$arg")
-        elif [[ "$arg" == "true" || "$arg" == "false" ]]; then
-            # The argument is the separate app ids option, so set its value
+        elif [[ "$arg" == "true" ]]; then
             separate_app_ids="$arg"
+        elif [[ "$arg" == "false" ]]; then
+            separate_app_ids="$arg"
+
         else
             # The argument is not a valid launcher name, streaming site or game service name, or separate app ids option, so treat it as a custom website
             custom_websites+=("$arg")
