@@ -117,10 +117,10 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       // Add a new state variable to keep track of whether the search modal is open or not
       const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
-      // Add a new state variable to keep track of the custom websites entered by the user
-      const [customWebsites, setCustomWebsites] = React.useState([]);
       // Add a new state variable to keep track of which button was clicked
       const [clickedButton, setClickedButton] = React.useState('');
+      // Add a new state variable to keep track of the custom websites entered by the user
+      const [customWebsites, setCustomWebsites] = React.useState([]);
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -129,12 +129,6 @@
       };
       const handleInstallClick = async () => {
           console.log('handleInstallClick called'); // Add this line
-          // Set the clickedButton state variable to 'install'
-          setClickedButton('install');
-          // Open the search modal to prompt the user for custom websites
-          setIsSearchModalOpen(true);
-          console.log('isSearchModalOpen set to true'); // Add this line
-          // ...
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: options,
@@ -199,16 +193,12 @@
                   ' ',
                   label))))),
           isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
-                  if (clickedButton === 'install') {
-                      // Handle result for install button
-                      setCustomWebsites(result.split(',').map((website) => website.trim()));
-                  }
-                  else if (clickedButton === 'createWebsiteShortcut') {
+                  if (clickedButton === 'createWebsiteShortcut') {
                       // Handle result for createWebsiteShortcut button
                       setCustomWebsites([...customWebsites, result]);
                   }
                   setIsSearchModalOpen(false);
-              }, promptText: clickedButton === 'install' ? "Enter custom websites (separated by commas)" : "Enter website" })),
+              }, promptText: "Enter website" })),
           window.SP_REACT.createElement("style", null, `
            .checkmark {
              color: green;

@@ -80,11 +80,11 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   // Add a new state variable to keep track of whether the search modal is open or not
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  // Add a new state variable to keep track of the custom websites entered by the user
-  const [customWebsites, setCustomWebsites] = useState<string[]>([]);
-
    // Add a new state variable to keep track of which button was clicked
    const [clickedButton, setClickedButton] = useState('');
+
+   // Add a new state variable to keep track of the custom websites entered by the user
+   const [customWebsites, setCustomWebsites] = useState<string[]>([]);
 
    const handleButtonClick = (name: string) => {
      setOptions((prevOptions) => ({
@@ -95,16 +95,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
    const handleInstallClick = async () => {
      console.log('handleInstallClick called'); // Add this line
-
-     // Set the clickedButton state variable to 'install'
-     setClickedButton('install');
-
-     // Open the search modal to prompt the user for custom websites
-     setIsSearchModalOpen(true);
-   
-     console.log('isSearchModalOpen set to true'); // Add this line
-   
-     // ...
    
      try {
        const result = await serverAPI.callPluginMethod("install", {
@@ -217,16 +207,13 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
          <SearchModal
            closeModal={() => setIsSearchModalOpen(false)}
            setModalResult={(result) => {
-             if (clickedButton === 'install') {
-               // Handle result for install button
-               setCustomWebsites(result.split(',').map((website: string) => website.trim()));
-             } else if (clickedButton === 'createWebsiteShortcut') {
+             if (clickedButton === 'createWebsiteShortcut') {
                // Handle result for createWebsiteShortcut button
                setCustomWebsites([...customWebsites, result]);
              }
              setIsSearchModalOpen(false);
            }}
-           promptText={clickedButton === 'install' ? "Enter custom websites (separated by commas)" : "Enter website"}
+           promptText={"Enter website"}
          />
        )}
 
