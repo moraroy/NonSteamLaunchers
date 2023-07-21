@@ -79,9 +79,9 @@ class Plugin:
         # Change the permissions of the NonSteamLaunchers.sh script to make it executable
         os.chmod(script_path, 0o755)
 
-         # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
-        command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + [str(separate_app_ids).lower()]
-
+        # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
+        command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['Separate App IDs'] if separate_app_ids else [])
+        
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
 
