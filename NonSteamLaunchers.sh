@@ -560,15 +560,34 @@ if [ ${#args[@]} -eq 0 ]; then
     # Display the main zenity window
     selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation" FALSE "Separate App IDs" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
 else
-    # Command line arguments were provided, so set the value of the options variable using the command line arguments
-    selected_launchers="${args[0]}"
-    separate_app_ids="${args[1]}"
-    custom_websites+=("${args[@]:2}")
+    # Initialize an array to store the selected launchers
+    selected_launchers=()
 
-fi
+    # Initialize an array to store the selected streaming sites or game services
+    selected_streaming_services=()
 
-# Print the selected launchers and custom websites
-echo "Selected launchers: $selected_launchers"
+    # Iterate over each command line argument
+    for arg in "${args[@]}"; do
+        # Check if the argument is a valid launcher name
+        if [[ "$arg" == "Epic Games" || "$arg" == "GOG Galaxy" || "$arg" == "Uplay" || "$arg" == "Origin" || "$arg" == "Battle.net" || "$arg" == "Amazon Games" || "$arg" == "EA App" || "$arg" == "Legacy Games" || "$arg" == "Itch.io" || "$arg" == "Humble Games" || "$arg" == "IndieGala" || "$arg" == "Rockstar Games Launcher" || "$arg" == "Glyph Launcher" || "$arg" == "Minecraft Launcher" || "$arg" == "PS Plus Collection Launcher" || "$arg" == "DMM Games Launcher" ]]; then
+            # The argument is a valid launcher name, so add it to the selected_launchers array
+            selected_launchers+=("$arg")
+        elif [[ "$arg" == "Xbox Game Pass" || "$arg" == "GeForce Now" || "$arg" == "Amazon Luna" || "$arg" == "Netflix" || "$arg" == "Hulu" || "$arg" == "Disney+" || "$arg" == "Amazon Prime Video" || "$arg" == "Youtube" ]]; then
+            # The argument is a valid streaming site or game service name, so add it to the selected_streaming_services array
+            selected_streaming_services+=("$arg")
+        elif [[ "$arg" == "true" || "$arg" == "false" ]]; then
+            # The argument is the separate app ids option, so set its value
+            separate_app_ids="$arg"
+        else
+            # The argument is not a valid launcher name, streaming site or game service name, or separate app ids option, so treat it as a custom website
+            custom_websites+=("$arg")
+        fi
+done
+
+
+# Print the selected launchers, streaming sites or game services, and custom websites
+echo "Selected launchers: ${selected_launchers[@]}"
+echo "Selected streaming sites or game services: ${selected_streaming_services[@]}"
 echo "Custom websites: ${custom_websites[@]}"
 
 # Set the value of the options variable
@@ -2425,7 +2444,7 @@ echo "99"
 echo "# Checking if Chrome is installed...please wait..."
 
 # Check if user selected any of the options
-if [[ $options == *"Netflix"* ]] || [[ $options == *"Xbox Game Pass"* ]] || [[ $options == *"Geforce Now"* ]] || [[ $options == *"Amazon Luna"* ]] || [[ $options == *"Hulu"* ]] || [[ $options == *"Disney+"* ]] || [[ $options == *"Amazon Prime Video"* ]] || [[ $options == *"Youtube"* ]]; then
+if [[ "${selected_streaming_services[@]}" == *"Netflix"* ]] || [[ "${selected_streaming_services[@]}" == *"Xbox Game Pass"* ]] || [[ "${selected_streaming_services[@]}" == *"Geforce Now"* ]] || [[ "${selected_streaming_services[@]}" == *"Amazon Luna"* ]] || [[ "${selected_streaming_services[@]}" == *"Hulu"* ]] || [[ "${selected_streaming_services[@]}" == *"Disney+"* ]] || [[ "${selected_streaming_services[@]}" == *"Amazon Prime Video"* ]] || [[ "${selected_streaming_services[@]}" == *"Youtube"* ]]; then
     # User selected one of the options
     echo "User selected one of the options"
 
@@ -2447,6 +2466,7 @@ fi
 
 #wait for Google Chrome to finish
 wait
+
 
 
 
