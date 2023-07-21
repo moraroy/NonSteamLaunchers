@@ -82,6 +82,7 @@
   }
 
   const SearchModal = ({ closeModal, setModalResult, promptText }) => {
+      console.log('SearchModal rendered'); // Add this line
       const [searchText, setSearchText] = React.useState('');
       const handleTextChange = (e) => {
           setSearchText(e.target.value);
@@ -95,6 +96,7 @@
               window.SP_REACT.createElement(deckyFrontendLib.TextField, { focusOnMount: true, label: "Search", placeholder: promptText, onChange: handleTextChange }))));
   };
   const Content = ({ serverAPI }) => {
+      console.log('Content rendered'); // Add this line
       const [options, setOptions] = React.useState({
           epicGames: false,
           gogGalaxy: false,
@@ -117,6 +119,8 @@
       const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
       // Add a new state variable to keep track of the custom websites entered by the user
       const [customWebsites, setCustomWebsites] = React.useState([]);
+      // Add a new state variable to keep track of which button was clicked
+      const [clickedButton, setClickedButton] = React.useState('');
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -124,8 +128,12 @@
           }));
       };
       const handleInstallClick = async () => {
+          console.log('handleInstallClick called'); // Add this line
+          // Set the clickedButton state variable to 'install'
+          setClickedButton('install');
           // Open the search modal to prompt the user for custom websites
           setIsSearchModalOpen(true);
+          console.log('isSearchModalOpen set to true'); // Add this line
           // ...
           try {
               const result = await serverAPI.callPluginMethod("install", {
@@ -151,22 +159,11 @@
           }
       };
       const handleCreateWebsiteShortcutClick = async () => {
-          // Display a pop-up window for entering a website
-          const website = window.prompt('Enter website');
-          if (website) {
-              try {
-                  await serverAPI.callPluginMethod("install", {
-                      selected_options: {},
-                      custom_websites: [website],
-                      separate_app_ids: false
-                  });
-                  alert('Website shortcut created successfully!');
-              }
-              catch (error) {
-                  console.error('Error calling install method on server-side plugin:', error);
-                  alert('Failed to create website shortcut.');
-              }
-          }
+          console.log('handleCreateWebsiteShortcutClick called'); // Add this line
+          // Set the clickedButton state variable to 'createWebsiteShortcut'
+          setClickedButton('createWebsiteShortcut');
+          // Open the search modal to prompt the user for a website
+          setIsSearchModalOpen(true);
       };
       // Create an array of objects representing each option, with properties for the option name and label
       const optionsData = [
@@ -202,30 +199,36 @@
                   ' ',
                   label))))),
           isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
-                  // Split the result string into an array of custom websites
-                  setCustomWebsites(result.split(',').map((website) => website.trim()));
+                  if (clickedButton === 'install') {
+                      // Handle result for install button
+                      setCustomWebsites(result.split(',').map((website) => website.trim()));
+                  }
+                  else if (clickedButton === 'createWebsiteShortcut') {
+                      // Handle result for createWebsiteShortcut button
+                      setCustomWebsites([...customWebsites, result]);
+                  }
                   setIsSearchModalOpen(false);
-              }, promptText: "Enter custom websites (separated by commas)" })),
+              }, promptText: clickedButton === 'install' ? "Enter custom websites (separated by commas)" : "Enter website" })),
           window.SP_REACT.createElement("style", null, `
-          .checkmark {
-            color: green;
-          }
-          .selected {
-            background-color: #eee;
-          }
-          progress {
-            display: block;
-            width: 100%;
-            margin-top: 5px;
-            height: 20px; /* Change the height of the progress bar here */
-          }
-          pre {
-            white-space: pre-wrap;
-          }
-          ButtonItem {
-            margin-bottom: 10px;
-          }
-        `)));
+           .checkmark {
+             color: green;
+           }
+           .selected {
+             background-color: #eee;
+           }
+           progress {
+             display:block;
+             width: 100%;
+             margin-top: 5px;
+             height: 20px; /* Change the height of the progress bar here */
+           }
+           pre {
+             white-space: pre-wrap;
+           }
+           ButtonItem {
+             margin-bottom: 10px;
+           }
+         `)));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {
