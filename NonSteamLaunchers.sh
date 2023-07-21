@@ -575,10 +575,11 @@ else
     args=("${args[@]/Separate App IDs}")
     
     for arg in "${args[@]:1}"; do
-    if [[ "$arg" != "Separate App IDs" ]]; then
+    if [[ "$arg" != "Separate App IDs" && "$arg" != "Xbox Game Pass" && "$arg" != "GeForce Now" && "$arg" != "Amazon Luna" && "$arg" != "Netflix" && "$arg" != "Hulu" && "$arg" != "Disney+" && "$arg" != "Amazon Prime Video" && "$arg" != "Youtube" ]]; then
         custom_websites+=("$arg")
     fi
 done
+
 
 fi
 
