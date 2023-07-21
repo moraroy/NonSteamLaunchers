@@ -3,15 +3,53 @@ import {
   definePlugin,
   Menu,
   MenuItem,
+  ModalRoot,
+  ModalRootProps,
   PanelSection,
   PanelSectionRow,
   ServerAPI,
   showContextMenu,
   staticClasses,
+  TextField,
   ToggleField
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
+
+type SearchModalProps = ModalRootProps & {
+  setModalResult?(result: string): void;
+  promptText: string;
+};
+
+const SearchModal: VFC<SearchModalProps> = ({
+  closeModal,
+  setModalResult,
+  promptText
+}) => {
+  const [searchText, setSearchText] = useState('');
+  
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+  
+  const handleSubmit = () => {
+    setModalResult && setModalResult(searchText);
+    closeModal && closeModal();
+  };
+  
+  return (
+    <ModalRoot closeModal={handleSubmit}>
+      <form>
+        <TextField
+          focusOnMount={true}
+          label="Search"
+          placeholder={promptText}
+          onChange={handleTextChange}
+        />
+      </form>
+    </ModalRoot>
+  );
+};
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [options, setOptions] = useState({
@@ -35,6 +73,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
   const [separateAppIds, setSeparateAppIds] = useState(false);
 
+  // Add a new state variable to keep track of whether the search modal is open or not
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+
+  // Add a new state variable to keep track of the custom websites entered by the user
+  const [customWebsites, setCustomWebsites] = useState<string[]>([]);
+
   const handleButtonClick = (name: string) => {
     setOptions((prevOptions) => ({
       ...prevOptions,
@@ -43,28 +87,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   };
 
   const handleInstallClick = async () => {
-    // Display a pop-up window for entering custom websites
-    const customWebsite = window.prompt('Enter custom websites (separated by commas)');
+    // Open the search modal to prompt the user for custom websites
+    setIsSearchModalOpen(true);
   
-    // Check if customWebsite is not null before calling the split method on it
-    const customWebsites = customWebsite ? customWebsite.split(',').map((website: string) => website.trim()) : [];
-  
-    // Construct a string that lists the selected launchers
-    const selectedLaunchers = Object.entries(options)
-      .filter(([_, isSelected]) => isSelected)
-      .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
-      .join(', ');
-  
-    // Update the progress state variable to indicate that the operation has started
-    setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
-  
-    // Log the selected options for debugging
-    console.log(`Selected options: ${JSON.stringify(options)}`);
+    // ...
   
     try {
       const result = await serverAPI.callPluginMethod("install", {
         selected_options: options,
-        custom_websites: customWebsites,
+        custom_websites: customWebsites, // Use the customWebsites state variable here
         separate_app_ids: separateAppIds
       });
   
@@ -99,21 +130,21 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     }
   };
   
-  // Create an array of objects representing each option, with properties for the option name and label
-  const optionsData = [
-    { name: 'epicGames', label: 'Epic Games' },
-    { name: 'gogGalaxy', label: 'Gog Galaxy' },
-    { name: 'origin', label: 'Origin' },
-    { name: 'uplay', label: 'Uplay' },
-    { name: 'xboxGamePass', label: 'Xbox Game Pass' },
-    { name: 'geforceNow', label: 'GeForce Now' },
-    { name: 'amazonLuna', label: 'Amazon Luna' },
-    { name: 'netflix', label: 'Netflix' },
-    { name: 'hulu', label: 'Hulu' },
-    { name: 'disneyPlus', label: 'Disney+' },
-    { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
-    { name: 'youtube', label: 'Youtube' }
-  ];
+   // Create an array of objects representing each option, with properties for the option name and label
+   const optionsData = [
+     { name: 'epicGames', label: 'Epic Games' },
+     { name: 'gogGalaxy', label: 'Gog Galaxy' },
+     { name: 'origin', label: 'Origin' },
+     { name: 'uplay', label: 'Uplay' },
+     { name: 'xboxGamePass', label: 'Xbox Game Pass' },
+     { name: 'geforceNow', label: 'GeForce Now' },
+     { name: 'amazonLuna', label: 'Amazon Luna' },
+     { name: 'netflix', label: 'Netflix' },
+     { name: 'hulu', label: 'Hulu' },
+     { name: 'disneyPlus', label: 'Disney+' },
+     { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
+     { name: 'youtube', label: 'Youtube' }
+   ];
   
   return (
     <>
@@ -171,6 +202,19 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           ))}
         </PanelSectionRow>
       </PanelSection>
+
+      {/* Render the search modal here */}
+      {isSearchModalOpen && (
+        <SearchModal
+          closeModal={() => setIsSearchModalOpen(false)}
+          setModalResult={(result) => {
+            // Split the result string into an array of custom websites
+            setCustomWebsites(result.split(',').map((website: string) => website.trim()));
+            setIsSearchModalOpen(false);
+          }}
+          promptText="Enter custom websites (separated by commas)"
+        />
+      )}
 
       <style>
         {`

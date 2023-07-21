@@ -81,6 +81,19 @@
     return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M505.12019,19.09375c-1.18945-5.53125-6.65819-11-12.207-12.1875C460.716,0,435.507,0,410.40747,0,307.17523,0,245.26909,55.20312,199.05238,128H94.83772c-16.34763.01562-35.55658,11.875-42.88664,26.48438L2.51562,253.29688A28.4,28.4,0,0,0,0,264a24.00867,24.00867,0,0,0,24.00582,24H127.81618l-22.47457,22.46875c-11.36521,11.36133-12.99607,32.25781,0,45.25L156.24582,406.625c11.15623,11.1875,32.15619,13.15625,45.27726,0l22.47457-22.46875V488a24.00867,24.00867,0,0,0,24.00581,24,28.55934,28.55934,0,0,0,10.707-2.51562l98.72834-49.39063c14.62888-7.29687,26.50776-26.5,26.50776-42.85937V312.79688c72.59753-46.3125,128.03493-108.40626,128.03493-211.09376C512.07526,76.5,512.07526,51.29688,505.12019,19.09375ZM384.04033,168A40,40,0,1,1,424.05,128,40.02322,40.02322,0,0,1,384.04033,168Z"}}]})(props);
   }
 
+  const SearchModal = ({ closeModal, setModalResult, promptText }) => {
+      const [searchText, setSearchText] = React.useState('');
+      const handleTextChange = (e) => {
+          setSearchText(e.target.value);
+      };
+      const handleSubmit = () => {
+          setModalResult && setModalResult(searchText);
+          closeModal && closeModal();
+      };
+      return (window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { closeModal: handleSubmit },
+          window.SP_REACT.createElement("form", null,
+              window.SP_REACT.createElement(deckyFrontendLib.TextField, { focusOnMount: true, label: "Search", placeholder: promptText, onChange: handleTextChange }))));
+  };
   const Content = ({ serverAPI }) => {
       const [options, setOptions] = React.useState({
           epicGames: false,
@@ -100,6 +113,10 @@
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
       // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
+      // Add a new state variable to keep track of whether the search modal is open or not
+      const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
+      // Add a new state variable to keep track of the custom websites entered by the user
+      const [customWebsites, setCustomWebsites] = React.useState([]);
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,
@@ -107,19 +124,9 @@
           }));
       };
       const handleInstallClick = async () => {
-          // Display a pop-up window for entering custom websites
-          const customWebsite = window.prompt('Enter custom websites (separated by commas)');
-          // Check if customWebsite is not null before calling the split method on it
-          const customWebsites = customWebsite ? customWebsite.split(',').map((website) => website.trim()) : [];
-          // Construct a string that lists the selected launchers
-          const selectedLaunchers = Object.entries(options)
-              .filter(([_, isSelected]) => isSelected)
-              .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
-              .join(', ');
-          // Update the progress state variable to indicate that the operation has started
-          setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
-          // Log the selected options for debugging
-          console.log(`Selected options: ${JSON.stringify(options)}`);
+          // Open the search modal to prompt the user for custom websites
+          setIsSearchModalOpen(true);
+          // ...
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: options,
@@ -190,6 +197,11 @@
                   window.SP_REACT.createElement("span", { className: "checkmark" }, options[name] ? '✓' : ''),
                   ' ',
                   label))))),
+          isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
+                  // Split the result string into an array of custom websites
+                  setCustomWebsites(result.split(',').map((website) => website.trim()));
+                  setIsSearchModalOpen(false);
+              }, promptText: "Enter custom websites (separated by commas)" })),
           window.SP_REACT.createElement("style", null, `
           .checkmark {
             color: green;
