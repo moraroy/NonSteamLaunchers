@@ -99,6 +99,22 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     }
   };
   
+  // Create an array of objects representing each option, with properties for the option name and label
+  const optionsData = [
+    { name: 'epicGames', label: 'Epic Games' },
+    { name: 'gogGalaxy', label: 'Gog Galaxy' },
+    { name: 'origin', label: 'Origin' },
+    { name: 'uplay', label: 'Uplay' },
+    { name: 'xboxGamePass', label: 'Xbox Game Pass' },
+    { name: 'geforceNow', label: 'GeForce Now' },
+    { name: 'amazonLuna', label: 'Amazon Luna' },
+    { name: 'netflix', label: 'Netflix' },
+    { name: 'hulu', label: 'Hulu' },
+    { name: 'disneyPlus', label: 'Disney+' },
+    { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
+    { name: 'youtube', label: 'Youtube' }
+  ];
+  
   return (
     <>
       {/* Render the progress bar and status message */}
@@ -141,115 +157,18 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           </ButtonItem>
         </PanelSectionRow>
 
-        {/* Render the options here */}
+        {/* Render the options here using a loop to generate the ButtonItem components for each option */}
         <PanelSectionRow>
-          <ButtonItem
-            className={options.epicGames ? 'selected' : ''}
-            layout="below"
-            onClick={() => handleButtonClick('epicGames')}
-          >
-            <span className="checkmark">{options.epicGames ? '✓' : ''}</span>{' '}
-            Epic Games
-          </ButtonItem>
-
-          <ButtonItem
-            className={options.gogGalaxy ? 'selected' : ''}
-            layout="below"
-            onClick={() => handleButtonClick('gogGalaxy')}
-          >
-            <span className="checkmark">{options.gogGalaxy ? '✓' : ''}</span>{' '}
-             Gog Galaxy
-           </ButtonItem>
-
-           <ButtonItem
-             className={options.origin ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick('origin')}
-           >
-             <span className="checkmark">{options.origin ? '✓' : ''}</span>{' '}
-             Origin
-           </ButtonItem>
-
-           <ButtonItem
-             className={options.uplay ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick('uplay')}
-           >
-             <span className="checkmark">{options.uplay ? '✓' : ''}</span>{' '}
-             Uplay
-           </ButtonItem>
-
-           <ButtonItem
-             className={options.xboxGamePass ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick('xboxGamePass')}
-           >
-             <span className="checkmark">{options.xboxGamePass ? '✓' : ''}</span>{' '}
-              Xbox Game Pass
-            </ButtonItem>
-
+          {optionsData.map(({ name, label }) => (
             <ButtonItem
-              className={options.geforceNow ? 'selected' : ''}
+              className={options[name] ? 'selected' : ''}
               layout="below"
-              onClick={() => handleButtonClick('geforceNow')}
+              onClick={() => handleButtonClick(name)}
             >
-              <span className="checkmark">{options.geforceNow ? '✓' : ''}</span>{' '}
-              GeForce Now
+              <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
+              {label}
             </ButtonItem>
-
-            <ButtonItem
-              className={options.amazonLuna ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('amazonLuna')}
-            >
-              <span className="checkmark">{options.amazonLuna ? '✓' : ''}</span>{' '}
-              Amazon Luna
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.netflix ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('netflix')}
-            >
-              <span className="checkmark">{options.netflix ? '✓' : ''}</span>{' '}
-              Netflix
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.hulu ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('hulu')}
-            >
-              <span className="checkmark">{options.hulu ? '✓' : ''}</span>{' '}
-              Hulu
-            </ButtonItem>
-
-            <ButtonItem
-              className={options.disneyPlus ? 'selected' : ''}
-              layout="below"
-              onClick={() => handleButtonClick('disneyPlus')}
-            >
-              <span className="checkmark">{options.disneyPlus ? '✓' : ''}</span>{' '}
-               Disney+
-             </ButtonItem>
-
-             <ButtonItem
-               className={options.amazonPrimeVideo ? 'selected' : ''}
-               layout="below"
-               onClick={() => handleButtonClick('amazonPrimeVideo')}
-             >
-               <span className="checkmark">{options.amazonPrimeVideo ? '✓' : ''}</span>{' '}
-                Amazon Prime Video
-              </ButtonItem>
-
-              <ButtonItem
-                className={options.youtube ? 'selected' : ''}
-                layout="below"
-                onClick={() => handleButtonClick('youtube')}
-              >
-                <span className="checkmark">{options.youtube ? '✓' : ''}</span>{' '}
-                Youtube
-              </ButtonItem>
+          ))}
         </PanelSectionRow>
       </PanelSection>
 
