@@ -559,7 +559,7 @@ if [ ${#args[@]} -eq 0 ]; then
 
     # Display the main zenity window
     selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation" FALSE "Separate App IDs" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
-else
+   else
     # Initialize an array to store the selected launchers
     selected_launchers=()
 
@@ -582,7 +582,8 @@ else
             # The argument is not a valid launcher name, streaming site or game service name, or separate app ids option, so treat it as a custom website
             custom_websites+=("$arg")
         fi
-done
+        done
+fi
 
 
 # Print the selected launchers, streaming sites or game services, and custom websites
