@@ -133,6 +133,7 @@
               .join(', ');
           setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
           console.log(`Selected options: ${JSON.stringify(options)}`);
+          console.log(`customWebsites: ${JSON.stringify(customWebsites)}`);
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: options,
