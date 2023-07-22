@@ -1,7 +1,7 @@
 import {
   ButtonItem,
   definePlugin,
-  findSP, // Import the findSP function here
+  findSP,
   Menu,
   MenuItem,
   ModalRoot,
@@ -10,7 +10,7 @@ import {
   PanelSectionRow,
   ServerAPI,
   showContextMenu,
-  showModal, // Import the showModal function here
+  showModal,
   staticClasses,
   TextField,
   ToggleField
@@ -19,44 +19,59 @@ import { useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
 
 type SearchModalProps = ModalRootProps & {
-  setModalResult?(result: string): void;
+  setModalResult?(result: string[]): void;
   promptText: string;
+  initialWebsites: string[];
 };
 
 const SearchModal: VFC<SearchModalProps> = ({
   closeModal,
   setModalResult,
-  promptText
+  promptText,
+  initialWebsites
 }) => {
-  console.log('SearchModal rendered'); // Add this line
+  console.log('SearchModal rendered');
 
-  const [searchText, setSearchText] = useState('');
-  
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  const [searchTexts, setSearchTexts] = useState(initialWebsites);
+
+  const handleTextChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTexts((prevSearchTexts) => {
+      const newSearchTexts = [...prevSearchTexts];
+      newSearchTexts[index] = e.target.value;
+      return newSearchTexts;
+    });
   };
-  
+
+  const handleAddClick = () => {
+    setSearchTexts((prevSearchTexts) => [...prevSearchTexts, '']);
+  };
+
   const handleSubmit = () => {
-    setModalResult && setModalResult(searchText);
+    setModalResult && setModalResult(searchTexts);
     closeModal && closeModal();
   };
-  
+
   return (
     <ModalRoot closeModal={handleSubmit}>
       <form>
-        <TextField
-          focusOnMount={true}
-          label="Search"
-          placeholder={promptText}
-          onChange={handleTextChange}
-        />
+        {searchTexts.map((searchText, index) => (
+          <TextField
+            key={index}
+            focusOnMount={index === searchTexts.length - 1}
+            label="Website"
+            placeholder={promptText}
+            value={searchText}
+            onChange={handleTextChange(index)}
+          />
+        ))}
+        <ButtonItem onClick={handleAddClick}>Add Website</ButtonItem>
       </form>
     </ModalRoot>
   );
 };
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
-  console.log('Content rendered'); // Add this line
+  console.log('Content rendered');
 
   const [options, setOptions] = useState({
     epicGames: false,
@@ -73,19 +88,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     youtube: false
   });
 
-   // Add a new state variable to keep track of the progress and status of the operation
    const [progress, setProgress] = useState({ percent: 0, status: '' });
 
-   // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
    const [separateAppIds, setSeparateAppIds] = useState(false);
 
-   // Add a new state variable to keep track of whether the search modal is open or not
    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-   // Add a new state variable to keep track of which button was clicked
    const [clickedButton, setClickedButton] = useState('');
 
-   // Add a new state variable to keep track of the custom websites entered by the user
    const [customWebsites, setCustomWebsites] = useState<string[]>([]);
 
    const handleButtonClick = (name: string) => {
@@ -96,57 +106,49 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
    };
 
    const handleInstallClick = async () => {
-     console.log('handleInstallClick called'); // Add this line
+     console.log('handleInstallClick called');
 
-     // Construct a string that lists the selected launchers
      const selectedLaunchers = Object.entries(options)
        .filter(([_, isSelected]) => isSelected)
        .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
        .join(', ');
 
-     // Update the progress state variable to indicate that the operation has started
      setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
 
-     // Log the selected options for debugging
      console.log(`Selected options: ${JSON.stringify(options)}`);
 
      try {
        const result = await serverAPI.callPluginMethod("install", {
          selected_options: options,
-         custom_websites: customWebsites, // Use the customWebsites state variable here
+         custom_websites: customWebsites,
          separate_app_ids: separateAppIds
        });
    
        if (result) {
-         // Update the progress state variable to indicate that the operation has completed successfully
          setProgress({ percent: 100, status: 'Installation successful!' });
          alert('Installation successful!');
        } else {
-         // Update the progress state variable to indicate that an error occurred
          setProgress({ percent: 100, status: 'Installation failed.' });
          alert('Installation failed.');
        }
      } catch (error) {
-       // Update the progress state variable to indicate that an error occurred
        setProgress({ percent: 100, status: 'Installation failed.' });
        console.error('Error calling _main method on server-side plugin:', error);
      }
    };
 
    const handleCreateWebsiteShortcutClick = async () => {
-     console.log('handleCreateWebsiteShortcutClick called'); // Add this line
+     console.log('handleCreateWebsiteShortcutClick called');
 
-     // Set the clickedButton state variable to 'createWebsiteShortcut'
      setClickedButton('createWebsiteShortcut');
 
-     // Open the search modal to prompt the user for a website
      showModal(
        <SearchModal
          promptText="Enter website"
+         initialWebsites={customWebsites}
          setModalResult={(result) => {
            if (clickedButton === 'createWebsiteShortcut') {
-             // Handle result for createWebsiteShortcut button
-             setCustomWebsites([...customWebsites, result]);
+             setCustomWebsites(result);
            }
          }}
        />,
@@ -154,7 +156,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      );
    };
    
-    // Create an array of objects representing each option, with properties for the option name and label
     const optionsData = [
       { name: 'epicGames', label: 'Epic Games' },
       { name: 'gogGalaxy', label: 'Gog Galaxy' },
@@ -172,24 +173,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
    
    return (
      <>
-       {/* Render the progress bar and status message */}
        <PanelSectionRow>
          <progress value={progress.percent} max={100} />
          <div>{progress.status}</div>
        </PanelSectionRow>
 
        <PanelSection>
-         {/* Add an Install button here using a ButtonItem component */}
          <ButtonItem layout="below" onClick={handleInstallClick}>
            Install
          </ButtonItem>
 
-         {/* Add a Create Website Shortcut button here using a ButtonItem component */}
          <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
            Create Website Shortcut
          </ButtonItem>
 
-         {/* Add a toggle switch for the "Separate App IDs" option here */}
          <PanelSectionRow>
            <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
          </PanelSectionRow>
@@ -212,7 +209,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            </ButtonItem>
          </PanelSectionRow>
 
-         {/* Render the options here using a loop to generate the ButtonItem components for each option */}
          <PanelSectionRow>
            {optionsData.map(({ name, label }) => (
              <ButtonItem
@@ -227,18 +223,17 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
          </PanelSectionRow>
        </PanelSection>
 
-       {/* Render the search modal here */}
        {isSearchModalOpen && (
          <SearchModal
            closeModal={() => setIsSearchModalOpen(false)}
            setModalResult={(result) => {
              if (clickedButton === 'createWebsiteShortcut') {
-               // Handle result for createWebsiteShortcut button
-               setCustomWebsites([...customWebsites, result]);
+               setCustomWebsites(result);
              }
              setIsSearchModalOpen(false);
            }}
            promptText={"Enter website"}
+           initialWebsites={customWebsites}
          />
        )}
 
@@ -255,7 +250,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
              display:block;
              width: 100%;
              margin-top: 5px;
-             height: 20px; /* Change the height of the progress bar here */
+             height: 20px;
            }
            pre {
              white-space: pre-wrap;

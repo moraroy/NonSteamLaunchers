@@ -81,22 +81,30 @@
     return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M505.12019,19.09375c-1.18945-5.53125-6.65819-11-12.207-12.1875C460.716,0,435.507,0,410.40747,0,307.17523,0,245.26909,55.20312,199.05238,128H94.83772c-16.34763.01562-35.55658,11.875-42.88664,26.48438L2.51562,253.29688A28.4,28.4,0,0,0,0,264a24.00867,24.00867,0,0,0,24.00582,24H127.81618l-22.47457,22.46875c-11.36521,11.36133-12.99607,32.25781,0,45.25L156.24582,406.625c11.15623,11.1875,32.15619,13.15625,45.27726,0l22.47457-22.46875V488a24.00867,24.00867,0,0,0,24.00581,24,28.55934,28.55934,0,0,0,10.707-2.51562l98.72834-49.39063c14.62888-7.29687,26.50776-26.5,26.50776-42.85937V312.79688c72.59753-46.3125,128.03493-108.40626,128.03493-211.09376C512.07526,76.5,512.07526,51.29688,505.12019,19.09375ZM384.04033,168A40,40,0,1,1,424.05,128,40.02322,40.02322,0,0,1,384.04033,168Z"}}]})(props);
   }
 
-  const SearchModal = ({ closeModal, setModalResult, promptText }) => {
-      console.log('SearchModal rendered'); // Add this line
-      const [searchText, setSearchText] = React.useState('');
-      const handleTextChange = (e) => {
-          setSearchText(e.target.value);
+  const SearchModal = ({ closeModal, setModalResult, promptText, initialWebsites }) => {
+      console.log('SearchModal rendered');
+      const [searchTexts, setSearchTexts] = React.useState(initialWebsites);
+      const handleTextChange = (index) => (e) => {
+          setSearchTexts((prevSearchTexts) => {
+              const newSearchTexts = [...prevSearchTexts];
+              newSearchTexts[index] = e.target.value;
+              return newSearchTexts;
+          });
+      };
+      const handleAddClick = () => {
+          setSearchTexts((prevSearchTexts) => [...prevSearchTexts, '']);
       };
       const handleSubmit = () => {
-          setModalResult && setModalResult(searchText);
+          setModalResult && setModalResult(searchTexts);
           closeModal && closeModal();
       };
       return (window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { closeModal: handleSubmit },
           window.SP_REACT.createElement("form", null,
-              window.SP_REACT.createElement(deckyFrontendLib.TextField, { focusOnMount: true, label: "Search", placeholder: promptText, onChange: handleTextChange }))));
+              searchTexts.map((searchText, index) => (window.SP_REACT.createElement(deckyFrontendLib.TextField, { key: index, focusOnMount: index === searchTexts.length - 1, label: "Website", placeholder: promptText, value: searchText, onChange: handleTextChange(index) }))),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { onClick: handleAddClick }, "Add Website"))));
   };
   const Content = ({ serverAPI }) => {
-      console.log('Content rendered'); // Add this line
+      console.log('Content rendered');
       const [options, setOptions] = React.useState({
           epicGames: false,
           gogGalaxy: false,
@@ -111,15 +119,10 @@
           amazonPrimeVideo: false,
           youtube: false
       });
-      // Add a new state variable to keep track of the progress and status of the operation
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
-      // Add a new state variable to keep track of whether the "Separate App IDs" option is selected or not
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
-      // Add a new state variable to keep track of whether the search modal is open or not
       const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
-      // Add a new state variable to keep track of which button was clicked
       const [clickedButton, setClickedButton] = React.useState('');
-      // Add a new state variable to keep track of the custom websites entered by the user
       const [customWebsites, setCustomWebsites] = React.useState([]);
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
@@ -128,15 +131,12 @@
           }));
       };
       const handleInstallClick = async () => {
-          console.log('handleInstallClick called'); // Add this line
-          // Construct a string that lists the selected launchers
+          console.log('handleInstallClick called');
           const selectedLaunchers = Object.entries(options)
               .filter(([_, isSelected]) => isSelected)
               .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
               .join(', ');
-          // Update the progress state variable to indicate that the operation has started
           setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
-          // Log the selected options for debugging
           console.log(`Selected options: ${JSON.stringify(options)}`);
           try {
               const result = await serverAPI.callPluginMethod("install", {
@@ -145,35 +145,28 @@
                   separate_app_ids: separateAppIds
               });
               if (result) {
-                  // Update the progress state variable to indicate that the operation has completed successfully
                   setProgress({ percent: 100, status: 'Installation successful!' });
                   alert('Installation successful!');
               }
               else {
-                  // Update the progress state variable to indicate that an error occurred
                   setProgress({ percent: 100, status: 'Installation failed.' });
                   alert('Installation failed.');
               }
           }
           catch (error) {
-              // Update the progress state variable to indicate that an error occurred
               setProgress({ percent: 100, status: 'Installation failed.' });
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
       const handleCreateWebsiteShortcutClick = async () => {
-          console.log('handleCreateWebsiteShortcutClick called'); // Add this line
-          // Set the clickedButton state variable to 'createWebsiteShortcut'
+          console.log('handleCreateWebsiteShortcutClick called');
           setClickedButton('createWebsiteShortcut');
-          // Open the search modal to prompt the user for a website
-          deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", setModalResult: (result) => {
+          deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", initialWebsites: customWebsites, setModalResult: (result) => {
                   if (clickedButton === 'createWebsiteShortcut') {
-                      // Handle result for createWebsiteShortcut button
-                      setCustomWebsites([...customWebsites, result]);
+                      setCustomWebsites(result);
                   }
               } }), deckyFrontendLib.findSP());
       };
-      // Create an array of objects representing each option, with properties for the option name and label
       const optionsData = [
           { name: 'epicGames', label: 'Epic Games' },
           { name: 'gogGalaxy', label: 'Gog Galaxy' },
@@ -208,11 +201,10 @@
                   label))))),
           isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
                   if (clickedButton === 'createWebsiteShortcut') {
-                      // Handle result for createWebsiteShortcut button
-                      setCustomWebsites([...customWebsites, result]);
+                      setCustomWebsites(result);
                   }
                   setIsSearchModalOpen(false);
-              }, promptText: "Enter website" })),
+              }, promptText: "Enter website", initialWebsites: customWebsites })),
           window.SP_REACT.createElement("style", null, `
            .checkmark {
              color: green;
@@ -224,7 +216,7 @@
              display:block;
              width: 100%;
              margin-top: 5px;
-             height: 20px; /* Change the height of the progress bar here */
+             height: 20px;
            }
            pre {
              white-space: pre-wrap;
