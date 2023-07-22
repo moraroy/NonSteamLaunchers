@@ -570,11 +570,15 @@ else
 
     for arg in "${args[@]}"; do
         if [[ "$arg" =~ ^https?:// ]]; then
-            custom_websites+=("$arg")
+            # Check if the arg is not an empty string before adding it to the custom_websites array
+            if [ -n "$arg" ]; then
+                custom_websites+=("$arg")
+            fi
         else
             selected_launchers+=("$arg")
         fi
     done
+
 
     # Convert the selected_launchers array to a string
     selected_launchers_str=$(IFS="|"; echo "${selected_launchers[*]}")

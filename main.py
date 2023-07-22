@@ -53,6 +53,11 @@ class Plugin:
     async def install(self, selected_options, custom_websites, separate_app_ids):
         decky_plugin.logger.info('install was called')
 
+        # Log the arguments for debugging
+        decky_plugin.logger.info(f"selected_options: {selected_options}")
+        decky_plugin.logger.info(f"custom_websites: {custom_websites}")
+        decky_plugin.logger.info(f"separate_app_ids: {separate_app_ids}")
+
         # Convert the selected options mapping to a list of strings
         selected_options_list = []
         for option, is_selected in selected_options.items():
@@ -97,3 +102,4 @@ class Plugin:
             return True
         else:
             return False
+
