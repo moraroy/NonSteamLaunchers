@@ -159,6 +159,7 @@
           console.log('handleCreateWebsiteShortcutClick called');
           setClickedButton('createWebsiteShortcut');
           deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", setModalResult: (result) => {
+                  console.log(`result: ${JSON.stringify(result)}`);
                   if (clickedButton === 'createWebsiteShortcut') {
                       // Handle result for createWebsiteShortcut button
                       setCustomWebsites(result);
@@ -198,6 +199,7 @@
                   ' ',
                   label))))),
           isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
+                  console.log(`result: ${JSON.stringify(result)}`);
                   if (clickedButton === 'createWebsiteShortcut') {
                       // Handle result for createWebsiteShortcut button
                       setCustomWebsites(result);

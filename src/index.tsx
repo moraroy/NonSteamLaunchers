@@ -136,6 +136,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
        <SearchModal
          promptText="Enter website"
          setModalResult={(result) => {
+           console.log(`result: ${JSON.stringify(result)}`);
            if (clickedButton === 'createWebsiteShortcut') {
              // Handle result for createWebsiteShortcut button
              setCustomWebsites(result);
@@ -214,18 +215,19 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      </PanelSection>
 
      {isSearchModalOpen && (
-       <SearchModal
-         closeModal={() => setIsSearchModalOpen(false)}
-         setModalResult={(result) => {
-           if (clickedButton === 'createWebsiteShortcut') {
-             // Handle result for createWebsiteShortcut button
-             setCustomWebsites(result);
-           }
-           setIsSearchModalOpen(false);
-         }}
-         promptText={"Enter website"}
-       />
-     )}
+      <SearchModal
+        closeModal={() => setIsSearchModalOpen(false)}
+        setModalResult={(result) => {
+          console.log(`result: ${JSON.stringify(result)}`);
+          if (clickedButton === 'createWebsiteShortcut') {
+            // Handle result for createWebsiteShortcut button
+            setCustomWebsites(result);
+          }
+          setIsSearchModalOpen(false);
+        }}
+        promptText={"Enter website"}
+      />
+    )}
 
 
      <style>
