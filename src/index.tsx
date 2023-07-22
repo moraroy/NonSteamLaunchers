@@ -39,6 +39,7 @@ const SearchModal: VFC<SearchModalProps> = ({
   const handleSubmit = () => {
     // Split the entered text by commas and trim any whitespace
     const websites = searchText.split(',').map((website) => website.trim());
+    console.log(`websites: ${JSON.stringify(websites)}`);
     setModalResult && setModalResult(websites);
     closeModal && closeModal();
   };
