@@ -97,7 +97,7 @@
       return (window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { closeModal: handleSubmit },
           window.SP_REACT.createElement("form", null,
               window.SP_REACT.createElement(deckyFrontendLib.TextField, { focusOnMount: true, label: "Websites", placeholder: promptText, onChange: handleTextChange }),
-              window.SP_REACT.createElement("p", null, "Enter multiple websites separated by commas."))));
+              window.SP_REACT.createElement("p", null, "You can separate multiple websites by using commas."))));
   };
   const Content = ({ serverAPI }) => {
       console.log('Content rendered');
@@ -120,6 +120,9 @@
       const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
       const [clickedButton, setClickedButton] = React.useState('');
       const [customWebsites, setCustomWebsites] = React.useState([]);
+      React.useEffect(() => {
+          console.log(`customWebsites updated: ${JSON.stringify(customWebsites)}`);
+      }, [customWebsites]);
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
               ...prevOptions,

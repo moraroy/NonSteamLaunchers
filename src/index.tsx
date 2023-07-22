@@ -15,7 +15,7 @@ import {
   TextField,
   ToggleField
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 import { FaRocket } from "react-icons/fa";
 
 type SearchModalProps = ModalRootProps & {
@@ -53,7 +53,7 @@ const SearchModal: VFC<SearchModalProps> = ({
           placeholder={promptText}
           onChange={handleTextChange}
         />
-        <p>Enter multiple websites separated by commas.</p>
+        <p>You can separate multiple websites by using commas.</p>
       </form>
     </ModalRoot>
   );
@@ -86,6 +86,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
    const [clickedButton, setClickedButton] = useState('');
 
    const [customWebsites, setCustomWebsites] = useState<string[]>([]);
+   useEffect(() => {
+    console.log(`customWebsites updated: ${JSON.stringify(customWebsites)}`);
+  }, [customWebsites]);
 
    const handleButtonClick = (name: string) => {
      setOptions((prevOptions) => ({
