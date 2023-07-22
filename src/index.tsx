@@ -21,50 +21,38 @@ import { FaRocket } from "react-icons/fa";
 type SearchModalProps = ModalRootProps & {
   setModalResult?(result: string[]): void;
   promptText: string;
-  initialWebsites: string[];
 };
 
 const SearchModal: VFC<SearchModalProps> = ({
   closeModal,
   setModalResult,
-  promptText,
-  initialWebsites
+  promptText
 }) => {
   console.log('SearchModal rendered');
 
-  const [searchTexts, setSearchTexts] = useState(initialWebsites);
+  const [searchText, setSearchText] = useState('');
 
-  const handleTextChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTexts((prevSearchTexts) => {
-      const newSearchTexts = [...prevSearchTexts];
-      newSearchTexts[index] = e.target.value;
-      return newSearchTexts;
-    });
-  };
-
-  const handleAddClick = () => {
-    setSearchTexts((prevSearchTexts) => [...prevSearchTexts, '']);
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
   };
 
   const handleSubmit = () => {
-    setModalResult && setModalResult(searchTexts);
+    // Split the entered text by commas and trim any whitespace
+    const websites = searchText.split(',').map((website) => website.trim());
+    setModalResult && setModalResult(websites);
     closeModal && closeModal();
   };
 
   return (
     <ModalRoot closeModal={handleSubmit}>
       <form>
-        {searchTexts.map((searchText, index) => (
-          <TextField
-            key={index}
-            focusOnMount={index === searchTexts.length - 1}
-            label="Website"
-            placeholder={promptText}
-            value={searchText}
-            onChange={handleTextChange(index)}
-          />
-        ))}
-        <ButtonItem onClick={handleAddClick}>Add Website</ButtonItem>
+        <TextField
+          focusOnMount={true}
+          label="Websites"
+          placeholder={promptText}
+          onChange={handleTextChange}
+        />
+        <p>Enter multiple websites separated by commas.</p>
       </form>
     </ModalRoot>
   );
@@ -145,9 +133,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      showModal(
        <SearchModal
          promptText="Enter website"
-         initialWebsites={customWebsites}
          setModalResult={(result) => {
            if (clickedButton === 'createWebsiteShortcut') {
+             // Handle result for createWebsiteShortcut button
              setCustomWebsites(result);
            }
          }}
@@ -156,118 +144,118 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      );
    };
    
-    const optionsData = [
-      { name: 'epicGames', label: 'Epic Games' },
-      { name: 'gogGalaxy', label: 'Gog Galaxy' },
-      { name: 'origin', label: 'Origin' },
-      { name: 'uplay', label: 'Uplay' },
-      { name: 'xboxGamePass', label: 'Xbox Game Pass' },
-      { name: 'geforceNow', label: 'GeForce Now' },
-      { name: 'amazonLuna', label: 'Amazon Luna' },
-      { name: 'netflix', label: 'Netflix' },
-      { name: 'hulu', label: 'Hulu' },
-      { name: 'disneyPlus', label: 'Disney+' },
-      { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
-      { name: 'youtube', label: 'Youtube' }
-    ];
-   
-   return (
-     <>
+   const optionsData = [
+    { name: 'epicGames', label: 'Epic Games' },
+    { name: 'gogGalaxy', label: 'Gog Galaxy' },
+    { name: 'origin', label: 'Origin' },
+    { name: 'uplay', label: 'Uplay' },
+    { name: 'xboxGamePass', label: 'Xbox Game Pass' },
+    { name: 'geforceNow', label: 'GeForce Now' },
+    { name: 'amazonLuna', label: 'Amazon Luna' },
+    { name: 'netflix', label: 'Netflix' },
+    { name: 'hulu', label: 'Hulu' },
+    { name: 'disneyPlus', label: 'Disney+' },
+    { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
+    { name: 'youtube', label: 'Youtube' }
+  ];
+ 
+ return (
+   <>
+     <PanelSectionRow>
+       <progress value={progress.percent} max={100} />
+       <div>{progress.status}</div>
+     </PanelSectionRow>
+
+     <PanelSection>
+       <ButtonItem layout="below" onClick={handleInstallClick}>
+         Install
+       </ButtonItem>
+
+       <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
+         Create Website Shortcut
+       </ButtonItem>
+
        <PanelSectionRow>
-         <progress value={progress.percent} max={100} />
-         <div>{progress.status}</div>
+         <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
        </PanelSectionRow>
 
-       <PanelSection>
-         <ButtonItem layout="below" onClick={handleInstallClick}>
-           Install
+       <PanelSectionRow>
+         <ButtonItem
+           layout="below"
+           onClick={(e: React.MouseEvent) =>
+             showContextMenu(
+               <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
+                 <MenuItem onSelected={() => {}}>Item #1</MenuItem>
+                 <MenuItem onSelected={() => {}}>Item #2</MenuItem>
+                 <MenuItem onSelected={() => {}}>Item #3</MenuItem>
+               </Menu>,
+               e.currentTarget ?? window
+             )
+           }
+         >
+           Find Games w/BoilR
          </ButtonItem>
+       </PanelSectionRow>
 
-         <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
-           Create Website Shortcut
-         </ButtonItem>
-
-         <PanelSectionRow>
-           <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
-         </PanelSectionRow>
-
-         <PanelSectionRow>
+       <PanelSectionRow>
+         {optionsData.map(({ name, label }) => (
            <ButtonItem
+             className={options[name] ? 'selected' : ''}
              layout="below"
-             onClick={(e: React.MouseEvent) =>
-               showContextMenu(
-                 <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                   <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                   <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                   <MenuItem onSelected={() => {}}>Item #3</MenuItem>
-                 </Menu>,
-                 e.currentTarget ?? window
-               )
-             }
+             onClick={() => handleButtonClick(name)}
            >
-             Find Games w/BoilR
+             <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
+             {label}
            </ButtonItem>
-         </PanelSectionRow>
+         ))}
+       </PanelSectionRow>
+     </PanelSection>
 
-         <PanelSectionRow>
-           {optionsData.map(({ name, label }) => (
-             <ButtonItem
-               className={options[name] ? 'selected' : ''}
-               layout="below"
-               onClick={() => handleButtonClick(name)}
-             >
-               <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
-               {label}
-             </ButtonItem>
-           ))}
-         </PanelSectionRow>
-       </PanelSection>
-
-       {isSearchModalOpen && (
-         <SearchModal
-           closeModal={() => setIsSearchModalOpen(false)}
-           setModalResult={(result) => {
-             if (clickedButton === 'createWebsiteShortcut') {
-               setCustomWebsites(result);
-             }
-             setIsSearchModalOpen(false);
-           }}
-           promptText={"Enter website"}
-           initialWebsites={customWebsites}
-         />
-       )}
+     {isSearchModalOpen && (
+       <SearchModal
+         closeModal={() => setIsSearchModalOpen(false)}
+         setModalResult={(result) => {
+           if (clickedButton === 'createWebsiteShortcut') {
+             // Handle result for createWebsiteShortcut button
+             setCustomWebsites(result);
+           }
+           setIsSearchModalOpen(false);
+         }}
+         promptText={"Enter website"}
+       />
+     )}
 
 
-       <style>
-         {`
-           .checkmark {
-             color: green;
-           }
-           .selected {
-             background-color: #eee;
-           }
-           progress {
-             display:block;
-             width: 100%;
-             margin-top: 5px;
-             height: 20px;
-           }
-           pre {
-             white-space: pre-wrap;
-           }
-           ButtonItem {
-             margin-bottom: 10px;
-           }
-         `}
-       </style>
-     </>
-   );
+     <style>
+       {`
+         .checkmark {
+           color: green;
+         }
+         .selected {
+           background-color: #eee;
+         }
+         progress {
+           display:block;
+           width: 100%;
+           margin-top: 5px;
+           height: 20px;
+         }
+         pre {
+           white-space: pre-wrap;
+         }
+         ButtonItem {
+           margin-bottom: 10px;
+         }
+       `}
+     </style>
+   </>
+ );
+};
+
+export default definePlugin((serverApi: ServerAPI) => {
+ return {
+   title: <div className={staticClasses.Title}>NonSteamLaunchers</div>,
+   content: <Content serverAPI={serverApi} />,
+   icon: <FaRocket />,
  };
-
- export default definePlugin((serverApi: ServerAPI) => {
-   return {
-     title: <div className={staticClasses.Title}>NonSteamLaunchers</div>,
-     content: <Content serverAPI={serverApi} />,
-     icon: <FaRocket />,
-   };
- });
+});
