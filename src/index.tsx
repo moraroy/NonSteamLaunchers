@@ -216,7 +216,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       <PanelSection title="Game Launchers">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          Here you choose your launchers you want to install and let NSL do the rest.
+          Here you choose your launchers you want to install and let NSL do the rest. Once Steam restarts your launchers will be in your library!
         </PanelSectionRow>
         <PanelSectionRow>
           {launcherOptions.map(({ name, label }) => (
@@ -234,7 +234,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       <PanelSection title="Game and Movie Streaming">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          Please install Google Chrome via the Discover Store. NSL uses Chrome to launch these sites.
+          Please install Google Chrome via the Discover Store in desktop mode first. NSL uses Chrome to launch these sites.
         </PanelSectionRow>
         <PanelSectionRow>
           {streamingOptions.map(({ name, label }) => (
