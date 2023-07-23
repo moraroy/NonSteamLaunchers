@@ -168,122 +168,132 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay'].includes(name));
   const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube'].includes(name));
  
- return (
-   <>
-     <PanelSectionRow>
-       <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
-     </PanelSectionRow>
-
-     <PanelSectionRow>
-       <progress value={progress.percent} max={100} />
-       <div>{progress.status}</div>
-     </PanelSectionRow>
-
-     <PanelSection>
-       <ButtonItem layout="below" onClick={handleInstallClick}>
-         Install
-       </ButtonItem>
-
-       <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
-         Create Website Shortcut
-       </ButtonItem>
-
-       <PanelSectionRow>
-         <ButtonItem
-           layout="below"
-           onClick={(e: React.MouseEvent) =>
-             showContextMenu(
-               <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                 <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                 <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                 <MenuItem onSelected={() => {}}>Item #3</MenuItem>
-               </Menu>,
-               e.currentTarget ?? window
-             )
+  return (
+    <>
+      <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
+        Welcome to the decky plugin version of NonSteamLaunchers! "I hope this works"
+      </PanelSectionRow>
+      <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
+        Thank you for everyone's support and contributions, this plugin is to install your favorite launchers on the steam deck in the easiest way possible. Enjoy!
+      </PanelSectionRow>
+  
+      <PanelSectionRow>
+        <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
+      </PanelSectionRow>
+  
+      <PanelSectionRow>
+        <progress value={progress.percent} max={100} />
+        <div>{progress.status}</div>
+      </PanelSectionRow>
+  
+      <PanelSection>
+        <ButtonItem layout="below" onClick={handleInstallClick}>
+          Install
+        </ButtonItem>
+  
+        <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
+          Create Website Shortcut
+        </ButtonItem>
+  
+        <PanelSectionRow>
+          <ButtonItem
+            layout="below"
+            onClick={(e: React.MouseEvent) =>
+              showContextMenu(
+                <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
+                  <MenuItem onSelected={() => {}}>Item #1</MenuItem>
+                  <MenuItem onSelected={() => {}}>Item #2</MenuItem>
+                  <MenuItem onSelected={() => {}}>Item #3</MenuItem>
+                </Menu>,
+                e.currentTarget ?? window
+              )
+            }
+          >
+            Find Games w/BoilR
+          </ButtonItem>
+        </PanelSectionRow>
+      </PanelSection>
+  
+      <PanelSection title="Game Launchers">
+        <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
+          This section is for managing game launchers.
+        </PanelSectionRow>
+        <PanelSectionRow>
+          {launcherOptions.map(({ name, label }) => (
+            <ButtonItem
+              className={options[name] ? 'selected' : ''}
+              layout="below"
+              onClick={() => handleButtonClick(name)}
+            >
+              <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
+              {label}
+            </ButtonItem>
+          ))}
+        </PanelSectionRow>
+      </PanelSection>
+  
+      <PanelSection title="Game Streaming">
+        <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
+          This section is for managing game streaming services.
+        </PanelSectionRow>
+        <PanelSectionRow>
+          {streamingOptions.map(({ name, label }) => (
+            <ButtonItem
+              className={options[name] ? 'selected' : ''}
+              layout="below"
+              onClick={() => handleButtonClick(name)}
+            >
+              <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
+              {label}
+            </ButtonItem>
+          ))}
+        </PanelSectionRow>
+      </PanelSection>
+  
+      {isSearchModalOpen && (
+       <SearchModal
+         closeModal={() => setIsSearchModalOpen(false)}
+         setModalResult={(result) => {
+           console.log(`result: ${JSON.stringify(result)}`);
+           if (clickedButton === 'createWebsiteShortcut') {
+             // Handle result for createWebsiteShortcut button
+             setCustomWebsites(result);
            }
-         >
-           Find Games w/BoilR
-         </ButtonItem>
-       </PanelSectionRow>
-     </PanelSection>
-
-     <PanelSection title="Game Launchers">
-       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-         This section is for managing game launchers.
-       </PanelSectionRow>
-       <PanelSectionRow>
-         {launcherOptions.map(({ name, label }) => (
-           <ButtonItem
-             className={options[name] ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick(name)}
-           >
-             <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
-             {label}
-           </ButtonItem>
-         ))}
-       </PanelSectionRow>
-     </PanelSection>
-
-     <PanelSection title="Game Streaming">
-       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-         This section is for managing game streaming services.
-       </PanelSectionRow>
-       <PanelSectionRow>
-         {streamingOptions.map(({ name, label }) => (
-           <ButtonItem
-             className={options[name] ? 'selected' : ''}
-             layout="below"
-             onClick={() => handleButtonClick(name)}
-           >
-             <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
-             {label}
-           </ButtonItem>
-         ))}
-       </PanelSectionRow>
-     </PanelSection>
-
-     {isSearchModalOpen && (
-      <SearchModal
-        closeModal={() => setIsSearchModalOpen(false)}
-        setModalResult={(result) => {
-          console.log(`result: ${JSON.stringify(result)}`);
-          if (clickedButton === 'createWebsiteShortcut') {
-            // Handle result for createWebsiteShortcut button
-            setCustomWebsites(result);
+           setIsSearchModalOpen(false);
+         }}
+         promptText={"Enter website"}
+       />
+     )}
+  
+  
+      <style>
+        {`
+          .checkmark {
+            color: green;
           }
-          setIsSearchModalOpen(false);
-        }}
-        promptText={"Enter website"}
-      />
-    )}
-
-
-     <style>
-       {`
-         .checkmark {
-           color: green;
-         }
-         .selected {
-           background-color: #eee;
-         }
-         progress {
-           display:block;
-           width: 100%;
-           margin-top: 5px;
-           height: 20px;
-         }
-         pre {
-           white-space: pre-wrap;
-         }
-         .decky-ButtonItem {
-           margin-bottom: 10px;
-           border-bottom: none;
-         }
-       `}
-     </style>
-   </>
- );
+          .selected {
+            background-color: #eee;
+          }
+          progress {
+            display:block;
+            width: 100%;
+            margin-top: 5px;
+            height: 20px;
+          }
+          pre {
+            white-space: pre-wrap;
+          }
+          .decky-ButtonItem {
+            margin-bottom: 10px;
+            border-bottom: none;
+          }
+          .decky-PanelSection {
+            border-bottom: none;
+          }
+        `}
+      </style>
+    </>
+  );
 };
 
 export default definePlugin((serverApi: ServerAPI) => {

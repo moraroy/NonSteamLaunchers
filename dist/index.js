@@ -186,6 +186,8 @@
       const launcherOptions = optionsData.filter(({ name }) => ['epicGames', 'gogGalaxy', 'origin', 'uplay'].includes(name));
       const streamingOptions = optionsData.filter(({ name }) => ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube'].includes(name));
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! \"I hope this works\""),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions, this plugin is to install your favorite launchers on the steam deck in the easiest way possible. Enjoy!"),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Separate App IDs", checked: separateAppIds, onChange: setSeparateAppIds })),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
@@ -220,26 +222,29 @@
                   setIsSearchModalOpen(false);
               }, promptText: "Enter website" })),
           window.SP_REACT.createElement("style", null, `
-         .checkmark {
-           color: green;
-         }
-         .selected {
-           background-color: #eee;
-         }
-         progress {
-           display:block;
-           width: 100%;
-           margin-top: 5px;
-           height: 20px;
-         }
-         pre {
-           white-space: pre-wrap;
-         }
-         .decky-ButtonItem {
-           margin-bottom: 10px;
-           border-bottom: none;
-         }
-       `)));
+          .checkmark {
+            color: green;
+          }
+          .selected {
+            background-color: #eee;
+          }
+          progress {
+            display:block;
+            width: 100%;
+            margin-top: 5px;
+            height: 20px;
+          }
+          pre {
+            white-space: pre-wrap;
+          }
+          .decky-ButtonItem {
+            margin-bottom: 10px;
+            border-bottom: none;
+          }
+          .decky-PanelSection {
+            border-bottom: none;
+          }
+        `)));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {
