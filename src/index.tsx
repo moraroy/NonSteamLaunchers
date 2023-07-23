@@ -67,6 +67,18 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     gogGalaxy: false,
     origin: false,
     uplay: false,
+    battleNet: false,
+    amazonGames: false,
+    eaApp: false,
+    legacyGames: false,
+    itchIo: false,
+    humbleGames: false,
+    indieGala: false,
+    rockstar: false,
+    glyph: false,
+    minecraft: false,
+    psPlus: false,
+    dmm: false,
     xboxGamePass: false,
     geforceNow: false,
     amazonLuna: false,
@@ -155,6 +167,18 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'gogGalaxy', label: 'Gog Galaxy' },
     { name: 'origin', label: 'Origin' },
     { name: 'uplay', label: 'Uplay' },
+    { name: 'battleNet', label: 'Battle.net' },
+    { name: 'amazonGames', label: 'Amazon Games' },
+    { name: 'eaApp', label: 'EA App' },
+    { name: 'legacyGames', label: 'Legacy Games' },
+    { name: 'itchIo', label: 'Itch.io' },
+    { name: 'humbleGames', label: 'Humble Games' },
+    { name: 'indieGala', label: 'IndieGala' },
+    { name: 'rockstar', label: 'Rockstar' },
+    { name: 'glyph', label: 'Glyph' },
+    { name: 'minecraft', label: 'Minecraft' },
+    { name: 'psPlus', label: 'PS Plus' },
+    { name: 'dmm', label: 'DMM' },
     { name: 'xboxGamePass', label: 'Xbox Game Pass' },
     { name: 'geforceNow', label: 'GeForce Now' },
     { name: 'amazonLuna', label: 'Amazon Luna' },
@@ -165,7 +189,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'youtube', label: 'Youtube' }
   ];
 
-  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay'].includes(name));
+  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'itchIo', 'humbleGames', 'indieGala', 'rockstar', 'glyph', 'minecraft', 'psPlus', 'dmm'].includes(name));
   const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube'].includes(name));
  
   return (
