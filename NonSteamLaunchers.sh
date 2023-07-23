@@ -2900,7 +2900,7 @@ args=("$@")
 # Check if there are any command line arguments
 if [ ${#args[@]} -gt 0 ]; then
     # If there are command line arguments, kill all instances of Steam
-    killall steam
+    killall steam &
 else
     # If there are no command line arguments, detach the script from the Steam process
     nohup sh -c 'sleep 10; /usr/bin/steam' &
