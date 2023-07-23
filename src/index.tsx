@@ -276,7 +276,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
          pre {
            white-space: pre-wrap;
          }
-         ButtonItem {
+         .decky-ButtonItem {
            margin-bottom: 10px;
            border-bottom: none;
          }
