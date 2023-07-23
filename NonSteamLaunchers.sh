@@ -2907,8 +2907,7 @@ else
 
     # Wait for the steam process to exit
     while pgrep steam > /dev/null; do sleep 1; done
-fi
-
+fi &
 
 
 
