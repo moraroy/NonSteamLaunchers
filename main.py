@@ -93,6 +93,9 @@ class Plugin:
         # Temporarily disable access control for the X server
         subprocess.run(['xhost', '+'])
 
+        # Log the result of running the xhost command for debugging
+        decky_plugin.logger.info(f"xhost result: {xhost_result}")
+
         # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
         command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['Separate App IDs'] if separate_app_ids else [])
         
