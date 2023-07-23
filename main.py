@@ -93,6 +93,7 @@ class Plugin:
         # Set up the environment for the new process
         env = os.environ.copy()
         env['DISPLAY'] = ':0'
+        env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
 
         process = subprocess.Popen(command, env=env)
 
