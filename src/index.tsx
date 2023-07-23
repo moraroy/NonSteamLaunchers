@@ -171,10 +171,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return (
     <>
       <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
-        Welcome to the decky plugin version of NonSteamLaunchers! "I hope this works"
+        Welcome to the decky plugin version of NonSteamLaunchers! I hope it works... aka nasty lawn chairs
       </PanelSectionRow>
       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-        Thank you for everyone's support and contributions, this plugin is to install your favorite launchers on the steam deck in the easiest way possible. Enjoy!
+        Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy!
       </PanelSectionRow>
   
       <PanelSectionRow>
@@ -216,7 +216,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       <PanelSection title="Game Launchers">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          This section is for managing game launchers.
+          Here you choose your launchers you want to install and let NSL do the rest.
         </PanelSectionRow>
         <PanelSectionRow>
           {launcherOptions.map(({ name, label }) => (
@@ -232,9 +232,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         </PanelSectionRow>
       </PanelSection>
   
-      <PanelSection title="Game Streaming">
+      <PanelSection title="Game and Movie Streaming">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          This section is for managing game streaming services.
+          Please install Google Chrome via the Discover Store. NSL uses Chrome to launch these sites.
         </PanelSectionRow>
         <PanelSectionRow>
           {streamingOptions.map(({ name, label }) => (
