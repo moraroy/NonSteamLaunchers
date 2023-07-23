@@ -2894,18 +2894,20 @@ fi
 
 
 
+# Get the command line arguments
+args=("$@")
 
+# Check if there are any command line arguments
+if [ ${#args[@]} -gt 0 ]; then
+    # If there are command line arguments, kill all instances of Steam
+    killall steam
+else
+    # If there are no command line arguments, detach the script from the Steam process
+    nohup sh -c 'sleep 10; /usr/bin/steam' &
 
-
-# Detach script from Steam process
-nohup sh -c 'sleep 10; /usr/bin/steam' &
-
-# Close all instances of Steam
-killall steam
-
-
-# Wait for the steam process to exit
-while pgrep steam > /dev/null; do sleep 1; done
+    # Wait for the steam process to exit
+    while pgrep steam > /dev/null; do sleep 1; done
+fi
 
 
 
