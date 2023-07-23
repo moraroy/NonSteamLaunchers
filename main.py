@@ -70,7 +70,7 @@ class Plugin:
                     selected_options_list.append(selected_option)
                 else:
                     # Launcher option
-                    selected_option = camel_to_title(option).replace('Ea App', 'EA App')
+                    selected_option = camel_to_title(option).replace('Ea App', 'EA App').replace('indieGala', 'IndieGala')
                     if ' ' in selected_option:
                         selected_option = f'"{selected_option}"'
                     selected_options_list.append(selected_option)
