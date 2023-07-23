@@ -278,6 +278,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
          }
          ButtonItem {
            margin-bottom: 10px;
+           border-bottom: none;
          }
        `}
      </style>
