@@ -90,7 +90,11 @@ class Plugin:
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
 
-        process = subprocess.Popen(command)
+        # Set up the environment for the new process
+        env = os.environ.copy()
+        env['DISPLAY'] = ':0'
+
+        process = subprocess.Popen(command, env=env)
 
         # Wait for the script to complete and get the exit code
         exit_code = process.wait()
@@ -102,4 +106,5 @@ class Plugin:
             return True
         else:
             return False
+
 
