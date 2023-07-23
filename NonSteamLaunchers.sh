@@ -2891,9 +2891,6 @@ fi
 
 
 
-# Get the command line arguments
-args=("$@")
-
 # Check if there are any command line arguments
 if [ ${#args[@]} -gt 0 ]; then
     # If there are command line arguments, kill all instances of Steam
