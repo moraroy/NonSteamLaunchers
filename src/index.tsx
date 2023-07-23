@@ -164,9 +164,16 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
     { name: 'youtube', label: 'Youtube' }
   ];
+
+  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay'].includes(name));
+  const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube'].includes(name));
  
  return (
    <>
+     <PanelSectionRow>
+       <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
+     </PanelSectionRow>
+
      <PanelSectionRow>
        <progress value={progress.percent} max={100} />
        <div>{progress.status}</div>
@@ -180,10 +187,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
        <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
          Create Website Shortcut
        </ButtonItem>
-
-       <PanelSectionRow>
-         <ToggleField label="Separate App IDs" checked={separateAppIds} onChange={setSeparateAppIds} />
-       </PanelSectionRow>
 
        <PanelSectionRow>
          <ButtonItem
@@ -202,9 +205,32 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            Find Games w/BoilR
          </ButtonItem>
        </PanelSectionRow>
+     </PanelSection>
 
+     <PanelSection title="Game Launchers">
+       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
+         This section is for managing game launchers.
+       </PanelSectionRow>
        <PanelSectionRow>
-         {optionsData.map(({ name, label }) => (
+         {launcherOptions.map(({ name, label }) => (
+           <ButtonItem
+             className={options[name] ? 'selected' : ''}
+             layout="below"
+             onClick={() => handleButtonClick(name)}
+           >
+             <span className="checkmark">{options[name] ? '✓' : ''}</span>{' '}
+             {label}
+           </ButtonItem>
+         ))}
+       </PanelSectionRow>
+     </PanelSection>
+
+     <PanelSection title="Game Streaming">
+       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
+         This section is for managing game streaming services.
+       </PanelSectionRow>
+       <PanelSectionRow>
+         {streamingOptions.map(({ name, label }) => (
            <ButtonItem
              className={options[name] ? 'selected' : ''}
              layout="below"
