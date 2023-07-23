@@ -51,74 +51,75 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
     async def install(self, selected_options, custom_websites, separate_app_ids):
-    decky_plugin.logger.info('install was called')
+        decky_plugin.logger.info('install was called')
 
-    # Log the arguments for debugging
-    decky_plugin.logger.info(f"selected_options: {selected_options}")
-    decky_plugin.logger.info(f"custom_websites: {custom_websites}")
-    decky_plugin.logger.info(f"separate_app_ids: {separate_app_ids}")
+        # Log the arguments for debugging
+        decky_plugin.logger.info(f"selected_options: {selected_options}")
+        decky_plugin.logger.info(f"custom_websites: {custom_websites}")
+        decky_plugin.logger.info(f"separate_app_ids: {separate_app_ids}")
 
-    # Convert the selected options mapping to a list of strings
-    selected_options_list = []
-    for option, is_selected in selected_options.items():
-        if is_selected:
-            if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube']:
-                # Streaming site or game service option
-                selected_option = camel_to_title(option).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+')  # Change this line to replace 'Geforce' with 'GeForce'
-                if ' ' in selected_option:
-                    selected_option = f'"{selected_option}"'
-                selected_options_list.append(selected_option)
-            elif option == 'eaApp':
-                # EA App launcher option
-                selected_option = "EA App"
-                if ' ' in selected_option:
-                    selected_option = f'"{selected_option}"'
-                selected_options_list.append(selected_option)
-            else:
-                # Launcher option
-                selected_option = camel_to_title(option)
-                if ' ' in selected_option:
-                    selected_option = f'"{selected_option}"'
-                selected_options_list.append(selected_option)
+        # Convert the selected options mapping to a list of strings
+        selected_options_list = []
+        for option, is_selected in selected_options.items():
+            if is_selected:
+                if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube']:
+                    # Streaming site or game service option
+                    selected_option = camel_to_title(option).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+')  # Change this line to replace 'Geforce' with 'GeForce'
+                    if ' ' in selected_option:
+                        selected_option = f'"{selected_option}"'
+                    selected_options_list.append(selected_option)
+                elif option == 'eaApp':
+                    # EA App launcher option
+                    selected_option = "EA App"
+                    if ' ' in selected_option:
+                        selected_option = f'"{selected_option}"'
+                    selected_options_list.append(selected_option)
+                else:
+                    # Launcher option
+                    selected_option = camel_to_title(option)
+                    if ' ' in selected_option:
+                        selected_option = f'"{selected_option}"'
+                    selected_options_list.append(selected_option)
 
-    # Log the selected_options_list for debugging
-    decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
+        # Log the selected_options_list for debugging
+        decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
 
-    # Set the path to the NonSteamLaunchers.sh script
-    script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
+        # Set the path to the NonSteamLaunchers.sh script
+        script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
 
-    # Change the permissions of the NonSteamLaunchers.sh script to make it executable
-    os.chmod(script_path, 0o755)
+        # Change the permissions of the NonSteamLaunchers.sh script to make it executable
+        os.chmod(script_path, 0o755)
 
-    # Temporarily disable access control for the X server
-    subprocess.run(['xhost', '+'])
+        # Temporarily disable access control for the X server
+        subprocess.run(['xhost', '+'])
 
-    # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
-    command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['Separate App IDs'] if separate_app_ids else [])
-    
-    # Log the command for debugging
-    decky_plugin.logger.info(f"Running command: {command}")
+        # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
+        command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['Separate App IDs'] if separate_app_ids else [])
+        
+        # Log the command for debugging
+        decky_plugin.logger.info(f"Running command: {command}")
 
-    # Set up the environment for the new process
-    env = os.environ.copy()
-    env['DISPLAY'] = ':0'
-    env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
+        # Set up the environment for the new process
+        env = os.environ.copy()
+        env['DISPLAY'] = ':0'
+        env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
 
-    process = subprocess.Popen(command, env=env)
+        process = subprocess.Popen(command, env=env)
 
-    # Wait for the script to complete and get the exit code
-    exit_code = process.wait()
+        # Wait for the script to complete and get the exit code
+        exit_code = process.wait()
 
-    # Re-enable access control for the X server
-    subprocess.run(['xhost', '-'])
+        # Re-enable access control for the X server
+        subprocess.run(['xhost', '-'])
 
-    # Log the exit code for debugging
-    decky_plugin.logger.info(f"Command exit code: {exit_code}")
+        # Log the exit code for debugging
+        decky_plugin.logger.info(f"Command exit code: {exit_code}")
 
-    if exit_code == 0:
-        return True
-    else:
-        return False
+        if exit_code == 0:
+            return True
+        else:
+            return False
+
 
 
 
