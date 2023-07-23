@@ -258,7 +258,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       <PanelSection title="Game and Movie Streaming">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          Please install Google Chrome via the Discover Store in desktop mode first. NSL uses Chrome to launch these sites.
+          Please install Google Chrome via the Discover Store in desktop mode first. NSL uses Chrome to launch these sites. Do NOT "Force Compatability" on these they will not open with proton.
         </PanelSectionRow>
         <PanelSectionRow>
           {streamingOptions.map(({ name, label }) => (

@@ -232,7 +232,7 @@
                   ' ',
                   label))))),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Game and Movie Streaming" },
-              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Please install Google Chrome via the Discover Store in desktop mode first. NSL uses Chrome to launch these sites."),
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Please install Google Chrome via the Discover Store in desktop mode first. NSL uses Chrome to launch these sites. Do NOT \"Force Compatability\" on these they will not open with proton."),
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null, streamingOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options[name] ? 'selected' : '', layout: "below", onClick: () => handleButtonClick(name) },
                   window.SP_REACT.createElement("span", { className: "checkmark" }, options[name] ? '✓' : ''),
                   ' ',
