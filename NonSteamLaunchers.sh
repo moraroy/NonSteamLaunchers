@@ -2891,8 +2891,20 @@ fi
 
 
 
-# Call the restart_steam method in the Python code to restart Steam
-python3 -c "import sys; print(sys.path); from main import Plugin; Plugin().restart_steam()"
+# Check if there are any command line arguments
+if [ ${#args[@]} -gt 0 ]; then
+    # If there are command line arguments, kill all instances of Steam
+    killall steam
+    
+    # Wait for all instances of Steam to be closed
+    while pgrep steam > /dev/null; do sleep 1; done
+else
+    # If there are no command line arguments, detach the script from the Steam process
+    nohup sh -c 'sleep 10; /usr/bin/steam' &
+
+    # Wait for the steam process to exit
+    while pgrep steam > /dev/null; do sleep 1; done
+fi
 
 
 
