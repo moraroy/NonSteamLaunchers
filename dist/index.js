@@ -154,7 +154,8 @@
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: options,
                   custom_websites: customWebsites,
-                  separate_app_ids: separateAppIds
+                  separate_app_ids: separateAppIds,
+                  start_fresh: true // Pass true for the start_fresh parameter
               });
               if (result) {
                   setProgress({ percent: 100, status: 'Installation successful!' });
@@ -219,6 +220,7 @@
               window.SP_REACT.createElement("div", null, progress.status)),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Start Fresh"),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleCreateWebsiteShortcutClick }, "Create Website Shortcut"),
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },

@@ -127,7 +127,8 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
        const result = await serverAPI.callPluginMethod("install", {
          selected_options: options,
          custom_websites: customWebsites,
-         separate_app_ids: separateAppIds
+         separate_app_ids: separateAppIds,
+         start_fresh: true // Pass true for the start_fresh parameter
        });
    
        if (result) {
@@ -214,6 +215,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       <PanelSection>
         <ButtonItem layout="below" onClick={handleInstallClick}>
           Install
+        </ButtonItem>
+
+        <ButtonItem layout="below" onClick={handleInstallClick}>
+          Start Fresh
         </ButtonItem>
   
         <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>

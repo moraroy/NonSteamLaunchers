@@ -50,13 +50,14 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
-    async def install(self, selected_options, custom_websites, separate_app_ids):
+    async def install(self, selected_options, custom_websites, separate_app_ids, start_fresh):
         decky_plugin.logger.info('install was called')
 
         # Log the arguments for debugging
         decky_plugin.logger.info(f"selected_options: {selected_options}")
         decky_plugin.logger.info(f"custom_websites: {custom_websites}")
         decky_plugin.logger.info(f"separate_app_ids: {separate_app_ids}")
+        decky_plugin.logger.info(f"start_fresh: {start_fresh}")
 
         # Convert the selected options mapping to a list of strings
         selected_options_list = []
@@ -87,9 +88,9 @@ class Plugin:
         # Temporarily disable access control for the X server
         subprocess.run(['xhost', '+'])
 
-        # Run the NonSteamLaunchers.sh script with the selected options, custom websites, and separate app ids option using subprocess.Popen
-        command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['Separate App IDs'] if separate_app_ids else [])
-        
+        # Run the NonSteamLaunchers.sh script with the selected options, custom websites, separate app ids option, and start fresh option using subprocess.Popen
+        command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['Separate App IDs'] if separate_app_ids else []) + (['Start Fresh'] if start_fresh else [])
+
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
 
@@ -113,5 +114,3 @@ class Plugin:
             return True
         else:
             return False
-
-
