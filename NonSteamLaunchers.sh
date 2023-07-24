@@ -2892,7 +2892,7 @@ fi
 
 
 # Call the restart_steam method in the Python code to restart Steam
-python3 -c "from main import Plugin; Plugin().restart_steam()"
+python3 -c "import sys; print(sys.path); from main import Plugin; Plugin().restart_steam()"
 
 
 
