@@ -144,6 +144,32 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      }
    };
 
+
+   const handleStartFreshClick = async () => {
+    console.log('handleStartFreshClick called');
+
+    // Call the install method on the server-side plugin with the appropriate arguments
+    try {
+      const result = await serverAPI.callPluginMethod("install", {
+        selected_options: options,
+        custom_websites: customWebsites,
+        separate_app_ids: separateAppIds,
+        start_fresh: true // Pass true for the start_fresh parameter
+      });
+
+      if (result) {
+        setProgress({ percent: 100, status: 'Installation successful!' });
+        alert('Installation successful!');
+      } else {
+        setProgress({ percent: 100, status: 'Installation failed.' });
+        alert('Installation failed.');
+      }
+    } catch (error) {
+      setProgress({ percent: 100, status: 'Installation failed.' });
+      console.error('Error calling _main method on server-side plugin:', error);
+    }
+  };
+
    const handleCreateWebsiteShortcutClick = async () => {
      console.log('handleCreateWebsiteShortcutClick called');
 
@@ -217,7 +243,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           Install
         </ButtonItem>
 
-        <ButtonItem layout="below" onClick={handleInstallClick}>
+        <ButtonItem layout="below" onClick={handleStartFreshClick}>
           Start Fresh
         </ButtonItem>
   
