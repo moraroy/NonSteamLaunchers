@@ -2893,17 +2893,17 @@ fi
 
 # Check if there are any command line arguments
 if [ ${#args[@]} -gt 0 ]; then
-    # If there are command line arguments, kill all instances of Steam
-    killall steam
+    # If there are command line arguments, kill the specific instance of Steam
+    pkill -f '/usr/bin/steam'
     
-    # Wait for all instances of Steam to be closed
-    while pgrep steam > /dev/null; do sleep 1; done
+    # Wait for the specific instance of Steam to be closed
+    while pgrep -f '/usr/bin/steam' > /dev/null; do sleep 1; done
 else
     # If there are no command line arguments, detach the script from the Steam process
     nohup sh -c 'sleep 10; /usr/bin/steam' &
 
     # Wait for the steam process to exit
-    while pgrep steam > /dev/null; do sleep 1; done
+    while pgrep -f '/usr/bin/steam' > /dev/null; do sleep 1; done
 fi
 
 
