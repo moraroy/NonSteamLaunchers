@@ -168,7 +168,7 @@ elif [[ -f "$origin_path2" ]]; then
 else
     # Origin is not installed
     origin_value="FALSE"
-    origin_text="Origin"
+    origin_text="Origin - Broken, Use at own risk"
 fi
 
 # Check if Uplay is installed
@@ -542,9 +542,6 @@ args=("$@")
 # Initialize an array to store the custom websites
 custom_websites=()
 
-# Initialize a variable to store whether the "Separate App IDs" option is selected or not
-separate_app_ids=false
-
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so prompt the user to enter custom websites separated by commas
@@ -564,40 +561,16 @@ if [ ${#args[@]} -eq 0 ]; then
     selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation" FALSE "Separate App IDs" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
-    
-    # Initialize an array to store the selected launchers
-    selected_launchers=()
-
-    for arg in "${args[@]}"; do
-        if [[ "$arg" =~ ^https?:// ]]; then
-            # Check if the arg is not an empty string before adding it to the custom_websites array
-            if [ -n "$arg" ]; then
-                custom_websites+=("$arg")
-            fi
-        else
-            selected_launchers+=("$arg")
-        fi
-    done
-
-
-    # Convert the selected_launchers array to a string
-    selected_launchers_str=$(IFS="|"; echo "${selected_launchers[*]}")
-    
-    # Check if the "Separate App IDs" option is selected in the command line arguments
-    if [[ " ${args[@]} " =~ " Separate App IDs " ]]; then
-        separate_app_ids=true
-    fi
-    
+    selected_launchers="${args[0]}"
+    custom_websites+=("${args[@]:1}")
 fi
 
 # Print the selected launchers and custom websites
-echo "Selected launchers: $selected_launchers_str"
+echo "Selected launchers: $selected_launchers"
 echo "Custom websites: ${custom_websites[@]}"
-echo "Separate App IDs: $separate_app_ids"
 
 # Set the value of the options variable
-options="$selected_launchers_str"
-
+options="$selected_launchers"
 
 
 
@@ -1366,7 +1339,7 @@ fi
 
 
 
-
+(
 
 
 
@@ -1480,10 +1453,10 @@ ubi_url=https://ubi.li/4vxt9
 ubi_file=~/Downloads/NonSteamLaunchersInstallation/UplayInstaller.exe
 
 # Set the URL to download the fourth file from
-origin_url=https://taskinoz.com/downloads/OriginSetup-10.5.119.52718.exe
+origin_url=https://eaassets-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe
 
 # Set the path to save the fourth file to
-origin_file=~/Downloads/NonSteamLaunchersInstallation/OriginSetup-10.5.119.52718.exe
+origin_file=~/Downloads/NonSteamLaunchersInstallation/OriginThinSetup.exe
 
 # Set the URL to download the fifth file from
 battle_url="https://www.battle.net/download/getInstallerForGame?os=win&gameProgram=BATTLENET_APP&version=Live"
@@ -1816,6 +1789,17 @@ if [[ $options == *"Origin"* ]]; then
 
     # Terminate any processes with the name Origin.exe
     pkill Origin.exe
+
+    # Download version.dll file
+    if [ ! -f "~/Downloads/NonSteamLaunchersInstallation/version.dll" ]; then
+        echo "Downloading version.dll file"
+        wget https://github.com/p0358/Fuck_off_EA_App/releases/download/v2/version.dll -O ~/Downloads/NonSteamLaunchersInstallation/version.dll
+    fi
+
+    # Move version.dll file to desired location
+    echo "Moving version.dll file to desired location"
+    mv ~/Downloads/NonSteamLaunchersInstallation/version.dll "$HOME/.local/share/Steam/steamapps/compatdata/$appid/pfx/drive_c/Program Files (x86)/Origin/"
+
 
     # Wait for the ORIGIN file to finish running
     wait
@@ -2484,6 +2468,16 @@ rm -rf ~/Downloads/NonSteamLaunchersInstallation
 
 
 
+    echo "100"
+    echo "# Installation Complete - Steam will now restart. Your launchers will be in your library!...Food for thought...do Jedis use Force Compatability?"
+) |
+zenity --progress \
+  --title="Update Status" \
+  --text="Starting update...please wait..." --width=450 --height=350\
+  --percentage=0 --auto-close
+
+wait
+
 
 
 
@@ -2891,20 +2885,24 @@ fi
 
 
 
-# Check if there are any command line arguments
-if [ ${#args[@]} -gt 0 ]; then
-    # If there are command line arguments, kill all instances of Steam
-    killall steam
-    
-    # Wait for all instances of Steam to be closed
-    while pgrep steam > /dev/null; do sleep 1; done
-else
-    # If there are no command line arguments, detach the script from the Steam process
-    nohup sh -c 'sleep 10; /usr/bin/steam' &
 
-    # Wait for the steam process to exit
-    while pgrep steam > /dev/null; do sleep 1; done
-fi
+
+
+
+
+
+# Detach script from Steam process
+nohup sh -c 'sleep 10; /usr/bin/steam' &
+
+# Close all instances of Steam
+killall steam
+
+
+# Wait for the steam process to exit
+while pgrep steam > /dev/null; do sleep 1; done
+
+
+
 
 
 
@@ -3106,27 +3104,28 @@ create_new_entry('$chromedirectory', 'Amazon Luna', '$lunachromelaunchoptions', 
 
 # Iterate over each custom website
 for custom_website in custom_websites:
-    # Remove any leading or trailing spaces from the custom website URL
-    custom_website = custom_website.strip()
+    # Check if the custom website is not an empty string
+    if custom_website:
+        # Remove any leading or trailing spaces from the custom website URL
+        custom_website = custom_website.strip()
 
-    # Remove the 'http://' or 'https://' prefix and the 'www.' prefix, if present
-    clean_website = custom_website.replace('http://', '').replace('https://', '').replace('www.', '')
+        # Remove the 'http://' or 'https://' prefix and the 'www.' prefix, if present
+        clean_website = custom_website.replace('http://', '').replace('https://', '').replace('www.', '')
 
-    # Extract the name of the website by removing everything after the first '/'
-    website_name = clean_website.split('/')[0]
+        # Extract the name of the website by removing everything after the first '/'
+        website_name = clean_website.split('/')[0]
 
-    # Remove the top-level domain (e.g. '.com') from the website name
-    website_name = website_name.rsplit('.', 1)[0]
+        # Remove the top-level domain (e.g. '.com') from the website name
+        website_name = website_name.rsplit('.', 1)[0]
 
-    # Capitalize the first letter of the website name
-    website_name = website_name.capitalize()
+        # Capitalize the first letter of the website name
+        website_name = website_name.capitalize()
 
-    # Define the launch options for this website
-    chromelaunch_options = f'run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://{clean_website}/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar'
+        # Define the launch options for this website
+        chromelaunch_options = f'run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://{clean_website}/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar'
 
-
-    # Call the create_new_entry function for this website
-    create_new_entry('$chromedirectory', website_name, chromelaunch_options, '$chrome_startdir')
+        # Call the create_new_entry function for this website
+        create_new_entry('$chromedirectory', website_name, chromelaunch_options, '$chrome_startdir')
 
 
 
