@@ -23,6 +23,7 @@ type SearchModalProps = ModalRootProps & {
   promptText: string;
 };
 
+
 const SearchModal: VFC<SearchModalProps> = ({
   closeModal,
   setModalResult,

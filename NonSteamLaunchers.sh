@@ -2894,18 +2894,17 @@ fi
 
 # Check if there are any command line arguments
 if [ ${#args[@]} -gt 0 ]; then
-    # If there are command line arguments, kill all instances of Steam
-    killall steam
-    
-    # Wait for all instances of Steam to be closed
-    while pgrep steam > /dev/null; do sleep 1; done
+    # If there are command line arguments, restart Steam using the Decky plugin method
+    python3 -c "from main import Plugin; Plugin().restart_steam()"
 else
-    # If there are no command line arguments, detach the script from the Steam process
+    # If there are no command line arguments, detach the script from the Steam process and close all instances of Steam
     nohup sh -c 'sleep 10; /usr/bin/steam' &
+    killall steam
 
     # Wait for the steam process to exit
     while pgrep steam > /dev/null; do sleep 1; done
 fi
+
 
 
 

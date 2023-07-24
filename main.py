@@ -113,6 +113,13 @@ class Plugin:
             return True
         else:
             return False
+    
+    # Function to restart Steam from the NonSteamLaunchers.sh -> main.py -> index.tsx through the server api
+    async def restart_steam(self):
+    decky_plugin.logger.info('restart_steam was called')
+
+    # Run the steam command with the -shutdown argument to restart Steam
+    subprocess.run(['steam', '-shutdown'])
 
 
 
