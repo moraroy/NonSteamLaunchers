@@ -171,25 +171,27 @@ const [options, setOptions] = useState({
     }
   };
 
-   const handleCreateWebsiteShortcutClick = async () => {
-     console.log('handleCreateWebsiteShortcutClick called');
-
-     setClickedButton('createWebsiteShortcut');
-
-     showModal(
-       <SearchModal
-         promptText="Enter website"
-         setModalResult={(result) => {
-           console.log(`result: ${JSON.stringify(result)}`);
-           if (clickedButton === 'createWebsiteShortcut') {
-             // Handle result for createWebsiteShortcut button
-             setCustomWebsites(result);
-           }
-         }}
-       />,
-       findSP()
-     );
-   };
+  const handleCreateWebsiteShortcutClick = async () => {
+    console.log('handleCreateWebsiteShortcutClick called');
+  
+    setClickedButton('createWebsiteShortcut');
+  
+    const websites = await showModal(
+      <SearchModal
+        closeModal={() => setIsSearchModalOpen(false)}
+        setModalResult={(result) => {
+          console.log(`result: ${JSON.stringify(result)}`);
+          if (clickedButton === 'createWebsiteShortcut') {
+            // Handle result for createWebsiteShortcut button
+            setCustomWebsites(result);
+          }
+          setIsSearchModalOpen(false);
+        }}
+        promptText={"Enter website"}
+      />,
+      findSP()
+    );
+  };
    
    const optionsData = [
     { name: "Epic Games", label: "Epic Games" },
