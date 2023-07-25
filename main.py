@@ -71,7 +71,7 @@ class Plugin:
                     selected_options_list.append(selected_option)
                 else:
                     # Launcher option
-                    selected_option = camel_to_title(option).replace('Ea App', 'EA App')
+                    selected_option = camel_to_title(option).replace('Ea App', 'EA App').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation').replace('Ps Plus', 'Playstation').replace('DMM', 'DMM Games')
                     if ' ' in selected_option:
                         selected_option = f'"{selected_option}"'
                     selected_options_list.append(selected_option)
