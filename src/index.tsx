@@ -55,6 +55,7 @@ const SearchModal: VFC<SearchModalProps> = ({
           onChange={handleTextChange}
         />
         <p>You can separate multiple websites by using commas.</p>
+        <button type="button" onClick={handleSubmit}>Submit</button>
       </form>
     </ModalRoot>
   );

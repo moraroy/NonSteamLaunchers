@@ -97,7 +97,8 @@
       return (window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { closeModal: handleSubmit },
           window.SP_REACT.createElement("form", null,
               window.SP_REACT.createElement(deckyFrontendLib.TextField, { focusOnMount: true, label: "Websites", placeholder: promptText, onChange: handleTextChange }),
-              window.SP_REACT.createElement("p", null, "You can separate multiple websites by using commas."))));
+              window.SP_REACT.createElement("p", null, "You can separate multiple websites by using commas."),
+              window.SP_REACT.createElement("button", { type: "button", onClick: handleSubmit }, "Submit"))));
   };
   const Content = ({ serverAPI }) => {
       console.log('Content rendered');
