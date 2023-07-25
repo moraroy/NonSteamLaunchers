@@ -173,21 +173,19 @@ const [options, setOptions] = useState({
 
   const handleCreateWebsiteShortcutClick = async () => {
     console.log('handleCreateWebsiteShortcutClick called');
-  
+
     setClickedButton('createWebsiteShortcut');
-  
-    const websites = await showModal(
+
+    showModal(
       <SearchModal
-        closeModal={() => setIsSearchModalOpen(false)}
+        promptText="Enter website"
         setModalResult={(result) => {
           console.log(`result: ${JSON.stringify(result)}`);
           if (clickedButton === 'createWebsiteShortcut') {
             // Handle result for createWebsiteShortcut button
             setCustomWebsites(result);
           }
-          setIsSearchModalOpen(false);
         }}
-        promptText={"Enter website"}
       />,
       findSP()
     );
