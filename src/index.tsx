@@ -79,7 +79,7 @@ const [options, setOptions] = useState({
   "Rockstar Games Launcher": false,
   "Glyph Launcher": false,
   "Minecraft": false,
-  "Playstation": false,
+  "Playstation Plus": false,
   "DMM Games": false,
   "Xbox Game Pass": false,
   "GeForce Now": false,
@@ -206,7 +206,7 @@ const [options, setOptions] = useState({
     { name: "Rockstar Games Launcher", label: "Rockstar Games Launcher" },
     { name: "Glyph Launcher", label: "Glyph Launcher" },
     { name: "Minecraft", label: "Minecraft" },
-    { name: "Playstation", label: "Playstation" },
+    { name: "Playstation Plus", label: "Playstation Plus" },
     { name: "DMM Games", label: "DMM Games" },
     { name: "Xbox Game Pass", label: "Xbox Game Pass" },
     { name: "GeForce Now", label: "GeForce Now" },
@@ -234,7 +234,7 @@ const [options, setOptions] = useState({
     "Rockstar Games Launcher",
     "Glyph Launcher",
     "Minecraft",
-    "Playstation",
+    "Playstation Plus",
     "DMM Games"
   ].includes(name)
 );
