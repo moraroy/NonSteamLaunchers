@@ -63,18 +63,10 @@ class Plugin:
         selected_options_list = []
         for option, is_selected in selected_options.items():
             if is_selected:
-                if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube']:
-                    # Streaming site or game service option
-                    selected_option = camel_to_title(option).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+')  # Change this line to replace 'Geforce' with 'GeForce'
-                    if ' ' in selected_option:
-                        selected_option = f'"{selected_option}"'
-                    selected_options_list.append(selected_option)
-                else:
-                    # Launcher option
-                    selected_option = camel_to_title(option).replace('Ea App', 'EA App').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation').replace('Ps Plus', 'Playstation').replace('DMM', 'DMM Games')
-                    if ' ' in selected_option:
-                        selected_option = f'"{selected_option}"'
-                    selected_options_list.append(selected_option)
+                selected_option = option
+                if ' ' in selected_option:
+                    selected_option = f'"{selected_option}"'
+                selected_options_list.append(selected_option)
 
         # Log the selected_options_list for debugging
         decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
