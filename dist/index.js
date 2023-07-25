@@ -199,14 +199,13 @@
       const handleCreateWebsiteShortcutClick = async () => {
           console.log('handleCreateWebsiteShortcutClick called');
           setClickedButton('createWebsiteShortcut');
-          await deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
+          deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", setModalResult: (result) => {
                   console.log(`result: ${JSON.stringify(result)}`);
                   if (clickedButton === 'createWebsiteShortcut') {
                       // Handle result for createWebsiteShortcut button
                       setCustomWebsites(result);
                   }
-                  setIsSearchModalOpen(false);
-              }, promptText: "Enter website" }), deckyFrontendLib.findSP());
+              } }), deckyFrontendLib.findSP());
       };
       const optionsData = [
           { name: "Epic Games", label: "Epic Games" },

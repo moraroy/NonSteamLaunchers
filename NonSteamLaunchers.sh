@@ -579,6 +579,14 @@ else
         fi
     done
 
+    # Check if the "Start Fresh" option is selected in the command line arguments
+    if [[ " ${args[@]} " =~ " Start Fresh " ]]; then
+        # The "Start Fresh" option is selected, so perform any necessary actions to start fresh
+        echo "Starting fresh..."
+        # Add your logic here to start fresh
+    fi
+
+
 
     # Convert the selected_launchers array to a string
     selected_launchers_str=$(IFS="|"; echo "${selected_launchers[*]}")
