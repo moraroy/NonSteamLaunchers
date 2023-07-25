@@ -542,6 +542,9 @@ args=("$@")
 # Initialize an array to store the custom websites
 custom_websites=()
 
+# Initialize a variable to store whether the "Separate App IDs" option is selected or not
+separate_app_ids=false
+
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so prompt the user to enter custom websites separated by commas
@@ -561,16 +564,40 @@ if [ ${#args[@]} -eq 0 ]; then
     selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation" FALSE "Separate App IDs" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
-    selected_launchers="${args[0]}"
-    custom_websites+=("${args[@]:1}")
+    
+    # Initialize an array to store the selected launchers
+    selected_launchers=()
+
+    for arg in "${args[@]}"; do
+        if [[ "$arg" =~ ^https?:// ]]; then
+            # Check if the arg is not an empty string before adding it to the custom_websites array
+            if [ -n "$arg" ]; then
+                custom_websites+=("$arg")
+            fi
+        else
+            selected_launchers+=("$arg")
+        fi
+    done
+
+
+    # Convert the selected_launchers array to a string
+    selected_launchers_str=$(IFS="|"; echo "${selected_launchers[*]}")
+    
+    # Check if the "Separate App IDs" option is selected in the command line arguments
+    if [[ " ${args[@]} " =~ " Separate App IDs " ]]; then
+        separate_app_ids=true
+    fi
+    
 fi
 
 # Print the selected launchers and custom websites
-echo "Selected launchers: $selected_launchers"
+echo "Selected launchers: $selected_launchers_str"
 echo "Custom websites: ${custom_websites[@]}"
+echo "Separate App IDs: $separate_app_ids"
 
 # Set the value of the options variable
-options="$selected_launchers"
+options="$selected_launchers_str"
+
 
 
 
