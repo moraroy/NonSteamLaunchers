@@ -687,6 +687,12 @@ fi
 
 
 
+
+
+
+
+
+
 # Check if the Start Fresh button was clicked
 if [[ $options == "Start Fresh" ]]; then
     # The Start Fresh button was clicked
@@ -737,8 +743,6 @@ if [[ $options == "Start Fresh" ]]; then
         exit 0
     fi
 fi
-
-
 
 
 if [[ $options == "Uninstall" ]]; then
