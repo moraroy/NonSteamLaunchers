@@ -687,53 +687,49 @@ fi
 
 
 
-
-
-
-
-
-
-# Check if the Start Fresh button was clicked
-if [[ $options == "Start Fresh" ]]; then
-    # The Start Fresh button was clicked
-    if zenity --question --text="aaahhh it always feels good to start fresh :) but...This will delete the App ID folders you installed inside the steamapps/compatdata/ directory. This means anything youve installed (launchers or games) WITHIN THIS SCRIPT will be deleted if you have them there. Everything will be wiped. Are you sure?" --width=300 --height=260; then
-        # The user clicked the "Yes" button
-        # Add code here to delete the directories
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/OriginLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/UplayLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/Battle.netLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/TheEAappLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/itchioLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GlyphLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/MinecraftLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher"
-        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/DMMGameLauncher"
-        rm -rf "/run/media/mmcblk0p1/NonSteamLaunchers/"
-        rm -rf "/run/media/mmcblk0p1/EpicGamesLauncher/"
-        rm -rf "/run/media/mmcblk0p1/GogGalaxyLauncher/"
-        rm -rf "/run/media/mmcblk0p1/OriginLauncher/"
-        rm -rf "/run/media/mmcblk0p1/UplayLauncher/"
-        rm -rf "/run/media/mmcblk0p1/Battle.netLauncher/"
-        rm -rf "/run/media/mmcblk0p1/TheEAappLauncher/"
-        rm -rf "/run/media/mmcblk0p1/AmazonGamesLauncher/"
-        rm -rf "/run/media/mmcblk0p1/LegacyGamesLauncher/"
-        rm -rf "/run/media/mmcblk0p1/itchioLauncher/"
-        rm -rf "/run/media/mmcblk0p1/HumbleGamesLauncher/"
-        rm -rf "/run/media/mmcblk0p1/IndieGalaLauncher/"
-        rm -rf "/run/media/mmcblk0p1/RockstarGamesLauncher/"
-        rm -rf "/run/media/mmcblk0p1/GlyphLauncher/"
-        rm -rf "/run/media/mmcblk0p1/MinecraftLauncher/"
-        rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
-        rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
-        rm -rf ~/Downloads/NonSteamLaunchersInstallation
+# Check if the "Start Fresh" option was selected
+if [[ $options == "Start Fresh" ]] || [[ " ${args[@]} " =~ " Start Fresh " ]]; then
+    # The Start Fresh button was clicked or the "Start Fresh" option was provided as a command line argument
+    if [ ${#args[@]} -eq 0 ]; then
+        # No command line arguments were provided, so display a Zenity dialog to confirm with the user that they want to start fresh
+        if zenity --question --text="aaahhh it always feels good to start fresh :) but...This will delete the App ID folders you installed inside the steamapps/compatdata/ directory. This means anything youve installed (launchers or games) WITHIN THIS SCRIPT will be deleted if you have them there. Everything will be wiped. Are you sure?" --width=300 --height=260; then
+            # The user clicked the "Yes" button
+            # Add code here to delete the directories
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/OriginLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/UplayLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/Battle.netLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/TheEAappLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/itchioLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GlyphLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/MinecraftLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher"
+            unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/DMMGameLauncher"
+            rm -rf "/run/media/mmcblk0p1/NonSteamLaunchers/"
+            rm -rf "/run/media/mmcblk0p1/EpicGamesLauncher/"
+            rm -rf "/run/media/mmcblk0p1/GogGalaxyLauncher/"
+            rm -rf "/run/media/mmcblk0p1/OriginLauncher/"
+            rm -rf "/run/media/mmcblk0p1/UplayLauncher/"
+            rm -rf "/run/media/mmcblk0p1/Battle.netLauncher/"
+            rm -rf "/run/media/mmcblk0p1/TheEAappLauncher/"
+            rm -rf "/run/media/mmcblk0p1/AmazonGamesLauncher/"
+            rm -rf "/run/media/mmcblk0p1/LegacyGamesLauncher/"
+            rm -rf "/run/media/mmcblk0p1/itchioLauncher/"
+            rm -rf "/run/media/mmcblk0p1/HumbleGamesLauncher/"
+            rm -rf "/run/media/mmcblk0p1/IndieGalaLauncher/"
+            rm -rf "/run/media/mmcblk0p1/RockstarGamesLauncher/"
+            rm -rf "/run/media/mmcblk0p1/GlyphLauncher/"
+            rm -rf "/run/media/mmcblk0p1/MinecraftLauncher/"
+            rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
+            rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
+            rm -rf ~/Downloads/NonSteamLaunchersInstallation
 
         # Exit the script
         exit 0
@@ -743,6 +739,9 @@ if [[ $options == "Start Fresh" ]]; then
         exit 0
     fi
 fi
+
+
+
 
 
 if [[ $options == "Uninstall" ]]; then
