@@ -129,7 +129,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
          selected_options: options,
          custom_websites: customWebsites,
          separate_app_ids: separateAppIds,
-         start_fresh: true // Pass true for the start_fresh parameter
+         start_fresh: false // Pass true for the start_fresh parameter
        });
    
        if (result) {
