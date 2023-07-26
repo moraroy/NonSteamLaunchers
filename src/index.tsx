@@ -64,32 +64,32 @@ const SearchModal: VFC<SearchModalProps> = ({
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   console.log('Content rendered');
 
-const [options, setOptions] = useState({
-  "Epic Games": false,
-  "GOG Galaxy": false,
-  "Origin": false,
-  "Uplay": false,
-  "Battle.net": false,
-  "Amazon Games": false,
-  "EA App": false,
-  "Legacy Games": false,
-  "itch.io": false,
-  "Humble Games Collection": false,
-  "IndieGala": false,
-  "Rockstar Games Launcher": false,
-  "Glyph Launcher": false,
-  "Minecraft": false,
-  "Playstation Plus": false,
-  "DMM Games": false,
-  "Xbox Game Pass": false,
-  "GeForce Now": false,
-  "Amazon Luna": false,
-  "Netflix": false,
-  "Hulu": false,
-  "Disney+": false,
-  "Amazon Prime Video": false,
-  "Youtube": false
-});
+  const [options, setOptions] = useState({
+    epicGames: false,
+    gogGalaxy: false,
+    origin: false,
+    uplay: false,
+    battleNet: false,
+    amazonGames: false,
+    eaApp: false,
+    legacyGames: false,
+    itchIo: false,
+    humbleGames: false,
+    indieGala: false,
+    rockstar: false,
+    glyph: false,
+    minecraft: false,
+    psPlus: false,
+    dmm: false,
+    xboxGamePass: false,
+    geforceNow: false,
+    amazonLuna: false,
+    netflix: false,
+    hulu: false,
+    disneyPlus: false,
+    amazonPrimeVideo: false,
+    youtube: false
+  });
 
    const [progress, setProgress] = useState({ percent: 0, status: '' });
 
@@ -104,12 +104,12 @@ const [options, setOptions] = useState({
     console.log(`customWebsites updated: ${JSON.stringify(customWebsites)}`);
   }, [customWebsites]);
 
-  const handleButtonClick = (name: string) => {
-    setOptions((prevOptions) => ({
-      ...prevOptions,
-      [name]: !prevOptions[name],
-    }));
-  };
+   const handleButtonClick = (name: string) => {
+     setOptions((prevOptions) => ({
+       ...prevOptions,
+       [name]: !prevOptions[name],
+     }));
+   };
 
    const handleInstallClick = async () => {
      console.log('handleInstallClick called');
@@ -129,6 +129,7 @@ const [options, setOptions] = useState({
          selected_options: options,
          custom_websites: customWebsites,
          separate_app_ids: separateAppIds,
+         start_fresh: true // Pass true for the start_fresh parameter
        });
    
        if (result) {
@@ -170,85 +171,56 @@ const [options, setOptions] = useState({
     }
   };
 
-  const handleCreateWebsiteShortcutClick = async () => {
-    console.log('handleCreateWebsiteShortcutClick called');
+   const handleCreateWebsiteShortcutClick = async () => {
+     console.log('handleCreateWebsiteShortcutClick called');
 
-    setClickedButton('createWebsiteShortcut');
+     setClickedButton('createWebsiteShortcut');
 
-    showModal(
-      <SearchModal
-        promptText="Enter website"
-        setModalResult={(result) => {
-          console.log(`result: ${JSON.stringify(result)}`);
-          if (clickedButton === 'createWebsiteShortcut') {
-            // Handle result for createWebsiteShortcut button
-            setCustomWebsites(result);
-          }
-        }}
-      />,
-      findSP()
-    );
-  };
+     showModal(
+       <SearchModal
+         promptText="Enter website"
+         setModalResult={(result) => {
+           console.log(`result: ${JSON.stringify(result)}`);
+           if (clickedButton === 'createWebsiteShortcut') {
+             // Handle result for createWebsiteShortcut button
+             setCustomWebsites(result);
+           }
+         }}
+       />,
+       findSP()
+     );
+   };
    
    const optionsData = [
-    { name: "Epic Games", label: "Epic Games" },
-    { name: "GOG Galaxy", label: "GOG Galaxy" },
-    { name: "Origin", label: "Origin" },
-    { name: "Uplay", label: "Uplay" },
-    { name: "Battle.net", label: "Battle.net" },
-    { name: "Amazon Games", label: "Amazon Games" },
-    { name: "EA App", label: "EA App" },
-    { name: "Legacy Games", label: "Legacy Games" },
-    { name: "itch.io", label: "itch.io" },
-    { name: "Humble Games Collection", label: "Humble Games Collection" },
-    { name: "IndieGala", label: "IndieGala" },
-    { name: "Rockstar Games Launcher", label: "Rockstar Games Launcher" },
-    { name: "Glyph Launcher", label: "Glyph Launcher" },
-    { name: "Minecraft", label: "Minecraft" },
-    { name: "Playstation Plus", label: "Playstation Plus" },
-    { name: "DMM Games", label: "DMM Games" },
-    { name: "Xbox Game Pass", label: "Xbox Game Pass" },
-    { name: "GeForce Now", label: "GeForce Now" },
-    { name: "Amazon Luna", label: "Amazon Luna" },
-    { name: "Netflix", label: "Netflix" },
-    { name: "Hulu", label: "Hulu" },
-    { name: "Disney+", label: "Disney+" },
-    { name: "Amazon Prime Video", label: "Amazon Prime Video" },
-    { name: "Youtube", label: "Youtube" }
+    { name: 'epicGames', label: 'Epic Games' },
+    { name: 'gogGalaxy', label: 'Gog Galaxy' },
+    { name: 'origin', label: 'Origin' },
+    { name: 'uplay', label: 'Uplay' },
+    { name: 'battleNet', label: 'Battle.net' },
+    { name: 'amazonGames', label: 'Amazon Games' },
+    { name: 'eaApp', label: 'EA App' },
+    { name: 'legacyGames', label: 'Legacy Games' },
+    { name: 'itchIo', label: 'Itch.io' },
+    { name: 'humbleGames', label: 'Humble Games' },
+    { name: 'indieGala', label: 'IndieGala' },
+    { name: 'rockstar', label: 'Rockstar' },
+    { name: 'glyph', label: 'Glyph' },
+    { name: 'minecraft', label: 'Minecraft' },
+    { name: 'psPlus', label: 'PS Plus' },
+    { name: 'dmm', label: 'DMM' },
+    { name: 'xboxGamePass', label: 'Xbox Game Pass' },
+    { name: 'geforceNow', label: 'GeForce Now' },
+    { name: 'amazonLuna', label: 'Amazon Luna' },
+    { name: 'netflix', label: 'Netflix' },
+    { name: 'hulu', label: 'Hulu' },
+    { name: 'disneyPlus', label: 'Disney+' },
+    { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
+    { name: 'youtube', label: 'Youtube' }
   ];
 
-  const launcherOptions = optionsData.filter(({ name }) =>
-  [
-    "Epic Games",
-    "GOG Galaxy",
-    "Origin",
-    "Uplay",
-    "Battle.net",
-    "Amazon Games",
-    "EA App",
-    "Legacy Games",
-    "itch.io",
-    "Humble Games Collection",
-    "IndieGala",
-    "Rockstar Games Launcher",
-    "Glyph Launcher",
-    "Minecraft",
-    "Playstation Plus",
-    "DMM Games"
-  ].includes(name)
-);
-const streamingOptions = optionsData.filter(({ name }) =>
-  [
-    "Xbox Game Pass",
-    "GeForce Now",
-    "Amazon Luna",
-    "Netflix",
-    "Hulu",
-    "Disney+",
-    "Amazon Prime Video",
-    "Youtube"
-  ].includes(name)
-);
+  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'itchIo', 'humbleGames', 'indieGala', 'rockstar', 'glyph', 'minecraft', 'psPlus', 'dmm'].includes(name));
+  const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube'].includes(name));
+ 
   return (
     <>
       <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
