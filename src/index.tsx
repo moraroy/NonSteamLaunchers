@@ -175,7 +175,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      console.log('handleCreateWebsiteShortcutClick called');
 
      setClickedButton('createWebsiteShortcut');
-     setIsSearchModalOpen(true); // Set isSearchModalOpen to true
 
      showModal(
        <SearchModal

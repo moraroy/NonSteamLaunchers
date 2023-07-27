@@ -199,7 +199,6 @@
       const handleCreateWebsiteShortcutClick = async () => {
           console.log('handleCreateWebsiteShortcutClick called');
           setClickedButton('createWebsiteShortcut');
-          setIsSearchModalOpen(true); // Set isSearchModalOpen to true
           deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", setModalResult: (result) => {
                   console.log(`result: ${JSON.stringify(result)}`);
                   if (clickedButton === 'createWebsiteShortcut') {
