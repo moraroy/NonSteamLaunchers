@@ -314,7 +314,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            console.log(`result: ${JSON.stringify(result)}`);
            if (clickedButton === 'createWebsiteShortcut') {
              // Handle result for createWebsiteShortcut button
-             setCustomWebsites(result);
+            
            }
            setIsSearchModalOpen(false);
          }}
