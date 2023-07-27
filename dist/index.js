@@ -130,7 +130,6 @@
       });
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
-      const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
       const [clickedButton, setClickedButton] = React.useState('');
       const [customWebsites, setCustomWebsites] = React.useState([]);
       React.useEffect(() => {
@@ -264,10 +263,6 @@
                   window.SP_REACT.createElement("span", { className: "checkmark" }, options[name] ? '✓' : ''),
                   ' ',
                   label))))),
-          isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
-                  console.log(`result: ${JSON.stringify(result)}`);
-                  setIsSearchModalOpen(false);
-              }, promptText: "Enter website" })),
           window.SP_REACT.createElement("style", null, `
           .checkmark {
             color: green;
