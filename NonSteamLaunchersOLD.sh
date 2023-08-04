@@ -7,7 +7,7 @@ chmod +x "$0"
 
 set -x
 
-version=v2.98
+version=v2.97
 
 check_for_updates() {
     # Set the URL to the GitHub API for the repository
@@ -542,42 +542,122 @@ args=("$@")
 # Initialize an array to store the custom websites
 custom_websites=()
 
+# Initialize a variable to store whether the "Separate App IDs" option is selected or not
+separate_app_ids=false
+
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
-    # No command line arguments were provided, so display the main zenity window
-    selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation, One Prefix, NonSteamLaunchers" FALSE "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
+    # No command line arguments were provided, so prompt the user to enter custom websites separated by commas
+    custom_websites_str=$(zenity --entry --title="Shortcut Creator" --text="Enter custom websites that you want shortcuts for, separated by commas. Leave blank and press ok if you dont want any. E.g. myspace.com, limewire.com, my.screenname.aol.com")
 
-    # Check if the user clicked the 'Cancel' button or selected one of the extra buttons
-    if [ $? -eq 1 ] || [[ $selected_launchers == "Start Fresh" ]] || [[ $selected_launchers == "Move to SD Card" ]] || [[ $selected_launchers == "Uninstall" ]] || [[ $selected_launchers == "Find Games" ]]; then
-        # The user clicked the 'Cancel' button or selected one of the extra buttons, so skip prompting for custom websites
-        custom_websites=()
-    else
-        # The user did not click the 'Cancel' button or select one of the extra buttons, so prompt for custom websites
-        custom_websites_str=$(zenity --entry --title="Shortcut Creator" --text="Enter custom websites that you want shortcuts for, separated by commas. Leave blank and press ok if you dont want any. E.g. myspace.com, limewire.com, my.screenname.aol.com")
-
-        # Check if the user clicked the 'Cancel' button
-        if [ $? -eq 1 ]; then
-            # The user clicked the 'Cancel' button, so exit the script
-            echo "The cancel button was clicked"
-            exit 1
-        fi
-
-        # Split the custom_websites_str variable into an array using ',' as the delimiter
-        IFS=',' read -ra custom_websites <<< "$custom_websites_str"
-
+    # Check if the user clicked the 'Cancel' button
+    if [ $? -eq 1 ]; then
+        # The user clicked the 'Cancel' button, so exit the script
+        echo "The cancel button was clicked"
+        exit 1
     fi
+
+    # Split the custom_websites_str variable into an array using ',' as the delimiter
+    IFS=',' read -ra custom_websites <<< "$custom_websites_str"
+
+    # Display the main zenity window
+    selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation" FALSE "Separate App IDs" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
-    selected_launchers="${args[0]}"
-    custom_websites+=("${args[@]:1}")
+    
+    # Initialize an array to store the selected launchers
+    selected_launchers=()
+
+    for arg in "${args[@]}"; do
+        if [[ "$arg" =~ ^https?:// ]]; then
+            # Check if the arg is not an empty string before adding it to the custom_websites array
+            if [ -n "$arg" ]; then
+                custom_websites+=("$arg")
+            fi
+        else
+            selected_launchers+=("$arg")
+        fi
+    done
+
+    # Check if the "Start Fresh" option is selected in the command line arguments
+    if [[ " ${args[@]} " =~ " Start Fresh " ]]; then
+        # The "Start Fresh" option is selected, so perform any necessary actions to start fresh
+        echo "Starting fresh..."
+        # Add your logic here to start fresh
+        # Add code here to delete the directories
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/OriginLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/UplayLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/Battle.netLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/TheEAappLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/itchioLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GlyphLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/MinecraftLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/DMMGameLauncher"
+        rm -rf "/run/media/mmcblk0p1/NonSteamLaunchers/"
+        rm -rf "/run/media/mmcblk0p1/EpicGamesLauncher/"
+        rm -rf "/run/media/mmcblk0p1/GogGalaxyLauncher/"
+        rm -rf "/run/media/mmcblk0p1/OriginLauncher/"
+        rm -rf "/run/media/mmcblk0p1/UplayLauncher/"
+        rm -rf "/run/media/mmcblk0p1/Battle.netLauncher/"
+        rm -rf "/run/media/mmcblk0p1/TheEAappLauncher/"
+        rm -rf "/run/media/mmcblk0p1/AmazonGamesLauncher/"
+        rm -rf "/run/media/mmcblk0p1/LegacyGamesLauncher/"
+        rm -rf "/run/media/mmcblk0p1/itchioLauncher/"
+        rm -rf "/run/media/mmcblk0p1/HumbleGamesLauncher/"
+        rm -rf "/run/media/mmcblk0p1/IndieGalaLauncher/"
+        rm -rf "/run/media/mmcblk0p1/RockstarGamesLauncher/"
+        rm -rf "/run/media/mmcblk0p1/GlyphLauncher/"
+        rm -rf "/run/media/mmcblk0p1/MinecraftLauncher/"
+        rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
+        rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
+        rm -rf ~/Downloads/NonSteamLaunchersInstallation
+
+        # Exit the script
+        exit 0
+
+    fi
+
+
+
+    # Convert the selected_launchers array to a string
+    selected_launchers_str=$(IFS="|"; echo "${selected_launchers[*]}")
+    
+    # Check if the "Separate App IDs" option is selected in the command line arguments
+    if [[ " ${args[@]} " =~ " Separate App IDs " ]]; then
+        separate_app_ids=true
+    fi
+    
 fi
 
 # Print the selected launchers and custom websites
-echo "Selected launchers: $selected_launchers"
+echo "Selected launchers: $selected_launchers_str"
 echo "Custom websites: ${custom_websites[@]}"
+echo "Separate App IDs: $separate_app_ids"
 
 # Set the value of the options variable
-options="$selected_launchers"
+options="$selected_launchers_str"
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Check if the cancel button was clicked
 if [ $? -eq 1 ] && [[ $options != "Start Fresh" ]] && [[ $options != "Move to SD Card" ]] && [[ $options != "Uninstall" ]] && [[ $options != "Find Games" ]]; then
@@ -585,6 +665,10 @@ if [ $? -eq 1 ] && [[ $options != "Start Fresh" ]] && [[ $options != "Move to SD
     echo "The cancel button was clicked"
     exit 1
 fi
+
+
+
+
 
 # Check if no options were selected and no custom website was provided
 if [ -z "$options" ] && [ -z "$custom_websites" ]; then
@@ -596,9 +680,8 @@ fi
 
 
 
-
 # Check if the user selected to use separate app IDs
-if [[ $options == *"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S"* ]]; then
+if [[ $options == *"Separate App IDs"* ]]; then
     # User selected to use separate app IDs
     use_separate_appids=true
 else
@@ -655,65 +738,24 @@ if [[ $options == "Start Fresh" ]]; then
     # The Start Fresh button was clicked
     if zenity --question --text="aaahhh it always feels good to start fresh :) but...This will delete the App ID folders you installed inside the steamapps/compatdata/ directory. This means anything youve installed (launchers or games) WITHIN THIS SCRIPT will be deleted if you have them there. Everything will be wiped. Are you sure?" --width=300 --height=260; then
         # The user clicked the "Yes" button
-        # Define the path to the compatdata directory
-        compatdata_dir="$HOME/.local/share/Steam/steamapps/compatdata"
-
-        # Define an array of original folder names
-        folder_names=("EpicGamesLauncher" "GogGalaxyLauncher" "UplayLauncher" "OriginLauncher" "Battle.netLauncher" "TheEAappLauncher" "AmazonGamesLauncher" "itchioLauncher" "LegacyGamesLauncher" "HumbleGamesLauncher" "IndieGalaLauncher" "RockstarGamesLauncher" "GlyphLauncher" "MinecraftLauncher" "PlaystationPlusLauncher" "DMMGameLauncher")
-
-        # Iterate over each folder name in the folder_names array
-        for folder in "${folder_names[@]}"; do
-            # Check if the folder exists
-            if [ -e "$compatdata_dir/$folder" ]; then
-                # Check if the folder is a symbolic link
-                if [ -L "$compatdata_dir/$folder" ]; then
-                    # Get the path of the target of the symbolic link
-                    target_path=$(readlink -f "$compatdata_dir/$folder")
-
-                    # Delete the target of the symbolic link
-                    rm -rf "$target_path"
-
-                    # Delete the symbolic link
-                    unlink "$compatdata_dir/$folder"
-                else
-                    # Delete the folder
-                    rm -rf "$compatdata_dir/$folder"
-                fi
-            fi
-        done
-
-        # Check if the NonSteamLaunchers folder exists
-        if [ -e "$compatdata_dir/NonSteamLaunchers" ]; then
-            # Check if the NonSteamLaunchers folder is a symbolic link
-            if [ -L "$compatdata_dir/NonSteamLaunchers" ]; then
-                # Get the path of the target of the symbolic link
-                target_path=$(readlink -f "$compatdata_dir/NonSteamLaunchers")
-
-                # Delete the target of the symbolic link
-                rm -rf "$target_path"
-
-                # Delete the symbolic link
-                unlink "$compatdata_dir/NonSteamLaunchers"
-            else
-                # Delete the NonSteamLaunchers folder
-                rm -rf "$compatdata_dir/NonSteamLaunchers"
-            fi
-        fi
-
-        # Iterate over each folder in the compatdata directory
-        for folder_path in "$compatdata_dir"/*; do
-            # Check if the current item is a folder
-            if [ -d "$folder_path" ]; then
-                # Check if the folder is empty
-                if [ -z "$(ls -A "$folder_path")" ]; then
-                    # Delete the empty folder
-                    rmdir "$folder_path"
-                    echo "Deleted empty folder: $(basename "$folder_path")"
-                fi
-            fi
-        done
-
-
+        # Add code here to delete the directories
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/OriginLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/UplayLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/Battle.netLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/TheEAappLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/itchioLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/GlyphLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/MinecraftLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher"
+        unlink & rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/DMMGameLauncher"
         rm -rf "/run/media/mmcblk0p1/NonSteamLaunchers/"
         rm -rf "/run/media/mmcblk0p1/EpicGamesLauncher/"
         rm -rf "/run/media/mmcblk0p1/GogGalaxyLauncher/"
@@ -733,10 +775,11 @@ if [[ $options == "Start Fresh" ]]; then
         rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
         rm -rf ~/Downloads/NonSteamLaunchersInstallation
 
-        # Exit the script with exit code 0 to indicate success
+        # Exit the script
         exit 0
     else
-        # The user clicked the "No" button, so exit with exit code 0 to indicate success.
+        # The user clicked the "No" button
+        # Add code here to exit the script
         exit 0
     fi
 fi
@@ -1396,7 +1439,7 @@ proton_dir=$(find ~/.steam/root/compatibilitytools.d -maxdepth 1 -type d -name "
 
 # Set the URLs to download GE-Proton from
 ge_proton_url1=https://github.com/GloriousEggroll/proton-ge-custom/releases/latest/download/GE-Proton.tar.gz
-ge_proton_url2=https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-11/GE-Proton8-11.tar.gz
+ge_proton_url2=https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-9/GE-Proton8-9.tar.gz
 
 
 
@@ -1880,7 +1923,7 @@ if [[ $options == *"Battle.net"* ]]; then
     # Run the BATTLE file using Proton with the /passive option
         echo "Running BATTLE file using Proton with the /passive option"
         "$STEAM_RUNTIME" "$proton_dir/proton" run "$battle_file" Battle.net-Setup.exe --lang=enUS --installpath="C:\Program Files (x86)\Battle.net"
-
+    
 fi
 
 wait
@@ -2955,7 +2998,7 @@ if [ -f "$config_vdf_path" ]; then
     cp "$config_vdf_path" "$backup_path"
 
     # Set the name of the compatibility tool to use
-    compat_tool_name="GE-Proton8-11"
+    compat_tool_name="GE-Proton8-9"
 else
     echo "Could not find config.vdf file"
 fi
@@ -2992,7 +3035,6 @@ sys.path.insert(0, os.path.expanduser('$HOME/Downloads/NonSteamLaunchersInstalla
 print(sys.path)  # Add this line to print the value of sys.path
 import vdf  # Updated import
 import binascii
-import re
 
 
 # Print the path to the file where the vdf module was loaded from
@@ -3051,7 +3093,7 @@ def get_steam_shortcut_id(exe, appname):
 
 
 
-app_id_to_name = {}
+
 
 def create_new_entry(shortcutdirectory, appname, launchoptions, startingdir):
     if shortcutdirectory != '' and launchoptions != '':
@@ -3059,7 +3101,6 @@ def create_new_entry(shortcutdirectory, appname, launchoptions, startingdir):
         if shortcutdirectory != chromedirectory:
             appid = get_steam_shortcut_id(exe, appname)
             app_ids.append(appid)
-            app_id_to_name[appid] = appname
         else:
             appid = None
 
@@ -3147,35 +3188,25 @@ for custom_website in custom_websites:
         # Remove the 'http://' or 'https://' prefix and the 'www.' prefix, if present
         clean_website = custom_website.replace('http://', '').replace('https://', '').replace('www.', '')
 
-        # Define a regular expression pattern to extract the game name from the URL
-        pattern = r'/games/([\w-]+)'
+        # Extract the name of the website by removing everything after the first '/'
+        website_name = clean_website.split('/')[0]
 
-        # Use the regular expression to search for the game name in the custom website URL
-        match = re.search(pattern, custom_website)
+        # Remove the top-level domain (e.g. '.com') from the website name
+        website_name = website_name.rsplit('.', 1)[0]
 
-        # Check if a match was found
-        if match:
-            # Extract the game name from the match object
-            game_name = match.group(1)
-
-            # Replace hyphens with spaces
-            game_name = game_name.replace('-', ' ')
-
-            # Capitalize the first letter of each word in the game name
-            game_name = game_name.title()
-        else:
-            # Use the entire URL as the entry name
-            game_name = clean_website
+        # Capitalize the first letter of the website name
+        website_name = website_name.capitalize()
 
         # Define the launch options for this website
         chromelaunch_options = f'run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://{clean_website}/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar'
 
         # Call the create_new_entry function for this website
-        create_new_entry('$chromedirectory', game_name, chromelaunch_options, '$chrome_startdir')
+        create_new_entry('$chromedirectory', website_name, chromelaunch_options, '$chrome_startdir')
 
 
 
-print(f'app_id_to_name: {app_id_to_name}')
+
+print(f'app_ids: {app_ids}')
 
 # Save the updated shortcuts dictionary to the shortcuts.vdf file
 with open('$shortcuts_vdf_path', 'wb') as f:
@@ -3304,90 +3335,9 @@ config['controller_config']['amazon luna'] = {
 
 
 
-
-
-
-
-
-
-
-
-
-
 # Save the updated config dictionary to the configset_controller_neptune.vdf file
 with open('$controller_config_path', 'w') as f:
-    vdf.dump(config, f)
-
-
-
-
-# Define the path to the compatdata directory
-compatdata_dir = '$HOME/.local/share/Steam/steamapps/compatdata'
-
-# Define a dictionary of original folder names
-folder_names = {
-    'Epic Games': 'EpicGamesLauncher',
-    'Gog Galaxy': 'GogGalaxyLauncher',
-    'Ubisoft Connect': 'UplayLauncher',
-    'Origin': 'OriginLauncher',
-    'Battle.net': 'Battle.netLauncher',
-    'EA App': 'TheEAappLauncher',
-    'Amazon Games': 'AmazonGamesLauncher',
-    'itch.io': 'itchioLauncher',
-    'Legacy Games': 'LegacyGamesLauncher',
-    'Humble Bundle': 'HumbleGamesLauncher',
-    'IndieGala Client': 'IndieGalaLauncher',
-    'Rockstar Games Launcher': 'RockstarGamesLauncher',
-    'Minecraft: Java Edition': 'MinecraftLauncher',
-    'Playstation Plus': 'PlaystationPlusLauncher',
-    'DMM Games': 'DMMGameLauncher',
-}
-
-# Iterate over each launcher in the folder_names dictionary
-for launcher_name, folder in folder_names.items():
-    # Define the current path of the folder
-    current_path = os.path.join(compatdata_dir, folder)
-
-    # Check if the folder exists
-    if os.path.exists(current_path):
-        print(f'{launcher_name}: {folder} exists')
-        # Get the app ID for this launcher from the app_id_to_name dictionary
-        appid = next(key for key, value in app_id_to_name.items() if value == launcher_name)
-
-        # Define the new path of the folder
-        new_path = os.path.join(compatdata_dir, str(appid))
-
-        # Rename the folder
-        os.rename(current_path, new_path)
-
-        # Define the path of the symbolic link
-        symlink_path = os.path.join(compatdata_dir, folder)
-
-        # Create a symbolic link to the renamed folder
-        os.symlink(new_path, symlink_path)
-    else:
-        print(f'{launcher_name}: {folder} does not exist')
-
-# Check if the NonSteamLaunchers folder exists
-if os.path.exists(os.path.join(compatdata_dir, 'NonSteamLaunchers')):
-    # Get the first app ID from the app_ids list
-    first_app_id = app_ids[0]
-
-    # Define the current path of the NonSteamLaunchers folder
-    current_path = os.path.join(compatdata_dir, 'NonSteamLaunchers')
-
-    # Define the new path of the NonSteamLaunchers folder
-    new_path = os.path.join(compatdata_dir, str(first_app_id))
-
-    # Rename the NonSteamLaunchers folder
-    os.rename(current_path, new_path)
-
-    # Define the path of the symbolic link
-    symlink_path = os.path.join(compatdata_dir, 'NonSteamLaunchers')
-
-    # Create a symbolic link to the renamed NonSteamLaunchers folder
-    os.symlink(new_path, symlink_path)"
-
+    vdf.dump(config, f)"
 
 
 
@@ -3395,4 +3345,3 @@ if os.path.exists(os.path.join(compatdata_dir, 'NonSteamLaunchers')):
 
 # Delete NonSteamLaunchersInstallation subfolder in Downloads folder
 rm -rf ~/Downloads/NonSteamLaunchersInstallation
-
