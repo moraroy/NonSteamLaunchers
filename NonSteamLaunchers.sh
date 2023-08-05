@@ -572,12 +572,18 @@ else
     custom_websites+=("${args[@]:1}")
 fi
 
+
 # Print the selected launchers and custom websites
 echo "Selected launchers: $selected_launchers"
+echo "Selected launchers: $selected_launchers_str"
 echo "Custom websites: ${custom_websites[@]}"
+echo "Separate App IDs: $separate_app_ids"
+
+
 
 # Set the value of the options variable
-options="$selected_launchers"
+options="$selected_launchers_str|$selected_launchers"
+
 
 
 
