@@ -555,6 +555,13 @@ if [ ${#args[@]} -eq 0 ]; then
         # The user clicked the 'Cancel' button or selected one of the extra buttons, so skip prompting for custom websites
         custom_websites=()
 
+        # Check if the cancel button was clicked
+        if [ $? -eq 1 ] && [[ $options != "Start Fresh" ]] && [[ $options != "Move to SD Card" ]] && [[ $options != "Uninstall" ]] && [[ $options != "Find Games" ]]; then
+            # The cancel button was clicked
+            echo "The cancel button was clicked"
+            exit 1
+        fi
+
         # Check if no options were selected and no custom website was provided
         if [ -z "$options" ] && [ -z "$custom_websites" ]; then
             # No options were selected and no custom website was provided
