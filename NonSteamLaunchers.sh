@@ -554,6 +554,13 @@ if [ ${#args[@]} -eq 0 ]; then
     if [ $? -eq 1 ] || [[ $selected_launchers == "Start Fresh" ]] || [[ $selected_launchers == "Move to SD Card" ]] || [[ $selected_launchers == "Uninstall" ]] || [[ $selected_launchers == "Find Games" ]]; then
         # The user clicked the 'Cancel' button or selected one of the extra buttons, so skip prompting for custom websites
         custom_websites=()
+
+        # Check if no options were selected and no custom website was provided
+        if [ -z "$options" ] && [ -z "$custom_websites" ]; then
+            # No options were selected and no custom website was provided
+            zenity --error --text="No options were selected and no custom website was provided. The script will now exit." --width=200 --height=150
+            exit 1
+        fi
     else
         # The user did not click the 'Cancel' button or select one of the extra buttons, so prompt for custom websites
         custom_websites_str=$(zenity --entry --title="Shortcut Creator" --text="Enter custom websites that you want shortcuts for, separated by commas. Leave blank and press ok if you dont want any. E.g. myspace.com, limewire.com, my.screenname.aol.com")
