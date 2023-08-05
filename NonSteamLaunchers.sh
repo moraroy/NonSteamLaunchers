@@ -542,6 +542,9 @@ args=("$@")
 # Initialize an array to store the custom websites
 custom_websites=()
 
+# Initialize a variable to store whether the "Separate App IDs" option is selected or not
+separate_app_ids=false
+
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so display the main zenity window
@@ -568,8 +571,30 @@ if [ ${#args[@]} -eq 0 ]; then
     fi
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
-    selected_launchers="${args[0]}"
-    custom_websites+=("${args[@]:1}")
+    
+    # Initialize an array to store the selected launchers
+    selected_launchers=()
+
+    for arg in "${args[@]}"; do
+        if [[ "$arg" =~ ^https?:// ]]; then
+            # Check if the arg is not an empty string before adding it to the custom_websites array
+            if [ -n "$arg" ]; then
+                custom_websites+=("$arg")
+            fi
+        else
+            selected_launchers+=("$arg")
+        fi
+    done
+
+    # Convert the selected_launchers array to a string by joining its elements with a `|` delimiter.
+    selected_launchers_str=$(IFS="|"; echo "${selected_launchers[*]}")
+
+    # Check if the `SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S` option was included in the `selected_launchers` variable. If this option was included, set the value of the `separate_app_ids` variable to `true`, indicating that separate app IDs should be used. Otherwise, set it to `false`.
+    if [[ "${selected_launchers[@]}" =~ "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S" ]]; then
+        separate_app_ids=true
+    else
+        separate_app_ids=false
+    fi
 fi
 
 
@@ -582,7 +607,7 @@ echo "Separate App IDs: $separate_app_ids"
 
 
 # Set the value of the options variable
-options="$selected_launchers"
+options="$selected_launchers_str|$selected_launchers"
 
 
 
