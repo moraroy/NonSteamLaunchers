@@ -659,106 +659,108 @@ fi
 
 
 
+# Define the StartFreshFunction
+function StartFreshFunction {
+    # Define the path to the compatdata directory
+    compatdata_dir="$HOME/.local/share/Steam/steamapps/compatdata"
+
+    # Define an array of original folder names
+    folder_names=("EpicGamesLauncher" "GogGalaxyLauncher" "UplayLauncher" "OriginLauncher" "Battle.netLauncher" "TheEAappLauncher" "AmazonGamesLauncher" "itchioLauncher" "LegacyGamesLauncher" "HumbleGamesLauncher" "IndieGalaLauncher" "RockstarGamesLauncher" "GlyphLauncher" "MinecraftLauncher" "PlaystationPlusLauncher" "DMMGameLauncher")
+
+    # Iterate over each folder name in the folder_names array
+    for folder in "${folder_names[@]}"; do
+        # Check if the folder exists
+        if [ -e "$compatdata_dir/$folder" ]; then
+            # Check if the folder is a symbolic link
+            if [ -L "$compatdata_dir/$folder" ]; then
+                # Get the path of the target of the symbolic link
+                target_path=$(readlink -f "$compatdata_dir/$folder")
+
+                # Delete the target of the symbolic link
+                rm -rf "$target_path"
+
+                # Delete the symbolic link
+                unlink "$compatdata_dir/$folder"
+            else
+                # Delete the folder
+                rm -rf "$compatdata_dir/$folder"
+            fi
+        fi
+    done
+
+    # Check if the NonSteamLaunchers folder exists
+    if [ -e "$compatdata_dir/NonSteamLaunchers" ]; then
+        # Check if the NonSteamLaunchers folder is a symbolic link
+        if [ -L "$compatdata_dir/NonSteamLaunchers" ]; then
+            # Get the path of the target of the symbolic link
+            target_path=$(readlink -f "$compatdata_dir/NonSteamLaunchers")
+
+            # Delete the target of the symbolic link
+            rm -rf "$target_path"
+
+            # Delete the symbolic link
+            unlink "$compatdata_dir/NonSteamLaunchers"
+        else
+            # Delete the NonSteamLaunchers folder
+            rm -rf "$compatdata_dir/NonSteamLaunchers"
+        fi
+    fi
+
+    # Iterate over each folder in the compatdata directory
+    for folder_path in "$compatdata_dir"/*; do
+        # Check if the current item is a folder
+        if [ -d "$folder_path" ]; then
+            # Check if the folder is empty
+            if [ -z "$(ls -A "$folder_path")" ]; then
+                # Delete the empty folder
+                rmdir "$folder_path"
+                echo "Deleted empty folder: $(basename "$folder_path")"
+            fi
+        fi
+    done
+
+    rm -rf "/run/media/mmcblk0p1/NonSteamLaunchers/"
+    rm -rf "/run/media/mmcblk0p1/EpicGamesLauncher/"
+    rm -rf "/run/media/mmcblk0p1/GogGalaxyLauncher/"
+    rm -rf "/run/media/mmcblk0p1/OriginLauncher/"
+    rm -rf "/run/media/mmcblk0p1/UplayLauncher/"
+    rm -rf "/run/media/mmcblk0p1/Battle.netLauncher/"
+    rm -rf "/run/media/mmcblk0p1/TheEAappLauncher/"
+    rm -rf "/run/media/mmcblk0p1/AmazonGamesLauncher/"
+    rm -rf "/run/media/mmcblk0p1/LegacyGamesLauncher/"
+    rm -rf "/run/media/mmcblk0p1/itchioLauncher/"
+    rm -rf "/run/media/mmcblk0p1/HumbleGamesLauncher/"
+    rm -rf "/run/media/mmcblk0p1/IndieGalaLauncher/"
+    rm -rf "/run/media/mmcblk0p1/RockstarGamesLauncher/"
+    rm -rf "/run/media/mmcblk0p1/GlyphLauncher/"
+    rm -rf "/run/media/mmcblk0p1/MinecraftLauncher/"
+    rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
+    rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
+    rm -rf ~/Downloads/NonSteamLaunchersInstallation
+
+    # Exit the script with exit code 0 to indicate success
+    exit 0
+}
+
 # Check if the Start Fresh button was clicked or if the Start Fresh option was passed as a command line argument
 if [[ $options == "Start Fresh" ]] || [[ $selected_launchers == "Start Fresh" ]]; then
     # The Start Fresh button was clicked or the Start Fresh option was passed as a command line argument
     if [ ${#args[@]} -eq 0 ]; then
         # No command line arguments were provided, so display the zenity window
         if zenity --question --text="aaahhh it always feels good to start fresh :) but...This will delete the App ID folders you installed inside the steamapps/compatdata/ directory. This means anything youve installed (launchers or games) WITHIN THIS SCRIPT will be deleted if you have them there. Everything will be wiped. Are you sure?" --width=300 --height=260; then
-            # The user clicked the "Yes" button
-
-        function StartFreshFunction {    
-        # Define the path to the compatdata directory
-        compatdata_dir="$HOME/.local/share/Steam/steamapps/compatdata"
-
-        # Define an array of original folder names
-        folder_names=("EpicGamesLauncher" "GogGalaxyLauncher" "UplayLauncher" "OriginLauncher" "Battle.netLauncher" "TheEAappLauncher" "AmazonGamesLauncher" "itchioLauncher" "LegacyGamesLauncher" "HumbleGamesLauncher" "IndieGalaLauncher" "RockstarGamesLauncher" "GlyphLauncher" "MinecraftLauncher" "PlaystationPlusLauncher" "DMMGameLauncher")
-
-            # Iterate over each folder name in the folder_names array
-            for folder in "${folder_names[@]}"; do
-                # Check if the folder exists
-                if [ -e "$compatdata_dir/$folder" ]; then
-                    # Check if the folder is a symbolic link
-                    if [ -L "$compatdata_dir/$folder" ]; then
-                        # Get the path of the target of the symbolic link
-                        target_path=$(readlink -f "$compatdata_dir/$folder")
-
-                        # Delete the target of the symbolic link
-                        rm -rf "$target_path"
-
-                        # Delete the symbolic link
-                        unlink "$compatdata_dir/$folder"
-                    else
-                        # Delete the folder
-                        rm -rf "$compatdata_dir/$folder"
-                    fi
-                fi
-            done
-
-            # Check if the NonSteamLaunchers folder exists
-            if [ -e "$compatdata_dir/NonSteamLaunchers" ]; then
-                # Check if the NonSteamLaunchers folder is a symbolic link
-                if [ -L "$compatdata_dir/NonSteamLaunchers" ]; then
-                    # Get the path of the target of the symbolic link
-                    target_path=$(readlink -f "$compatdata_dir/NonSteamLaunchers")
-
-                    # Delete the target of the symbolic link
-                    rm -rf "$target_path"
-
-                    # Delete the symbolic link
-                    unlink "$compatdata_dir/NonSteamLaunchers"
-                else
-                    # Delete the NonSteamLaunchers folder
-                    rm -rf "$compatdata_dir/NonSteamLaunchers"
-                fi
-            fi
-
-            # Iterate over each folder in the compatdata directory
-            for folder_path in "$compatdata_dir"/*; do
-                # Check if the current item is a folder
-                if [ -d "$folder_path" ]; then
-                    # Check if the folder is empty
-                    if [ -z "$(ls -A "$folder_path")" ]; then
-                        # Delete the empty folder
-                        rmdir "$folder_path"
-                        echo "Deleted empty folder: $(basename "$folder_path")"
-                    fi
-                fi
-            done
-
-
-            rm -rf "/run/media/mmcblk0p1/NonSteamLaunchers/"
-            rm -rf "/run/media/mmcblk0p1/EpicGamesLauncher/"
-            rm -rf "/run/media/mmcblk0p1/GogGalaxyLauncher/"
-            rm -rf "/run/media/mmcblk0p1/OriginLauncher/"
-            rm -rf "/run/media/mmcblk0p1/UplayLauncher/"
-            rm -rf "/run/media/mmcblk0p1/Battle.netLauncher/"
-            rm -rf "/run/media/mmcblk0p1/TheEAappLauncher/"
-            rm -rf "/run/media/mmcblk0p1/AmazonGamesLauncher/"
-            rm -rf "/run/media/mmcblk0p1/LegacyGamesLauncher/"
-            rm -rf "/run/media/mmcblk0p1/itchioLauncher/"
-            rm -rf "/run/media/mmcblk0p1/HumbleGamesLauncher/"
-            rm -rf "/run/media/mmcblk0p1/IndieGalaLauncher/"
-            rm -rf "/run/media/mmcblk0p1/RockstarGamesLauncher/"
-            rm -rf "/run/media/mmcblk0p1/GlyphLauncher/"
-            rm -rf "/run/media/mmcblk0p1/MinecraftLauncher/"
-            rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
-            rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
-            rm -rf ~/Downloads/NonSteamLaunchersInstallation
-            
-             # Exit the script with exit code 0 to indicate success
-            exit 0
-            }
+            # The user clicked the "Yes" button, so call the StartFreshFunction
+            StartFreshFunction
         else
             # The user clicked the "No" button, so exit with exit code 0 to indicate success.
             exit 0
         fi
     else
-        # Command line arguments were provided, so skip displaying the zenity window and directly perform any necessary actions to start fresh
+        # Command line arguments were provided, so skip displaying the zenity window and directly perform any necessary actions to start fresh by calling the StartFreshFunction
         StartFreshFunction
     fi
-
 fi
+
+
 
 if [[ $options == "Uninstall" ]]; then
 # Check if the cancel button was clicked
