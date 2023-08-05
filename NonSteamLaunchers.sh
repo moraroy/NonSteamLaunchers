@@ -579,6 +579,9 @@ echo "Custom websites: ${custom_websites[@]}"
 # Set the value of the options variable
 options="$selected_launchers"
 
+
+
+
 # Check if the cancel button was clicked
 if [ $? -eq 1 ] && [[ $options != "Start Fresh" ]] && [[ $options != "Move to SD Card" ]] && [[ $options != "Uninstall" ]] && [[ $options != "Find Games" ]]; then
     # The cancel button was clicked
