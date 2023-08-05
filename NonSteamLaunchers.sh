@@ -582,7 +582,7 @@ echo "Separate App IDs: $separate_app_ids"
 
 
 # Set the value of the options variable
-options="$selected_launchers_str|$selected_launchers"
+options="$selected_launchers"
 
 
 
