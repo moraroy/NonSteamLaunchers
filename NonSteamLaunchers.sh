@@ -666,6 +666,8 @@ if [[ $options == "Start Fresh" ]] || [[ $selected_launchers == "Start Fresh" ]]
         # No command line arguments were provided, so display the zenity window
         if zenity --question --text="aaahhh it always feels good to start fresh :) but...This will delete the App ID folders you installed inside the steamapps/compatdata/ directory. This means anything youve installed (launchers or games) WITHIN THIS SCRIPT will be deleted if you have them there. Everything will be wiped. Are you sure?" --width=300 --height=260; then
             # The user clicked the "Yes" button
+
+        function StartFreshFunction {    
         # Define the path to the compatdata directory
         compatdata_dir="$HOME/.local/share/Steam/steamapps/compatdata"
 
@@ -743,14 +745,19 @@ if [[ $options == "Start Fresh" ]] || [[ $selected_launchers == "Start Fresh" ]]
             rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
             rm -rf "/run/media/mmcblk0p1/DMMGameLauncher/"
             rm -rf ~/Downloads/NonSteamLaunchersInstallation
-
-            # Exit the script with exit code 0 to indicate success
+            
+             # Exit the script with exit code 0 to indicate success
             exit 0
+            }
         else
             # The user clicked the "No" button, so exit with exit code 0 to indicate success.
             exit 0
         fi
+    else
+        # Command line arguments were provided, so skip displaying the zenity window and directly perform any necessary actions to start fresh
+        StartFreshFunction
     fi
+
 fi
 
 if [[ $options == "Uninstall" ]]; then
