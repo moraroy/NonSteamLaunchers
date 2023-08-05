@@ -659,9 +659,9 @@ fi
 
 
 
-# Check if the Start Fresh button was clicked
-if [[ $options == "Start Fresh" ]]; then
-    # The Start Fresh button was clicked
+# Check if the Start Fresh button was clicked or if the Start Fresh option was passed as a command line argument
+if [[ $options == "Start Fresh" ]] || [[ $selected_launchers == "Start Fresh" ]]; then
+    # The Start Fresh button was clicked or the Start Fresh option was passed as a command line argument
     if [ ${#args[@]} -eq 0 ]; then
         # No command line arguments were provided, so display the zenity window
         if zenity --question --text="aaahhh it always feels good to start fresh :) but...This will delete the App ID folders you installed inside the steamapps/compatdata/ directory. This means anything youve installed (launchers or games) WITHIN THIS SCRIPT will be deleted if you have them there. Everything will be wiped. Are you sure?" --width=300 --height=260; then
