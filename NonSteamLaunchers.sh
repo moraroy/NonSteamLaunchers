@@ -550,24 +550,17 @@ if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so display the main zenity window
     selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation, One Prefix, NonSteamLaunchers" FALSE "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
 
-    # Check if the user clicked the 'Cancel' button or selected one of the extra buttons
-    if [ $? -eq 1 ] || [[ $selected_launchers == "Start Fresh" ]] || [[ $selected_launchers == "Move to SD Card" ]] || [[ $selected_launchers == "Uninstall" ]] || [[ $selected_launchers == "Find Games" ]]; then
-        # The user clicked the 'Cancel' button or selected one of the extra buttons, so skip prompting for custom websites
+     # Check if the user clicked either the 'Cancel' button or close button on the zenity window
+    if [ $? -eq 1 ]; then
+        # The user clicked either the 'Cancel' button or close button on the zenity window, so exit with exit code 1 to indicate failure.
+        echo "The cancel button was clicked"
+        exit 1
+    fi
+
+    # Check if the user selected one of the extra buttons
+    if [[ $selected_launchers == "Start Fresh" ]] || [[ $selected_launchers == "Move to SD Card" ]] || [[ $selected_launchers == "Uninstall" ]] || [[ $selected_launchers == "Find Games" ]]; then
+        # The user selected one of the extra buttons, so skip prompting for custom websites
         custom_websites=()
-
-        # Check if the cancel button was clicked
-        if [ $? -eq 1 ] && [[ $options != "Start Fresh" ]] && [[ $options != "Move to SD Card" ]] && [[ $options != "Uninstall" ]] && [[ $options != "Find Games" ]]; then
-            # The cancel button was clicked
-            echo "The cancel button was clicked"
-            exit 1
-        fi
-
-        # Check if no options were selected and no custom website was provided
-        if [ -z "$options" ] && [ -z "$custom_websites" ]; then
-            # No options were selected and no custom website was provided
-            zenity --error --text="No options were selected and no custom website was provided. The script will now exit." --width=200 --height=150
-            exit 1
-        fi
     else
         # The user did not click the 'Cancel' button or select one of the extra buttons, so prompt for custom websites
         custom_websites_str=$(zenity --entry --title="Shortcut Creator" --text="Enter custom websites that you want shortcuts for, separated by commas. Leave blank and press ok if you dont want any. E.g. myspace.com, limewire.com, my.screenname.aol.com")
@@ -689,7 +682,6 @@ if [[ -f "$eaapp_path1" ]] || [[ -f "$eaapp_path2" ]]; then
         exit 1
     fi
 fi
-
 
 
 
