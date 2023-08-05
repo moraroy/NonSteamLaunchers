@@ -690,6 +690,10 @@ fi
 
 
 
+
+
+
+
 # Define the StartFreshFunction
 function StartFreshFunction {
     # Define the path to the compatdata directory
