@@ -572,6 +572,23 @@ if [ ${#args[@]} -eq 0 ]; then
         # The user did not click the 'Cancel' button or select one of the extra buttons, so prompt for custom websites
         custom_websites_str=$(zenity --entry --title="Shortcut Creator" --text="Enter custom websites that you want shortcuts for, separated by commas. Leave blank and press ok if you dont want any. E.g. myspace.com, limewire.com, my.screenname.aol.com")
 
+        # Check if no options were selected and no custom website was provided
+        if [ -z "$selected_launchers" ] && [ -z "$custom_websites_str" ]; then
+            # No options were selected and no custom website was provided
+            zenity --error --text="No options were selected and no custom website was provided. The script will now exit." --width=200 --height=150
+            exit 1
+        fi
+
+        # Check if the user clicked either the 'Cancel' button or close button on the zenity window
+        if [ $? -eq 1 ]; then
+            # The user clicked either the 'Cancel' button or close button on the zenity window, so exit with exit code 1 to indicate failure.
+            echo "The cancel button was clicked"
+            exit 1
+        fi
+
+
+
+
         # Check if the user clicked the 'Cancel' button
         if [ $? -eq 1 ]; then
             # The user clicked the 'Cancel' button, so exit the script
