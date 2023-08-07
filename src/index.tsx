@@ -266,7 +266,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               )
             }
           >
-            Find Games w/BoilR
+            this button doesnt do anything yet
           </ButtonItem>
         </PanelSectionRow>
       </PanelSection>
