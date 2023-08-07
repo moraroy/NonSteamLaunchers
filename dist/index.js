@@ -83,6 +83,7 @@
 
   // Define a reducer function for updating customWebsites
   const customWebsitesReducer = (state, action) => {
+      console.log(`action: ${JSON.stringify(action)}`);
       switch (action.type) {
           case 'UPDATE_CUSTOM_WEBSITES':
               return action.customWebsites;

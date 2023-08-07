@@ -29,6 +29,7 @@ const customWebsitesReducer = (
   state: string[],
   action: UpdateCustomWebsitesAction
 ) => {
+  console.log(`action: ${JSON.stringify(action)}`);
   switch (action.type) {
     case 'UPDATE_CUSTOM_WEBSITES':
       return action.customWebsites;
