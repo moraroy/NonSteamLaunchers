@@ -266,7 +266,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               )
             }
           >
-            this button doesnt do anything yet
+            does nothing yet
           </ButtonItem>
         </PanelSectionRow>
       </PanelSection>
