@@ -154,7 +154,6 @@
       });
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
-      const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
       const [clickedButton, setClickedButton] = React.useState('');
       React.useEffect(() => {
           console.log(`customWebsites updated:${JSON.stringify(customWebsites)}`);
@@ -287,14 +286,6 @@
                   window.SP_REACT.createElement("span", { className: "checkmark" }, options[name] ? '✓' : ''),
                   ' ',
                   label))))),
-          isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
-                  console.log(`result:${JSON.stringify(result)}`);
-                  if (clickedButton === 'createWebsiteShortcut') {
-                      // Handle result for createWebsiteShortcut button
-                      dispatch({ type: 'UPDATE_CUSTOM_WEBSITES', customWebsites: result });
-                  }
-                  setIsSearchModalOpen(false);
-              }, promptText: "Enter website" })),
           window.SP_REACT.createElement("style", null, `
           .checkmark {
             color: green;

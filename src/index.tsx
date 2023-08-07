@@ -139,8 +139,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
    const [separateAppIds, setSeparateAppIds] = useState(false);
 
-   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-
    const [clickedButton, setClickedButton] = useState('');
 
    useEffect(() => {
@@ -348,21 +346,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           ))}
         </PanelSectionRow>
       </PanelSection>
-  
-      {isSearchModalOpen && (
-       <SearchModal
-         closeModal={() => setIsSearchModalOpen(false)}
-         setModalResult={(result) => {
-           console.log(`result:${JSON.stringify(result)}`);
-           if (clickedButton === 'createWebsiteShortcut') {
-             // Handle result for createWebsiteShortcut button
-             dispatch({ type:'UPDATE_CUSTOM_WEBSITES', customWebsites:result });
-           }
-           setIsSearchModalOpen(false);
-         }}
-         promptText={"Enter website"}
-       />
-     )}
   
       <style>
         {`
