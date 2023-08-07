@@ -32,6 +32,8 @@ const customWebsitesReducer = (
   console.log(`action: ${JSON.stringify(action)}`);
   switch (action.type) {
     case 'UPDATE_CUSTOM_WEBSITES':
+      // Store the updated customWebsites in localStorage
+      localStorage.setItem('customWebsites', JSON.stringify(action.customWebsites));
       return action.customWebsites;
     default:
       return state;
@@ -49,8 +51,8 @@ const CustomWebsitesContext = createContext<{
 
 // Create a provider component that takes in children as a prop
 const CustomWebsitesProvider: React.FC = ({ children }) => {
-  // Create a state variable and dispatch function for customWebsites
-  const [customWebsites, dispatch] = useReducer(customWebsitesReducer, []);
+  // Retrieve the customWebsites from localStorage on initial render
+  const [customWebsites, dispatch] = useReducer(customWebsitesReducer, JSON.parse(localStorage.getItem('customWebsites') || '[]'));
 
   // Render the provider and pass in the customWebsites state and dispatch function as the value
   return (
