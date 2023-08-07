@@ -81,6 +81,27 @@
     return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M505.12019,19.09375c-1.18945-5.53125-6.65819-11-12.207-12.1875C460.716,0,435.507,0,410.40747,0,307.17523,0,245.26909,55.20312,199.05238,128H94.83772c-16.34763.01562-35.55658,11.875-42.88664,26.48438L2.51562,253.29688A28.4,28.4,0,0,0,0,264a24.00867,24.00867,0,0,0,24.00582,24H127.81618l-22.47457,22.46875c-11.36521,11.36133-12.99607,32.25781,0,45.25L156.24582,406.625c11.15623,11.1875,32.15619,13.15625,45.27726,0l22.47457-22.46875V488a24.00867,24.00867,0,0,0,24.00581,24,28.55934,28.55934,0,0,0,10.707-2.51562l98.72834-49.39063c14.62888-7.29687,26.50776-26.5,26.50776-42.85937V312.79688c72.59753-46.3125,128.03493-108.40626,128.03493-211.09376C512.07526,76.5,512.07526,51.29688,505.12019,19.09375ZM384.04033,168A40,40,0,1,1,424.05,128,40.02322,40.02322,0,0,1,384.04033,168Z"}}]})(props);
   }
 
+  // Define a reducer function for updating customWebsites
+  const customWebsitesReducer = (state, action) => {
+      switch (action.type) {
+          case 'UPDATE_CUSTOM_WEBSITES':
+              return action.customWebsites;
+          default:
+              return state;
+      }
+  };
+  // Create a context with an empty array as the default value
+  const CustomWebsitesContext = React.createContext({
+      customWebsites: [],
+      dispatch: () => { },
+  });
+  // Create a provider component that takes in children as a prop
+  const CustomWebsitesProvider = ({ children }) => {
+      // Create a state variable and dispatch function for customWebsites
+      const [customWebsites, dispatch] = React.useReducer(customWebsitesReducer, []);
+      // Render the provider and pass in the customWebsites state and dispatch function as the value
+      return (window.SP_REACT.createElement(CustomWebsitesContext.Provider, { value: { customWebsites, dispatch } }, children));
+  };
   const SearchModal = ({ closeModal, setModalResult, promptText }) => {
       console.log('SearchModal rendered');
       const [searchText, setSearchText] = React.useState('');
@@ -102,6 +123,8 @@
   };
   const Content = ({ serverAPI }) => {
       console.log('Content rendered');
+      // Use the useContext hook to access customWebsites and dispatch from the context
+      const { customWebsites, dispatch } = React.useContext(CustomWebsitesContext);
       const [options, setOptions] = React.useState({
           epicGames: false,
           gogGalaxy: false,
@@ -132,9 +155,8 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [isSearchModalOpen, setIsSearchModalOpen] = React.useState(false);
       const [clickedButton, setClickedButton] = React.useState('');
-      const [customWebsites, setCustomWebsites] = React.useState([]);
       React.useEffect(() => {
-          console.log(`customWebsites updated: ${JSON.stringify(customWebsites)}`);
+          console.log(`customWebsites updated:${JSON.stringify(customWebsites)}`);
       }, [customWebsites]);
       const handleButtonClick = (name) => {
           setOptions((prevOptions) => ({
@@ -149,8 +171,8 @@
               .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
               .join(', ');
           setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
-          console.log(`Selected options: ${JSON.stringify(options)}`);
-          console.log(`customWebsites: ${JSON.stringify(customWebsites)}`);
+          console.log(`Selected options:${JSON.stringify(options)}`);
+          console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: options,
@@ -200,10 +222,10 @@
           console.log('handleCreateWebsiteShortcutClick called');
           setClickedButton('createWebsiteShortcut');
           deckyFrontendLib.showModal(window.SP_REACT.createElement(SearchModal, { promptText: "Enter website", setModalResult: (result) => {
-                  console.log(`result: ${JSON.stringify(result)}`);
+                  console.log(`result:${JSON.stringify(result)}`);
                   if (clickedButton === 'createWebsiteShortcut') {
                       // Handle result for createWebsiteShortcut button
-                      setCustomWebsites(result);
+                      dispatch({ type: 'UPDATE_CUSTOM_WEBSITES', customWebsites: result });
                   }
               } }), deckyFrontendLib.findSP());
       };
@@ -251,7 +273,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: (e) => deckyFrontendLib.showContextMenu(window.SP_REACT.createElement(deckyFrontendLib.Menu, { label: "Menu", cancelText: "CAAAANCEL", onCancel: () => { } },
                           window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #1"),
                           window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #2"),
-                          window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #3")), e.currentTarget ?? window) }, "this button doesnt do anything yet"))),
+                          window.SP_REACT.createElement(deckyFrontendLib.MenuItem, { onSelected: () => { } }, "Item #3")), e.currentTarget ?? window) }, "does nothing yet"))),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Game Launchers" },
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Here you choose your launchers you want to install and let NSL do the rest. Once Steam restarts your launchers will be in your library!"),
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options[name] ? 'selected' : '', layout: "below", onClick: () => handleButtonClick(name) },
@@ -265,10 +287,10 @@
                   ' ',
                   label))))),
           isSearchModalOpen && (window.SP_REACT.createElement(SearchModal, { closeModal: () => setIsSearchModalOpen(false), setModalResult: (result) => {
-                  console.log(`result: ${JSON.stringify(result)}`);
+                  console.log(`result:${JSON.stringify(result)}`);
                   if (clickedButton === 'createWebsiteShortcut') {
                       // Handle result for createWebsiteShortcut button
-                      setCustomWebsites(result);
+                      dispatch({ type: 'UPDATE_CUSTOM_WEBSITES', customWebsites: result });
                   }
                   setIsSearchModalOpen(false);
               }, promptText: "Enter website" })),
@@ -300,7 +322,8 @@
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {
           title: window.SP_REACT.createElement("div", { className: deckyFrontendLib.staticClasses.Title }, "NonSteamLaunchers"),
-          content: window.SP_REACT.createElement(Content, { serverAPI: serverApi }),
+          content: (window.SP_REACT.createElement(CustomWebsitesProvider, null,
+              window.SP_REACT.createElement(Content, { serverAPI: serverApi }))),
           icon: window.SP_REACT.createElement(FaRocket, null),
       };
   });

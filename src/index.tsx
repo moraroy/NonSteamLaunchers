@@ -13,16 +13,56 @@ import {
   showModal,
   staticClasses,
   TextField,
-  ToggleField
+  ToggleField,
 } from "decky-frontend-lib";
-import { useEffect, useState, VFC } from "react";
+import { useContext, useEffect, useReducer, useState, VFC, createContext } from "react";
 import { FaRocket } from "react-icons/fa";
+
+// Define an action type for updating customWebsites
+type UpdateCustomWebsitesAction = {
+  type: 'UPDATE_CUSTOM_WEBSITES';
+  customWebsites: string[];
+};
+
+// Define a reducer function for updating customWebsites
+const customWebsitesReducer = (
+  state: string[],
+  action: UpdateCustomWebsitesAction
+) => {
+  switch (action.type) {
+    case 'UPDATE_CUSTOM_WEBSITES':
+      return action.customWebsites;
+    default:
+      return state;
+  }
+};
+
+// Create a context with an empty array as the default value
+const CustomWebsitesContext = createContext<{
+  customWebsites: string[];
+  dispatch: React.Dispatch<UpdateCustomWebsitesAction>;
+}>({
+  customWebsites: [],
+  dispatch: () => {},
+});
+
+// Create a provider component that takes in children as a prop
+const CustomWebsitesProvider: React.FC = ({ children }) => {
+  // Create a state variable and dispatch function for customWebsites
+  const [customWebsites, dispatch] = useReducer(customWebsitesReducer, []);
+
+  // Render the provider and pass in the customWebsites state and dispatch function as the value
+  return (
+    <CustomWebsitesContext.Provider value={{ customWebsites, dispatch }}>
+      {children}
+    </CustomWebsitesContext.Provider>
+  );
+};
 
 type SearchModalProps = ModalRootProps & {
   setModalResult?(result: string[]): void;
   promptText: string;
 };
-
 
 const SearchModal: VFC<SearchModalProps> = ({
   closeModal,
@@ -62,36 +102,39 @@ const SearchModal: VFC<SearchModalProps> = ({
 };
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
-  console.log('Content rendered');
+   console.log('Content rendered');
 
-  const [options, setOptions] = useState({
-    epicGames: false,
-    gogGalaxy: false,
-    origin: false,
-    uplay: false,
-    battleNet: false,
-    amazonGames: false,
-    eaApp: false,
-    legacyGames: false,
-    itchIo: false,
-    humbleGames: false,
-    indieGala: false,
-    rockstar: false,
-    glyph: false,
-    minecraft: false,
-    psPlus: false,
-    dmm: false,
-    xboxGamePass: false,
-    geforceNow: false,
-    amazonLuna: false,
-    netflix: false,
-    hulu: false,
-    disneyPlus: false,
-    amazonPrimeVideo: false,
-    youtube: false
-  });
+   // Use the useContext hook to access customWebsites and dispatch from the context
+   const { customWebsites, dispatch } = useContext(CustomWebsitesContext);
 
-   const [progress, setProgress] = useState({ percent: 0, status: '' });
+   const [options, setOptions] = useState({
+     epicGames: false,
+     gogGalaxy: false,
+     origin: false,
+     uplay: false,
+     battleNet: false,
+     amazonGames: false,
+     eaApp: false,
+     legacyGames: false,
+     itchIo: false,
+     humbleGames: false,
+     indieGala: false,
+     rockstar: false,
+     glyph: false,
+     minecraft: false,
+     psPlus: false,
+     dmm: false,
+     xboxGamePass: false,
+     geforceNow: false,
+     amazonLuna:false,
+     netflix:false,
+     hulu:false,
+     disneyPlus:false,
+     amazonPrimeVideo:false,
+     youtube:false
+   });
+
+   const [progress, setProgress] = useState({ percent:0, status:'' });
 
    const [separateAppIds, setSeparateAppIds] = useState(false);
 
@@ -99,96 +142,94 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
    const [clickedButton, setClickedButton] = useState('');
 
-   const [customWebsites, setCustomWebsites] = useState<string[]>([]);
    useEffect(() => {
-    console.log(`customWebsites updated: ${JSON.stringify(customWebsites)}`);
-  }, [customWebsites]);
+       console.log(`customWebsites updated:${JSON.stringify(customWebsites)}`);
+   }, [customWebsites]);
 
-   const handleButtonClick = (name: string) => {
-     setOptions((prevOptions) => ({
-       ...prevOptions,
-       [name]: !prevOptions[name],
-     }));
+   const handleButtonClick = (name:string) => {
+       setOptions((prevOptions) => ({
+           ...prevOptions,
+           [name]: !prevOptions[name],
+       }));
    };
 
    const handleInstallClick = async () => {
-     console.log('handleInstallClick called');
+       console.log('handleInstallClick called');
 
-     const selectedLaunchers = Object.entries(options)
-       .filter(([_, isSelected]) => isSelected)
-       .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
-       .join(', ');
+       const selectedLaunchers = Object.entries(options)
+           .filter(([_, isSelected]) => isSelected)
+           .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
+           .join(', ');
 
-     setProgress({ percent: 0, status: `Calling serverAPI... Installing ${selectedLaunchers}` });
+       setProgress({ percent:0, status:`Calling serverAPI... Installing ${selectedLaunchers}` });
 
-     console.log(`Selected options: ${JSON.stringify(options)}`);
-     console.log(`customWebsites: ${JSON.stringify(customWebsites)}`);
+       console.log(`Selected options:${JSON.stringify(options)}`);
+       console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
 
-     try {
-       const result = await serverAPI.callPluginMethod("install", {
-         selected_options: options,
-         custom_websites: customWebsites,
-         separate_app_ids: separateAppIds,
-         start_fresh: false // Pass true for the start_fresh parameter
-       });
-   
-       if (result) {
-         setProgress({ percent: 100, status: 'Installation successful!' });
-         alert('Installation successful!');
-       } else {
-         setProgress({ percent: 100, status: 'Installation failed.' });
-         alert('Installation failed.');
+       try {
+           const result = await serverAPI.callPluginMethod("install", {
+               selected_options: options,
+               custom_websites: customWebsites,
+               separate_app_ids: separateAppIds,
+               start_fresh: false // Pass true for the start_fresh parameter
+           });
+
+           if (result) {
+               setProgress({ percent:100, status:'Installation successful!' });
+               alert('Installation successful!');
+           } else {
+               setProgress({ percent:100, status:'Installation failed.' });
+               alert('Installation failed.');
+           }
+       } catch (error) {
+           setProgress({ percent:100, status:'Installation failed.' });
+           console.error('Error calling _main method on server-side plugin:', error);
        }
-     } catch (error) {
-       setProgress({ percent: 100, status: 'Installation failed.' });
-       console.error('Error calling _main method on server-side plugin:', error);
-     }
    };
 
-
    const handleStartFreshClick = async () => {
-    console.log('handleStartFreshClick called');
+       console.log('handleStartFreshClick called');
 
-    // Call the install method on the server-side plugin with the appropriate arguments
-    try {
-      const result = await serverAPI.callPluginMethod("install", {
-        selected_options: options,
-        custom_websites: customWebsites,
-        separate_app_ids: separateAppIds,
-        start_fresh: true // Pass true for the start_fresh parameter
-      });
+       // Call the install method on the server-side plugin with the appropriate arguments
+       try {
+           const result = await serverAPI.callPluginMethod("install", {
+               selected_options: options,
+               custom_websites: customWebsites,
+               separate_app_ids: separateAppIds,
+               start_fresh: true // Pass true for the start_fresh parameter
+           });
 
-      if (result) {
-        setProgress({ percent: 100, status: 'Installation successful!' });
-        alert('Installation successful!');
-      } else {
-        setProgress({ percent: 100, status: 'Installation failed.' });
-        alert('Installation failed.');
-      }
-    } catch (error) {
-      setProgress({ percent: 100, status: 'Installation failed.' });
-      console.error('Error calling _main method on server-side plugin:', error);
-    }
-  };
+           if (result) {
+               setProgress({ percent:100, status:'Installation successful!' });
+               alert('Installation successful!');
+           } else {
+               setProgress({ percent:100, status:'Installation failed.' });
+               alert('Installation failed.');
+           }
+       } catch (error) {
+           setProgress({ percent:100, status:'Installation failed.' });
+           console.error('Error calling _main method on server-side plugin:', error);
+       }
+   };
 
    const handleCreateWebsiteShortcutClick = async () => {
-     console.log('handleCreateWebsiteShortcutClick called');
+       console.log('handleCreateWebsiteShortcutClick called');
 
-     setClickedButton('createWebsiteShortcut');
+       setClickedButton('createWebsiteShortcut');
 
-     showModal(
-       <SearchModal
-         promptText="Enter website"
-         setModalResult={(result) => {
-           console.log(`result: ${JSON.stringify(result)}`);
-           if (clickedButton === 'createWebsiteShortcut') {
-             // Handle result for createWebsiteShortcut button
-             setCustomWebsites(result);
-           }
-         }}
-       />,
-       findSP()
-     );
+       showModal(
+           <SearchModal
+               promptText="Enter website"
+               setModalResult={(result) => {
+                   console.log(`result:${JSON.stringify(result)}`);
+                   if (clickedButton === 'createWebsiteShortcut') {
+                       // Handle result for createWebsiteShortcut button
+                       dispatch({ type:'UPDATE_CUSTOM_WEBSITES', customWebsites:result });
+                   }
+               }}
+           />,
+           findSP()
+       );
    };
    
    const optionsData = [
@@ -243,7 +284,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         <ButtonItem layout="below" onClick={handleInstallClick}>
           Install
         </ButtonItem>
-
+  
         <ButtonItem layout="below" onClick={handleStartFreshClick}>
           Start Fresh
         </ButtonItem>
@@ -311,17 +352,16 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
        <SearchModal
          closeModal={() => setIsSearchModalOpen(false)}
          setModalResult={(result) => {
-           console.log(`result: ${JSON.stringify(result)}`);
+           console.log(`result:${JSON.stringify(result)}`);
            if (clickedButton === 'createWebsiteShortcut') {
              // Handle result for createWebsiteShortcut button
-             setCustomWebsites(result);
+             dispatch({ type:'UPDATE_CUSTOM_WEBSITES', customWebsites:result });
            }
            setIsSearchModalOpen(false);
          }}
          promptText={"Enter website"}
        />
      )}
-  
   
       <style>
         {`
@@ -351,12 +391,16 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       </style>
     </>
   );
-};
-
-export default definePlugin((serverApi: ServerAPI) => {
- return {
+  };
+  
+  export default definePlugin((serverApi: ServerAPI) => {
+  return {
    title: <div className={staticClasses.Title}>NonSteamLaunchers</div>,
-   content: <Content serverAPI={serverApi} />,
+   content: (
+     <CustomWebsitesProvider>
+       <Content serverAPI={serverApi} />
+     </CustomWebsitesProvider>
+   ),
    icon: <FaRocket />,
- };
-});
+  };
+  });
