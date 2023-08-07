@@ -218,7 +218,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'youtube', label: 'Youtube' }
   ];
 
-  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'itchIo', 'humbleGames', 'indieGala', 'rockstar', 'glyph', 'minecraft', 'psPlus', 'dmm'].includes(name));
+  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'origin', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
   const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube'].includes(name));
  
   return (
