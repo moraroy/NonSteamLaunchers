@@ -570,7 +570,7 @@ if [ ${#args[@]} -eq 0 ]; then
     fi
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
-    
+
     # Initialize an array to store the selected launchers
     selected_launchers=()
 
@@ -793,7 +793,6 @@ if [[ $options == "Start Fresh" ]] || [[ $selected_launchers == "Start Fresh" ]]
         StartFreshFunction
     fi
 fi
-
 
 
 if [[ $options == "Uninstall" ]]; then
