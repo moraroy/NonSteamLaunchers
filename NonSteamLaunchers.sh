@@ -567,14 +567,6 @@ if [ ${#args[@]} -eq 0 ]; then
 
         # Split the custom_websites_str variable into an array using ',' as the delimiter
         IFS=',' read -ra custom_websites <<< "$custom_websites_str"
-
-        # Check if no options were selected and no custom website was provided
-        if [ -z "$options" ] && [ -z "$custom_websites" ]; then
-            # No options were selected and no custom website was provided
-            zenity --error --text="No options were selected and no custom website was provided. The script will now exit." --width=200 --height=150
-            exit 1
-        fi
-
     fi
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
@@ -626,7 +618,6 @@ fi
 
 
 
-
 # Check if the cancel button was clicked
 if [ $? -eq 1 ] && [[ $options != "Start Fresh" ]] && [[ $options != "Move to SD Card" ]] && [[ $options != "Uninstall" ]] && [[ $options != "Find Games" ]]; then
     # The cancel button was clicked
@@ -653,6 +644,8 @@ else
     # User did not select to use separate app IDs
     use_separate_appids=false
 fi
+
+
 
 
 
