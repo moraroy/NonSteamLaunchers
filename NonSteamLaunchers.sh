@@ -565,10 +565,8 @@ if [ ${#args[@]} -eq 0 ]; then
             exit 1
         fi
 
-
         # Split the custom_websites_str variable into an array using ',' as the delimiter
         IFS=',' read -ra custom_websites <<< "$custom_websites_str"
-
     fi
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
@@ -640,6 +638,7 @@ else
     # User did not select to use separate app IDs
     use_separate_appids=false
 fi
+
 
 
 
