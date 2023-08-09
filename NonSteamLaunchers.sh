@@ -614,7 +614,14 @@ echo "Separate App IDs: $separate_app_ids"
 
 
 # Set the value of the options variable
-options="$selected_launchers_str|$selected_launchers"
+if [ ${#args[@]} -eq 0 ]; then
+    # No command line arguments were provided, so set the value of the options variable using the selected_launchers variable
+    options="$selected_launchers"
+else
+    # Command line arguments were provided, so set the value of the options variable using the selected_launchers_str variable
+    options="$selected_launchers_str"
+fi
+
 
 
 
