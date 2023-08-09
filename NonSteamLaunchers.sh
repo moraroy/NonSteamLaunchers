@@ -558,15 +558,23 @@ if [ ${#args[@]} -eq 0 ]; then
         # The user did not click the 'Cancel' button or select one of the extra buttons, so prompt for custom websites
         custom_websites_str=$(zenity --entry --title="Shortcut Creator" --text="Enter custom websites that you want shortcuts for, separated by commas. Leave blank and press ok if you dont want any. E.g. myspace.com, limewire.com, my.screenname.aol.com")
 
-        # Check if the user clicked the 'Cancel' button
-        if [ $? -eq 1 ]; then
-            # The user clicked the 'Cancel' button, so exit the script
-            echo "The cancel button was clicked"
+        # Check if the user clicked the 'Cancel' button or entered an empty string
+        if [ $? -eq 1 ] || [ -z "$custom_websites_str" ]; then
+            # The user clicked the 'Cancel' button or entered an empty string, so exit the script
+            echo "The cancel button was clicked or no custom websites were entered"
             exit 1
         fi
 
         # Split the custom_websites_str variable into an array using ',' as the delimiter
         IFS=',' read -ra custom_websites <<< "$custom_websites_str"
+
+        # Check if no options were selected and no custom website was provided
+        if [ -z "$options" ] && [ -z "$custom_websites" ]; then
+            # No options were selected and no custom website was provided
+            zenity --error --text="No options were selected and no custom website was provided. The script will now exit." --width=200 --height=150
+            exit 1
+        fi
+
     fi
 else
     # Command line arguments were provided, so set the value of the options variable using the command line arguments
