@@ -162,7 +162,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
            .join(', ');
 
-       setProgress({ percent:0, status:`Calling serverAPI... Installing ${selectedLaunchers}` });
+       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}` });
 
        console.log(`Selected options:${JSON.stringify(options)}`);
        console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
