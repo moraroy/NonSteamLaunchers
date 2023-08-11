@@ -235,7 +235,7 @@
           { name: 'epicGames', label: 'Epic Games' },
           { name: 'gogGalaxy', label: 'Gog Galaxy' },
           { name: 'origin', label: 'Origin' },
-          { name: 'uplay', label: 'Uplay' },
+          { name: 'uplay', label: 'Ubisoft Connect' },
           { name: 'battleNet', label: 'Battle.net' },
           { name: 'amazonGames', label: 'Amazon Games' },
           { name: 'eaApp', label: 'EA App' },
@@ -260,7 +260,7 @@
       const launcherOptions = optionsData.filter(({ name }) => ['epicGames', 'gogGalaxy', 'origin', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
       const streamingOptions = optionsData.filter(({ name }) => ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube'].includes(name));
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! I hope it works... aka nasty lawn chairs"),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! I hope it works..."),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy!"),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Separate App IDs", checked: separateAppIds, onChange: setSeparateAppIds })),
