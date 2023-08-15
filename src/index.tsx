@@ -266,10 +266,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return (
     <>
       <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
-        Welcome to the decky plugin version of NonSteamLaunchers! I hope it works... P.S. Create Website shortcut doesnt hold variables yet, WIP
+        Welcome to the decky plugin version of NonSteamLaunchers! I hope it works...
       </PanelSectionRow>
       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-        Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix, thank you!
+        Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix, Create Website shortcut doesnt hold variables yet, WIP and some launchers are not available due to user input still looking for way around this thank you and please be patient as i add more features from the original script!
       </PanelSectionRow>
   
       <PanelSectionRow>
