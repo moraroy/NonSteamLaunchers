@@ -162,7 +162,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
            .join(', ');
 
-       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}` });
+       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will automatically restart` });
 
        console.log(`Selected options:${JSON.stringify(options)}`);
        console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
@@ -266,10 +266,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return (
     <>
       <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
-        Welcome to the decky plugin version of NonSteamLaunchers! I hope it works...
+        Welcome to the decky plugin version of NonSteamLaunchers! I hope it works... P.S. Create Website shortcut doesnt hold variables yet, WIP
       </PanelSectionRow>
       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-        Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy!
+        Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix, thank you!
       </PanelSectionRow>
   
       <PanelSectionRow>
