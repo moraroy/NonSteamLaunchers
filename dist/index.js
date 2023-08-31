@@ -172,7 +172,7 @@
               .filter(([_, isSelected]) => isSelected)
               .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
               .join(', ');
-          setProgress({ percent: 0, status: `Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will automatically restart` });
+          setProgress({ percent: 0, status: `Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart Automatically` });
           console.log(`Selected options:${JSON.stringify(options)}`);
           console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
           try {
@@ -261,7 +261,7 @@
       const streamingOptions = optionsData.filter(({ name }) => ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube'].includes(name));
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! I hope it works..."),
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix, Create Website shortcut doesnt hold variables yet, WIP and some launchers are not available due to user input still looking for way around this thank you and please be patient as i add more features from the original script!"),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix. The \"Create Website Shortcut\" doesnt hold variables yet that is a WIP. Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!"),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Separate App IDs", checked: separateAppIds, onChange: setSeparateAppIds })),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
