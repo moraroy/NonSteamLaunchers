@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2155
-
 set -x              # activate debugging (execution shown)
 set -o pipefail     # capture error from pipes
 # set -eu           # exit immediately, undefined vars are errors
 
 # ENVIRONMENT VARIABLES
 # $USER
-logged_in_user=$(logname)
+[[ -n $(logname >/dev/null 2>&1) ]] && logged_in_user=$(logname) || logged_in_user=$(whoami)
 
 # $UID
 # logged_in_uid=$(id -u "${logged_in_user}")
@@ -21,7 +19,7 @@ logged_in_home=$(eval echo "~${logged_in_user}")
 download_dir="${logged_in_home}/Downloads/NonSteamLaunchersInstallation"
 
 # Create a log file in the same directory as the desktop file/.sh file
-exec >> ${logged_in_home}/Downloads/NonSteamLaunchers-install.log 2>&1
+exec >> "${logged_in_home}/Downloads/NonSteamLaunchers-install.log" 2>&1
 
 # Version number (major.minor)
 version=v2.99
@@ -517,7 +515,7 @@ separate_app_ids=false
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so display the main zenity window
-    selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation, One Prefix, NonSteamLaunchers" FALSE "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
+    selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation, One Prefix, NonSteamLaunchers" FALSE "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX'S" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $origin_value "$origin_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $minecraft_value "$minecraft_text" $psplus_value "$psplus_text" $dmm_value "$dmm_text" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "Youtube" FALSE "Twitch" --width=535 --height=740 --extra-button="Uninstall" --extra-button="Find Games" --extra-button="Start Fresh" --extra-button="Move to SD Card")
 
     # Check if the user clicked the 'Cancel' button or selected one of the extra buttons
     if [ $? -eq 1 ] || [[ $selected_launchers == "Start Fresh" ]] || [[ $selected_launchers == "Move to SD Card" ]] || [[ $selected_launchers == "Uninstall" ]] || [[ $selected_launchers == "Find Games" ]]; then
@@ -1314,7 +1312,7 @@ if [[ $options == "Find Games" ]]; then
     # Download the latest BoilR from GitHub (Linux version)
     mkdir -p "$download_dir"
     cd "$download_dir"
-    wget https://github.com/PhilipK/BoilR/releases/download/v.1.9.1/linux_BoilR
+    wget https://github.com/PhilipK/BoilR/releases/download/v.1.9.4/linux_BoilR
 
     # Add execute permissions to the linux_BoilR file
     chmod +x linux_BoilR
@@ -1335,66 +1333,65 @@ echo "0"
 echo "# Detecting, Updating and Installing GE-Proton"
 
 # check to make sure compatabilitytools.d exists and makes it if it doesnt
-    if [ ! -d "${logged_in_home}/.steam/root/compatibilitytools.d" ]; then
+if [ ! -d "${logged_in_home}/.steam/root/compatibilitytools.d" ]; then
     mkdir -p "${logged_in_home}/.steam/root/compatibilitytools.d"
 fi
 
 # Create NonSteamLaunchersInstallation subfolder in Downloads folder
-mkdir -p ${logged_in_home}/Downloads/NonSteamLaunchersInstallation
+mkdir -p "${logged_in_home}/Downloads/NonSteamLaunchersInstallation"
 
 # Set the path to the Proton directory
-proton_dir=$(find ~/.steam/root/compatibilitytools.d -maxdepth 1 -type d -name "GE-Proton*" | sort -V | tail -n1)
+proton_dir=$(find "${logged_in_home}/.steam/root/compatibilitytools.d" -maxdepth 1 -type d -name "GE-Proton*" | sort -V | tail -n1)
 
 # Set the URLs to download GE-Proton from
-ge_proton_url1=https://github.com/GloriousEggroll/proton-ge-custom/releases/latest/download/GE-Proton.tar.gz
-ge_proton_url2=https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-14/GE-Proton8-14.tar.gz
+ge_proton_url1="https://github.com/GloriousEggroll/proton-ge-custom/releases/latest/download/GE-Proton.tar.gz"
+ge_proton_url2="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-22/GE-Proton8-22.tar.gz"
 
 # Check if GE-Proton is installed
 if [ -z "$proton_dir" ]; then
     # Download GE-Proton using the first URL
     echo "Downloading GE-Proton using the first URL"
-    wget $ge_proton_url1 -O ${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz
+    ret_code=$(wget "$ge_proton_url1" -O "${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz"; echo $?)
 
     # Check if the download succeeded
-    if [ $? -ne 0 ]; then
+     if [ "$ret_code" -ne 0 ]; then
         # Download GE-Proton using the second URL
         echo "Downloading GE-Proton using the second URL"
-        wget $ge_proton_url2 -O ${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz
+        ret_code=$(wget "$ge_proton_url2" -O "${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz"; echo $?)
     fi
 
     # Check if either download succeeded
-    if [ $? -eq 0 ]; then
+    if [ "$ret_code" -eq 0 ]; then
         # Install GE-Proton
         echo "Installing GE-Proton"
-        tar -xvf ${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz -C ~/.steam/root/compatibilitytools.d/
-        proton_dir=$(find ~/.steam/root/compatibilitytools.d -maxdepth 1 -type d -name "GE-Proton*" | sort -V | tail -n1)
+        tar -xvf "${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz" -C "${logged_in_home}/.steam/root/compatibilitytools.d"
+        proton_dir=$(find "${logged_in_home}/.steam/root/compatibilitytools.d" -maxdepth 1 -type d -name "GE-Proton*" | sort -V | tail -n1)
     else
         # Handle download failure
         echo "Failed to download GE-Proton"
     fi
 else
-
-# Check if installed version is the latest version
-installed_version=$(basename $proton_dir | sed 's/GE-Proton-//')
+    # Check if installed version is the latest version
+    installed_version=$(basename $proton_dir | sed 's/GE-Proton-//')
     latest_version=$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | grep tag_name | cut -d '"' -f 4)
     if [ "$installed_version" != "$latest_version" ]; then
         # Download GE-Proton using the first URL
         echo "Downloading GE-Proton using the first URL"
-        wget $ge_proton_url1 -O ${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz
+        ret_code=$(wget "$ge_proton_url1" -O "${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz"; echo $?)
 
         # Check if the download succeeded
-        if [ $? -ne 0 ]; then
+        if [ "$ret_code" -ne 0 ]; then
             # Download GE-Proton using the second URL
             echo "Downloading GE-Proton using the second URL"
-            wget $ge_proton_url2 -O ${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz
+            ret_code=$(wget "$ge_proton_url2" -O "${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz"; echo $?)
         fi
 
         # Check if either download succeeded
-        if [ $? -eq 0 ]; then
+        if [ "$ret_code" -eq 0 ]; then
             # Install GE-Proton
             echo "Installing GE-Proton"
-            tar -xvf ${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz -C ~/.steam/root/compatibilitytools.d/
-            proton_dir=$(find ~/.steam/root/compatibilitytools.d -maxdepth 1 -type d -name "GE-Proton*" | sort -V | tail -n1)
+            tar -xvf "${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GE-Proton.tar.gz" -C "${logged_in_home}/.steam/root/compatibilitytools.d"
+            proton_dir=$(find "${logged_in_home}/.steam/root/compatibilitytools.d" -maxdepth 1 -type d -name "GE-Proton*" | sort -V | tail -n1)
         else
             # Handle download failure
             echo "Failed to download GE-Proton"
@@ -1427,7 +1424,7 @@ ubi_url=https://ubi.li/4vxt9
 ubi_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/UplayInstaller.exe
 
 # Set the URL to download the fourth file from
-origin_url=https://eaassets-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe
+origin_url=https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe
 
 # Set the path to save the fourth file to
 origin_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/OriginThinSetup.exe
@@ -2591,6 +2588,13 @@ if [[ $options == *"Amazon Luna"* ]]; then
     lunachromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://luna.amazon.com/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
 fi
 
+if [[ $options == *"Twitch"* ]]; then
+    # User selected Twitch
+    chromedirectory="\"$chrome_path\""
+    twitchchromelaunchoptions="run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://www.twitch.tv/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar"
+fi
+
+
 # Check if any custom websites were provided
 if [ ${#custom_websites[@]} -gt 0 ]; then
     # User entered one or more custom websites
@@ -2661,8 +2665,9 @@ if [[ -f "${steam_dir}/config/config.vdf" ]]; then
     # Initialize the most_recent variable
     most_recent=0
 
+	# TODO: `find` would likely be safer than globbing
     # Loop through all the userdata folders
-    for USERDATA_FOLDER in ~/.steam/root/userdata/*; do
+    for USERDATA_FOLDER in "${logged_in_home}"/.steam/root/userdata/*; do
         # Check if the current userdata folder is not the "0" or "anonymous" folder
         if [[ "$USERDATA_FOLDER" != *"/0" ]] && [[ "$USERDATA_FOLDER" != *"/anonymous" ]]; then
             # Get the access time of the current userdata folder
@@ -2746,7 +2751,7 @@ if [ -f "$config_vdf_path" ]; then
     cp "$config_vdf_path" "$backup_path"
 
     # Set the name of the compatibility tool to use
-    compat_tool_name="GE-Proton8-14"
+    compat_tool_name="GE-Proton8-22"
 else
     echo "Could not find config.vdf file"
 fi
@@ -2914,6 +2919,7 @@ create_new_entry('$chromedirectory', 'Disney+', '$disneychromelaunchoptions', '$
 create_new_entry('$chromedirectory', 'Amazon Prime Video', '$amazonchromelaunchoptions', '$chrome_startdir')
 create_new_entry('$chromedirectory', 'Youtube', '$youtubechromelaunchoptions', '$chrome_startdir')
 create_new_entry('$chromedirectory', 'Amazon Luna', '$lunachromelaunchoptions', '$chrome_startdir')
+create_new_entry('$chromedirectory', 'Twitch', '$twitchchromelaunchoptions', '$chrome_startdir')
 
 # Iterate over each custom website
 for custom_website in custom_websites:
@@ -3064,6 +3070,9 @@ config['controller_config']['geforce now'] = {
 }
 config['controller_config']['amazon luna'] = {
     'template': 'controller_neptune_gamepad+mouse.vdf'
+}
+config['controller_config']['twitch'] = {
+    'workshop': '2875543745'
 }
 
 # Save the updated config dictionary to the configset_controller_neptune.vdf file

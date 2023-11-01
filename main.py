@@ -63,7 +63,7 @@ class Plugin:
         selected_options_list = []
         for option, is_selected in selected_options.items():
             if is_selected:
-                if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube']:
+                if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube', 'twitch']:
                     # Streaming site or game service option
                     selected_option = camel_to_title(option).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+')  # Change this line to replace 'Geforce' with 'GeForce'
                     if ' ' in selected_option:

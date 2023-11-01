@@ -134,7 +134,8 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
      hulu:false,
      disneyPlus:false,
      amazonPrimeVideo:false,
-     youtube:false
+     youtube:false,
+     twitch:false
    });
 
    const [progress, setProgress] = useState({ percent:0, status:'' });
@@ -257,11 +258,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'hulu', label: 'Hulu' },
     { name: 'disneyPlus', label: 'Disney+' },
     { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
-    { name: 'youtube', label: 'Youtube' }
+    { name: 'youtube', label: 'Youtube' },
+    { name: 'twitch', label: 'Twitch' }
   ];
 
   const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
-  const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube'].includes(name));
+  const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube', 'twitch'].includes(name));
  
   return (
     <>
