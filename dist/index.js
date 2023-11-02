@@ -165,21 +165,79 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
+      const optionsData = [
+          { name: 'epicGames', label: 'Epic Games' },
+          { name: 'gogGalaxy', label: 'Gog Galaxy' },
+          { name: 'origin', label: 'Origin' },
+          { name: 'uplay', label: 'Ubisoft Connect' },
+          { name: 'battleNet', label: 'Battle.net' },
+          { name: 'amazonGames', label: 'Amazon Games' },
+          { name: 'eaApp', label: 'EA App' },
+          { name: 'legacyGames', label: 'Legacy Games' },
+          { name: 'itchIo', label: 'Itch.io' },
+          { name: 'humbleGames', label: 'Humble Games' },
+          { name: 'indieGala', label: 'IndieGala Client' },
+          { name: 'minecraft', label: 'Minecraft' },
+          { name: 'psPlus', label: 'Playstation Plus' },
+          { name: 'xboxGamePass', label: 'Xbox Game Pass' },
+          { name: 'geforceNow', label: 'GeForce Now' },
+          { name: 'amazonLuna', label: 'Amazon Luna' },
+          { name: 'netflix', label: 'Netflix' },
+          { name: 'hulu', label: 'Hulu' },
+          { name: 'disneyPlus', label: 'Disney+' },
+          { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
+          { name: 'youtube', label: 'Youtube' },
+          { name: 'twitch', label: 'Twitch' }
+      ];
+      const launcherOptions = optionsData.filter(({ name }) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
+      const streamingOptions = optionsData.filter(({ name }) => ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube', 'twitch'].includes(name));
       return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! I hope it works..."),
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix. The \"Create Website Shortcut\" doesnt hold variables yet that is a WIP. Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!"),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix. Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!"),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Separate App IDs", checked: separateAppIds, onChange: setSeparateAppIds })),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
-              Object.keys(options).map((name) => (window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => handleButtonClick(name) },
-                  options[name] ? '✓' : '',
-                  " ",
-                  name))),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleStartFreshClick }, "Start Fresh"))));
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleStartFreshClick }, "Start Fresh")),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Game Launchers" },
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Here you choose your launchers you want to install and let NSL do the rest. Once Steam restarts your launchers will be in your library!"),
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options[name] ? 'selected' : '', layout: "below", onClick: () => handleButtonClick(name) },
+                  window.SP_REACT.createElement("span", { className: "checkmark" }, options[name] ? '✓' : ''),
+                  ' ',
+                  label))))),
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Game and Movie Streaming" },
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Please install Google Chrome via the Discover Store in desktop mode first. NSL uses Chrome to launch these sites. Do NOT \"Force Compatability\" on these they will not open with proton."),
+              window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null, streamingOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { className: options[name] ? 'selected' : '', layout: "below", onClick: () => handleButtonClick(name) },
+                  window.SP_REACT.createElement("span", { className: "checkmark" }, options[name] ? '✓' : ''),
+                  ' ',
+                  label))))),
+          window.SP_REACT.createElement("style", null, `
+        .checkmark {
+          color: green;
+        }
+        .selected {
+          background-color: #eee;
+        }
+        progress {
+          display:block;
+          width: 100%;
+          margin-top: 5px;
+          height: 20px;
+        }
+        pre {
+          white-space: pre-wrap;
+        }
+        .decky-ButtonItem {
+          margin-bottom: 10px;
+          border-bottom: none;
+        }
+        .decky-PanelSection {
+          border-bottom: none;
+        }
+      `)));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       return {
