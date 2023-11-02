@@ -83,7 +83,7 @@
 
   const Content = ({ serverAPI }) => {
       console.log('Content rendered');
-      const [options] = React.useState({
+      const [options, setOptions] = React.useState({
           epicGames: false,
           gogGalaxy: false,
           origin: false,
@@ -112,6 +112,12 @@
       });
       const [progress, setProgress] = React.useState({ percent: 0, status: '' });
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
+      const handleButtonClick = (name) => {
+          setOptions((prevOptions) => ({
+              ...prevOptions,
+              [name]: !prevOptions[name],
+          }));
+      };
       const handleInstallClick = async () => {
           console.log('handleInstallClick called');
           const selectedLaunchers = Object.entries(options)
@@ -168,6 +174,10 @@
               window.SP_REACT.createElement("progress", { value: progress.percent, max: 100 }),
               window.SP_REACT.createElement("div", null, progress.status)),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, null,
+              Object.keys(options).map((name) => (window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => handleButtonClick(name) },
+                  options[name] ? '✓' : '',
+                  " ",
+                  name))),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleInstallClick }, "Install"),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleStartFreshClick }, "Start Fresh"))));
   };

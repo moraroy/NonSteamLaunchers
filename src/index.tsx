@@ -13,7 +13,7 @@ import { FaRocket } from "react-icons/fa";
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
    console.log('Content rendered');
 
-   const [options] = useState({
+   const [options, setOptions] = useState({
      epicGames: false,
      gogGalaxy: false,
      origin: false,
@@ -44,6 +44,13 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
    const [progress, setProgress] = useState({ percent:0, status:'' });
 
    const [separateAppIds, setSeparateAppIds] = useState(false);
+
+   const handleButtonClick = (name:string) => {
+       setOptions((prevOptions) => ({
+           ...prevOptions,
+           [name]: !prevOptions[name],
+       }));
+   };
 
    const handleInstallClick = async () => {
        console.log('handleInstallClick called');
@@ -116,6 +123,11 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       </PanelSectionRow>
   
       <PanelSection>
+        {Object.keys(options).map((name) => (
+          <ButtonItem layout="below" onClick={() => handleButtonClick(name)}>
+            {options[name] ? '✓' : ''} {name}
+          </ButtonItem>
+        ))}
         <ButtonItem layout="below" onClick={handleInstallClick}>
           Install
         </ButtonItem>
