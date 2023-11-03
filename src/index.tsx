@@ -263,7 +263,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube', 'twitch'].includes(name));
  
   return (
-    <>
+    <div className="decky-plugin">
       <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
         Welcome to the decky plugin version of NonSteamLaunchers! I hope it works...
       </PanelSectionRow>
@@ -332,31 +332,31 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       <style>
         {`
-          .checkmark {
+          .decky-plugin .checkmark {
             color: green;
           }
-          .selected {
+          .decky-plugin .selected {
             background-color: #eee;
           }
-          progress {
+          .decky-plugin progress {
             display:block;
             width: 100%;
             margin-top: 5px;
             height: 20px;
           }
-          pre {
+          .decky-plugin pre {
             white-space: pre-wrap;
           }
-          .decky-ButtonItem {
+          .decky-plugin .decky-ButtonItem {
             margin-bottom: 10px;
             border-bottom: none;
           }
-          .decky-PanelSection {
+          .decky-plugin .decky-PanelSection {
             border-bottom: none;
           }
         `}
       </style>
-    </>
+    </div>
   );
   };
   

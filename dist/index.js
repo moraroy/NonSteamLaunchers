@@ -261,7 +261,7 @@
       ];
       const launcherOptions = optionsData.filter(({ name }) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
       const streamingOptions = optionsData.filter(({ name }) => ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube', 'twitch'].includes(name));
-      return (window.SP_REACT.createElement(window.SP_REACT.Fragment, null,
+      return (window.SP_REACT.createElement("div", { className: "decky-plugin" },
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! I hope it works..."),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix. The \"Create Website Shortcut\" doesnt hold variables yet that is a WIP. Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!"),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
@@ -286,26 +286,26 @@
                   ' ',
                   label))))),
           window.SP_REACT.createElement("style", null, `
-          .checkmark {
+          .decky-plugin .checkmark {
             color: green;
           }
-          .selected {
+          .decky-plugin .selected {
             background-color: #eee;
           }
-          progress {
+          .decky-plugin progress {
             display:block;
             width: 100%;
             margin-top: 5px;
             height: 20px;
           }
-          pre {
+          .decky-plugin pre {
             white-space: pre-wrap;
           }
-          .decky-ButtonItem {
+          .decky-plugin .decky-ButtonItem {
             margin-bottom: 10px;
             border-bottom: none;
           }
-          .decky-PanelSection {
+          .decky-plugin .decky-PanelSection {
             border-bottom: none;
           }
         `)));
