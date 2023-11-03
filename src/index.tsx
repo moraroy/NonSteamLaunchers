@@ -259,7 +259,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'twitch', label: 'Twitch' }
   ];
 
-  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
+  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
   const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube', 'twitch'].includes(name));
  
   return (

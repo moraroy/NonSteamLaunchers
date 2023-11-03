@@ -229,7 +229,7 @@
           { name: 'youtube', label: 'Youtube' },
           { name: 'twitch', label: 'Twitch' }
       ];
-      const launcherOptions = optionsData.filter(({ name }) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
+      const launcherOptions = optionsData.filter(({ name }) => ['epicGames', 'gogGalaxy', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
       const streamingOptions = optionsData.filter(({ name }) => ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube', 'twitch'].includes(name));
       return (window.SP_REACT.createElement("div", { className: "decky-plugin" },
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "16px", fontWeight: "bold", marginBottom: "10px" } }, "Welcome to the decky plugin version of NonSteamLaunchers! I hope it works..."),
