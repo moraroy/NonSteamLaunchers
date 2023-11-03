@@ -2,14 +2,11 @@ import {
   ButtonItem,
   definePlugin,
   findSP,
-  Menu,
-  MenuItem,
   ModalRoot,
   ModalRootProps,
   PanelSection,
   PanelSectionRow,
   ServerAPI,
-  showContextMenu,
   showModal,
   staticClasses,
   TextField,
@@ -295,24 +292,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
           Create Website Shortcut
         </ButtonItem>
-  
-        <PanelSectionRow>
-          <ButtonItem
-            layout="below"
-            onClick={(e: React.MouseEvent) =>
-              showContextMenu(
-                <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                  <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                  <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                  <MenuItem onSelected={() => {}}>Item #3</MenuItem>
-                </Menu>,
-                e.currentTarget ?? window
-              )
-            }
-          >
-            does nothing yet
-          </ButtonItem>
-        </PanelSectionRow>
       </PanelSection>
   
       <PanelSection title="Game Launchers">
