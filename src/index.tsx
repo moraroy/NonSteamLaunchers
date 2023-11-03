@@ -1,17 +1,111 @@
 import {
   ButtonItem,
   definePlugin,
+  findSP,
+  ModalRoot,
+  ModalRootProps,
   PanelSection,
   PanelSectionRow,
   ServerAPI,
+  showModal,
   staticClasses,
+  TextField,
   ToggleField,
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useContext, useEffect, useReducer, useState, VFC, createContext } from "react";
 import { FaRocket } from "react-icons/fa";
+
+// Define an action type for updating customWebsites
+type UpdateCustomWebsitesAction = {
+  type: 'UPDATE_CUSTOM_WEBSITES';
+  customWebsites: string[];
+};
+
+// Define a reducer function for updating customWebsites
+const customWebsitesReducer = (
+  state: string[],
+  action: UpdateCustomWebsitesAction
+) => {
+  console.log(`action: ${JSON.stringify(action)}`);
+  switch (action.type) {
+    case 'UPDATE_CUSTOM_WEBSITES':
+      // Store the updated customWebsites in localStorage
+      localStorage.setItem('customWebsites', JSON.stringify(action.customWebsites));
+      return action.customWebsites;
+    default:
+      return state;
+  }
+};
+
+// Create a context with an empty array as the default value
+const CustomWebsitesContext = createContext<{
+  customWebsites: string[];
+  dispatch: React.Dispatch<UpdateCustomWebsitesAction>;
+}>({
+  customWebsites: [],
+  dispatch: () => {},
+});
+
+// Create a provider component that takes in children as a prop
+const CustomWebsitesProvider: React.FC = ({ children }) => {
+  // Retrieve the customWebsites from localStorage on initial render
+  const [customWebsites, dispatch] = useReducer(customWebsitesReducer, JSON.parse(localStorage.getItem('customWebsites') || '[]'));
+
+  // Render the provider and pass in the customWebsites state and dispatch function as the value
+  return (
+    <CustomWebsitesContext.Provider value={{ customWebsites, dispatch }}>
+      {children}
+    </CustomWebsitesContext.Provider>
+  );
+};
+
+type SearchModalProps = ModalRootProps & {
+  setModalResult?(result: string[]): void;
+  promptText: string;
+};
+
+const SearchModal: VFC<SearchModalProps> = ({
+  closeModal,
+  setModalResult,
+  promptText
+}) => {
+  console.log('SearchModal rendered');
+
+  const [searchText, setSearchText] = useState('');
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    // Split the entered text by commas and trim any whitespace
+    const websites = searchText.split(',').map((website) => website.trim());
+    console.log(`websites: ${JSON.stringify(websites)}`);
+    setModalResult && setModalResult(websites);
+    closeModal && closeModal();
+  };
+
+  return (
+    <ModalRoot closeModal={handleSubmit}>
+      <form>
+        <TextField
+          focusOnMount={true}
+          label="Websites"
+          placeholder={promptText}
+          onChange={handleTextChange}
+        />
+        <p>You can separate multiple websites by using commas.</p>
+        <button type="button" onClick={handleSubmit}>Submit</button>
+      </form>
+    </ModalRoot>
+  );
+};
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
    console.log('Content rendered');
+
+   // Use the useContext hook to access customWebsites and dispatch from the context
+   const { customWebsites, dispatch } = useContext(CustomWebsitesContext);
 
    const [options, setOptions] = useState({
      epicGames: false,
@@ -45,6 +139,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
    const [separateAppIds, setSeparateAppIds] = useState(false);
 
+   const [clickedButton, setClickedButton] = useState('');
+
+   useEffect(() => {
+       console.log(`customWebsites updated:${JSON.stringify(customWebsites)}`);
+   }, [customWebsites]);
+
    const handleButtonClick = (name:string) => {
        setOptions((prevOptions) => ({
            ...prevOptions,
@@ -63,10 +163,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
        setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart Automatically` });
 
        console.log(`Selected options:${JSON.stringify(options)}`);
+       console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
 
        try {
            const result = await serverAPI.callPluginMethod("install", {
                selected_options: options,
+               custom_websites: customWebsites,
                separate_app_ids: separateAppIds,
                start_fresh: false // Pass true for the start_fresh parameter
            });
@@ -91,6 +193,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
        try {
            const result = await serverAPI.callPluginMethod("install", {
                selected_options: options,
+               custom_websites: customWebsites,
                separate_app_ids: separateAppIds,
                start_fresh: true // Pass true for the start_fresh parameter
            });
@@ -106,6 +209,26 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            setProgress({ percent:100, status:'Installation failed.' });
            console.error('Error calling _main method on server-side plugin:', error);
        }
+   };
+
+   const handleCreateWebsiteShortcutClick = async () => {
+       console.log('handleCreateWebsiteShortcutClick called');
+
+       setClickedButton('createWebsiteShortcut');
+
+       showModal(
+           <SearchModal
+               promptText="Enter website"
+               setModalResult={(result) => {
+                   console.log(`result:${JSON.stringify(result)}`);
+                   if (clickedButton === 'createWebsiteShortcut') {
+                       // Handle result for createWebsiteShortcut button
+                       dispatch({ type:'UPDATE_CUSTOM_WEBSITES', customWebsites:result });
+                   }
+               }}
+           />,
+           findSP()
+       );
    };
    
    const optionsData = [
@@ -145,7 +268,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         Welcome to the decky plugin version of NonSteamLaunchers! I hope it works...
       </PanelSectionRow>
       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-        Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix. Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!
+        Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... you may need to restart your steam deck even after steam restarts the first time. This is a known bug im trying to fix. The "Create Website Shortcut" doesnt hold variables yet that is a WIP. Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!
       </PanelSectionRow>
   
       <PanelSectionRow>
@@ -165,6 +288,11 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         <ButtonItem layout="below" onClick={handleStartFreshClick}>
           Start Fresh
         </ButtonItem>
+        {/*
+        <ButtonItem layout="below" onClick={handleCreateWebsiteShortcutClick}>
+          Create Website Shortcut
+        </ButtonItem>
+        */}
       </PanelSection>
   
       <PanelSection title="Game Launchers">
@@ -237,7 +365,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return {
    title: <div className={staticClasses.Title}>NonSteamLaunchers</div>,
    content: (
+     <CustomWebsitesProvider>
        <Content serverAPI={serverApi} />
+     </CustomWebsitesProvider>
    ),
    icon: <FaRocket />,
   };
