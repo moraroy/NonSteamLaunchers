@@ -71,7 +71,7 @@ class Plugin:
                     selected_options_list.append(selected_option)
                 elif option != 'separateAppIds':
                     # Launcher option (excluding the Separate App IDs option)
-                    selected_option = camel_to_title(option).replace('Ea App', 'EA App').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation Plus').replace('DMM', 'DMM Games')
+                    selected_option = camel_to_title(option).replace('Ea App', 'EA App').replace('Uplay', 'Ubisoft Connect').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation Plus').replace('DMM', 'DMM Games')
                     if ' ' in selected_option:
                         selected_option = f'"{selected_option}"'
                     selected_options_list.append(selected_option)

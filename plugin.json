@@ -1,7 +1,7 @@
 {
   "name": "NonSteamLaunchers",
   "author": "moraroy",
-  "flags": ["debug", "_root"],
+  "flags": ["debug"],
   "publish": {
     "tags": ["template", "root"],
     "description": "NonSteamLaunchers - The easiest way to add your favorite Non-Steam Launchers.",

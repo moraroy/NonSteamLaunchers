@@ -152,15 +152,15 @@ fi
 if [[ -f "$uplay_path1" ]]; then
     # Uplay is installed in path 1
     uplay_value="FALSE"
-    uplay_text="Uplay ===> $uplay_path1"
+    uplay_text="Ubisoft Connect ===> $uplay_path1"
 elif [[ -f "$uplay_path2" ]]; then
     # Uplay is installed in path 2
     uplay_value="FALSE"
-    uplay_text="Uplay ===> $uplay_path2"
+    uplay_text="Ubisoft Connect ===> $uplay_path2"
 else
     # Uplay is not installed
     uplay_value="FALSE"
-    uplay_text="Uplay"
+    uplay_text="Ubisoft Connect"
 fi
 
 # Check if Battle.net is installed
@@ -1345,7 +1345,7 @@ proton_dir=$(find "${logged_in_home}/.steam/root/compatibilitytools.d" -maxdepth
 
 # Set the URLs to download GE-Proton from
 ge_proton_url1="https://github.com/GloriousEggroll/proton-ge-custom/releases/latest/download/GE-Proton.tar.gz"
-ge_proton_url2="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-22/GE-Proton8-22.tar.gz"
+ge_proton_url2="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-23/GE-Proton8-23.tar.gz"
 
 # Check if GE-Proton is installed
 if [ -z "$proton_dir" ]; then
@@ -1421,7 +1421,7 @@ exe_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/GOG_Galaxy_2.
 ubi_url=https://ubi.li/4vxt9
 
 # Set the path to save the third file to
-ubi_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/UplayInstaller.exe
+ubi_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/UbisoftConnectInstaller.exe
 
 # Set the URL to download the fourth file from
 origin_url=https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe
@@ -1644,10 +1644,10 @@ fi
 
 wait
 echo "50"
-echo "# Downloading & Installing Uplay ...please wait..."
+echo "# Downloading & Installing Ubisoft Connect ...please wait..."
 
 # Check if user selected Uplay
-if [[ $options == *"Uplay"* ]]; then
+if [[ $options == *"Ubisoft Connect"* ]]; then
     # User selected Uplay
     echo "User selected Uplay"
 
@@ -1675,7 +1675,7 @@ if [[ $options == *"Uplay"* ]]; then
     # Download UBI file
     if [ ! -f "$ubi_file" ]; then
         echo "Downloading UBI file"
-        wget $ubi_url -O $ubi_file
+        wget --no-check-certificate $ubi_url -O $ubi_file
     fi
 
     # Run the UBI file using Proton with the /passive option
@@ -1783,6 +1783,15 @@ if [[ $options == *"Battle.net"* ]]; then
     # Run the BATTLE file using Proton with the /passive option
     echo "Running BATTLE file using Proton with the /passive option"
     "$STEAM_RUNTIME" "$proton_dir/proton" run "$battle_file" Battle.net-Setup.exe --lang=enUS --installpath="C:\Program Files (x86)\Battle.net"
+
+    while true; do
+    if pgrep -f "Battle.net.exe" > /dev/null; then
+        pkill -f "Battle.net.exe"
+        break
+    fi
+    sleep 1
+    done
+
 fi
 
 wait
@@ -2751,7 +2760,7 @@ if [ -f "$config_vdf_path" ]; then
     cp "$config_vdf_path" "$backup_path"
 
     # Set the name of the compatibility tool to use
-    compat_tool_name="GE-Proton8-22"
+    compat_tool_name="GE-Proton8-23"
 else
     echo "Could not find config.vdf file"
 fi

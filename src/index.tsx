@@ -160,7 +160,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
            .join(', ');
 
-       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart Automatically` });
+       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart Automatically.` });
 
        console.log(`Selected options:${JSON.stringify(options)}`);
        console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
@@ -245,7 +245,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'indieGala', label: 'IndieGala Client' },
     { name: 'rockstar', label: 'Rockstar Games Launcher' },
     { name: 'glyph', label: 'Glyph Laucnher' },
-    { name: 'minecraft', label: 'Minecraft' },
+    { name: 'minecraft', label: 'Minecraft: Java Edition' },
     { name: 'psPlus', label: 'Playstation Plus' },
     { name: 'dmm', label: 'DMM Games' },
     { name: 'xboxGamePass', label: 'Xbox Game Pass' },
@@ -259,7 +259,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'twitch', label: 'Twitch' }
   ];
 
-  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
+  const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
   const streamingOptions = optionsData.filter(({name}) => ['xboxGamePass','geforceNow','amazonLuna','netflix','hulu','disneyPlus','amazonPrimeVideo','youtube', 'twitch'].includes(name));
  
   return (
@@ -297,7 +297,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       <PanelSection title="Game Launchers">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          Here you choose your launchers you want to install and let NSL do the rest. Once Steam restarts your launchers will be in your library!
+          Here you choose your launchers you want to install and let NSL do the rest. Once Steam restarts your launchers will be in your library! If they do not start up, restart your steam deck manually.
         </PanelSectionRow>
         <PanelSectionRow>
           {launcherOptions.map(({ name, label }) => (
