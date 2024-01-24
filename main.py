@@ -50,7 +50,7 @@ class Plugin:
             os.path.join(decky_plugin.DECKY_HOME, "template"),
             os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
 
-    async def install(self, selected_options, custom_websites, separate_app_ids, start_fresh):
+    async def install(self, selected_options, custom_websites, separate_app_ids, start_fresh, stop_game_scanner=False):
         decky_plugin.logger.info('install was called')
 
         # Log the arguments for debugging
@@ -58,6 +58,7 @@ class Plugin:
         decky_plugin.logger.info(f"custom_websites: {custom_websites}")
         decky_plugin.logger.info(f"separate_app_ids: {separate_app_ids}")
         decky_plugin.logger.info(f"start_fresh: {start_fresh}")
+        decky_plugin.logger.info(f"stop_game_scanner: {stop_game_scanner}")
 
         # Convert the selected options mapping to a list of strings
         selected_options_list = []
@@ -65,31 +66,29 @@ class Plugin:
             if is_selected:
                 if option in ['xboxGamePass', 'geforceNow', 'amazonLuna', 'netflix', 'hulu', 'disneyPlus', 'amazonPrimeVideo', 'youtube', 'twitch']:
                     # Streaming site or game service option
-                    selected_option = camel_to_title(option).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+')  # Change this line to replace 'Geforce' with 'GeForce'
-                    if ' ' in selected_option:
-                        selected_option = f'"{selected_option}"'
-                    selected_options_list.append(selected_option)
+                    selected_option = camel_to_title(option).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+')
+                    selected_options_list.append(f'"{selected_option}"')
                 elif option != 'separateAppIds':
                     # Launcher option (excluding the Separate App IDs option)
                     selected_option = camel_to_title(option).replace('Ea App', 'EA App').replace('Uplay', 'Ubisoft Connect').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation Plus').replace('DMM', 'DMM Games')
-                    if ' ' in selected_option:
-                        selected_option = f'"{selected_option}"'
-                    selected_options_list.append(selected_option)
+                    selected_options_list.append(f'"{selected_option}"')
+
 
         # Log the selected_options_list for debugging
         decky_plugin.logger.info(f"selected_options_list: {selected_options_list}")
 
-        # Set the path to the NonSteamLaunchers.sh script
-        script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
-
-        # Change the permissions of the NonSteamLaunchers.sh script to make it executable
-        os.chmod(script_path, 0o755)
+        # Set the command prefix
+        command_prefix = "/bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- "
 
         # Temporarily disable access control for the X server
         subprocess.run(['xhost', '+'])
 
-        # Run the NonSteamLaunchers.sh script with the selected options, custom websites, separate app ids option, and start fresh option using subprocess.Popen
-        command = [script_path] + [option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + (['SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX\'S'] if separate_app_ids else []) + (['Start Fresh'] if start_fresh else [])
+        # Construct the command to run
+        command_suffix = ' '.join([option for option in selected_options_list] + [website for website in custom_websites if website and website.strip() != ''] + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + ([f'" Stop NSLGameScanner "'] if stop_game_scanner else [])) + "'"
+
+
+
+        command = command_prefix + command_suffix
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")
@@ -99,7 +98,7 @@ class Plugin:
         env['DISPLAY'] = ':0'
         env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
 
-        process = subprocess.Popen(command, env=env)
+        process = subprocess.Popen(command, shell=True, env=env)
 
         # Wait for the script to complete and get the exit code
         exit_code = process.wait()

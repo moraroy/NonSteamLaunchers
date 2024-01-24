@@ -160,7 +160,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
            .join(', ');
 
-       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart Automatically.` });
+       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart automatically.` });
 
        console.log(`Selected options:${JSON.stringify(options)}`);
        console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
@@ -188,6 +188,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
    const handleStartFreshClick = async () => {
        console.log('handleStartFreshClick called');
+       setProgress({ percent:0, status:'wiping...if there is enough toilet paper...' });
 
        // Call the install method on the server-side plugin with the appropriate arguments
        try {
@@ -199,14 +200,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            });
 
            if (result) {
-               setProgress({ percent:100, status:'Installation successful!' });
-               alert('Installation successful!');
+               setProgress({ percent:100, status:'there was...NSL has been wiped! Dont forget to delete your shortcuts!' });
+               alert('there was...NSL has been wiped! Dont forget to delete your shortcuts!');
            } else {
-               setProgress({ percent:100, status:'Installation failed.' });
-               alert('Installation failed.');
+               setProgress({ percent:100, status:'wipe failed.' });
+               alert('wipe failed.');
            }
        } catch (error) {
-           setProgress({ percent:100, status:'Installation failed.' });
+           setProgress({ percent:100, status:'wipe failed.' });
            console.error('Error calling _main method on server-side plugin:', error);
        }
    };
@@ -230,6 +231,34 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            findSP()
        );
    };
+   
+   const handleStopNSLGameScannerClick = async () => {
+    console.log('handleStopNSLGameScannerClick called');
+    setProgress({ percent:0, status:'Stopping game scanner...' });
+    try {
+      const result = await serverAPI.callPluginMethod("install", {
+        selected_options: options,
+        custom_websites: customWebsites,
+        separate_app_ids: separateAppIds,
+        start_fresh: false,
+        stop_game_scanner: true
+      });
+      if (result) {
+        setProgress({ percent:100, status:'Game scanner stopped successfully!' });
+        alert('Game scanner stopped successfully!');
+      } else {
+        setProgress({ percent:100, status:'Failed to stop game scanner.' });
+        alert('Failed to stop game scanner.');
+      }
+    } catch (error) {
+      setProgress({ percent:100, status:'Error stopping game scanner.' });
+      console.error('Error calling install method on server-side plugin:', error);
+    }
+  };
+  
+  
+
+  
    
    const optionsData = [
     { name: 'epicGames', label: 'Epic Games' },
@@ -265,10 +294,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   return (
     <div className="decky-plugin">
       <PanelSectionRow style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
-        Welcome to the decky plugin version of NonSteamLaunchers! I hope it works...
+        Welcome to the decky plugin version of NonSteamLaunchers!
       </PanelSectionRow>
       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-        Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as i add more features from the original script!
+        Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as I add more features from the original script! The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect and the EA App.
       </PanelSectionRow>
   
       <PanelSectionRow>
@@ -279,6 +308,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         <progress value={progress.percent} max={100} />
         <div>{progress.status}</div>
       </PanelSectionRow>
+
+      <PanelSection>
+        <ButtonItem layout="below" onClick={handleStopNSLGameScannerClick}>
+          Stop NSLGameScanner
+        </ButtonItem>
+        <p style={{ fontSize: "12px", marginBottom: "10px" }}>
+          When you install a launcher, this NSLGameScanner becomes live. The games that you download will automatically be added to your library on every restart of your deck. If for any reason you want this to stop, simply click this button.
+        </p>
+      </PanelSection>
   
       <PanelSection>
         <ButtonItem layout="below" onClick={handleInstallClick}>
