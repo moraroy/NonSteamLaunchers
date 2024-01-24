@@ -32,11 +32,12 @@ Supported Stores 🛍
 - Legacy Games ✔️
 - Origin (only working way) ✔️
 - Rockstar Games Launcher ✔️
-- Ubisoft ✔️
+- Ubisoft Connect ✔️
 - Glyph ✔️
 - Minecraft ✔️
 - Playstation Plus ✔️
 - DMM Games Player ✔️
+- VK Play ✔️
 
 <h1 align="center">
 Supported Streaming Sites for games and as well as any website. 🌐
@@ -51,12 +52,18 @@ Supported Streaming Sites for games and as well as any website. 🌐
 - Disney+ ✔️
 - Hulu ✔️
 - Youtube ✔️
+- Twitch ✔️
 
 <h1 align="left">
 Find Games
 </h1>
 
-Use the "Find Games" button to load [Boilr](https://github.com/PhilipK/BoilR) this will open Boilr for you to set your settings so you can find your games easier.
+Use the "Find Games" button to load [Boilr](https://github.com/PhilipK/BoilR) this will open Boilr for you to set your settings so you can find your games easier. 
+
+"NSLGameScanner.service" is also live when you use this script and continues after the script is closed and even works after your Steam Deck has restarted. This works in the background as a service file to automatically add your games to your library on every Steam restart. Currently adds:
+- Epic Games 🎮
+- Ubisoft Connect 🎮
+- EA App 🎮
 
 <h1 align="center">
 How to Install 🔧
@@ -70,7 +77,7 @@ How to Install 🔧
 * Go to desktop mode, right click the download button above and save the .desktop file to your Steam Deck desktop. 
 * Go to your desktop, click the NonSteamLaunchers icon, it will download and run the latest NonSteamLaunchers.sh from this repository and run it.
 * You will simply have to choose which launcher to install and let the script handle the rest. 💻 No files are left in your "Downloads" they are deleted after installation.
-* After running the script, launch Steam on your Steam Deck. You'll find the new launchers in your library under the non-steam tab. Click a launcher to see your installed games from that store, and launch them directly from Steam! Even in gamemode 🥳
+* After running the script, launch Steam on your Steam Deck. You'll find the new launchers in your library under the non-steam tab. Click a launcher to see your installed games from that store, and launch them directly from Steam! If you have downloaded a game inside of your launcher, restart your deck or steam adn the NSLGameScanner.service should add it to your library. Even in gamemode 🥳
 
 <!--- TODO: handful of broken icons (cf. 🡺🡺🡺 ); probably should remove or replace them with more common font to handle unicode-->
 
@@ -93,7 +100,6 @@ Currently Working On 👷‍♂️
 </h1>
 
 * Decky Loader Plugin ❌ 
-* Auto-download images and set them for library entries ❌ 
 * Integrate better with [BoilR](https://github.com/PhilipK/BoilR) ❌ 
 
 <h1 align="center">
@@ -102,7 +108,7 @@ Contributing 🤝
 
 If you have any suggestions or improvements for this script, feel free to open an issue or submit a pull request.
 
-You can donate to me on [ko-fi](https://ko-fi.com/moraroy), [liberapay](https://liberapay.com/moraroy), or [sponsor me on github](https://github.com/sponsors/moraroy)
+You can donate to me on [ko-fi](https://ko-fi.com/moraroy), [liberapay](https://liberapay.com/moraroy), or [sponsor me on github](https://github.com/sponsors/moraroy) or [patreon](https://patreon.com/moraroy)
 
 ## Development Environment
 
@@ -194,9 +200,3 @@ Additional tooling includes but is not limited to:
 #### shellcheck
 
 `.shellcheckrc` excludes various [bash language rules](https://github.com/koalaman/shellcheck/wiki/Ignore#ignoring-one-or-more-types-of-errors-forever). Useful to control noise vs. legitimate warnings/errors when using the shellcheck extension.
-
-<h1 align="center">
-License 📝
-</h1>
-
-This project is licensed under the MIT License. See the `LICENSE` file for more information.
