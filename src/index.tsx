@@ -160,7 +160,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
            .map(([name, _]) => name.charAt(0).toUpperCase() + name.slice(1))
            .join(', ');
 
-       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time...Checking Proton GE... Downloading and Installing ${selectedLaunchers}... Steam will restart automatically.` });
+       setProgress({ percent:0, status:`Calling serverAPI...please be patient...this can take some time... Downloading and Installing ${selectedLaunchers}... Steam will restart automatically.` });
 
        console.log(`Selected options:${JSON.stringify(options)}`);
        console.log(`customWebsites:${JSON.stringify(customWebsites)}`);
@@ -285,7 +285,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     { name: 'disneyPlus', label: 'Disney+' },
     { name: 'amazonPrimeVideo', label: 'Amazon Prime Video' },
     { name: 'youtube', label: 'Youtube' },
-    { name: 'twitch', label: 'Twitch' },
+    { name: 'twitch', label: 'Twitch' }
   ];
 
   const launcherOptions = optionsData.filter(({name}) => ['epicGames', 'gogGalaxy', 'uplay', 'battleNet', 'amazonGames', 'eaApp', 'legacyGames', 'humbleGames', 'indieGala', 'minecraft', 'psPlus'].includes(name));
@@ -297,7 +297,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         Welcome to the decky plugin version of NonSteamLaunchers!
       </PanelSectionRow>
       <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-        Thank you for everyone's support and contributions on the script itself. This plugin is for you. Enjoy! A couple notes... Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as I add more features from the original script! The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy and the EA App.
+        Thank you for everyone's support and contributions on the script itself, this is the plugin we have all been waiting for... installing your favorite launchers in the easiest way possible. Enjoy! P.S. A couple notes... Some launchers are not available due to user input, still looking for way around this, thank you and please be patient as I add more features from the original script! The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect and the EA App.
       </PanelSectionRow>
   
       <PanelSectionRow>
