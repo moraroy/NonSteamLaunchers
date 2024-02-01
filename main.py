@@ -33,22 +33,31 @@ class Plugin:
     # Migrations that should be performed before entering `_main()`.
     async def _migration(self):
         decky_plugin.logger.info("Migrating")
-        # Here's a migration example for logs:
-        # - `~/.config/decky-template/template.log` will be migrated to `decky_plugin.DECKY_PLUGIN_LOG_DIR/template.log`
-        decky_plugin.migrate_logs(os.path.join(decky_plugin.DECKY_USER_HOME,
-                                               ".config", "decky-template", "template.log"))
-        # Here's a migration example for settings:
-        # - `~/homebrew/settings/template.json` is migrated to `decky_plugin.DECKY_PLUGIN_SETTINGS_DIR/template.json`
-        # - `~/.config/decky-template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_SETTINGS_DIR/`
-        decky_plugin.migrate_settings(
-            os.path.join(decky_plugin.DECKY_HOME, "settings", "template.json"),
-            os.path.join(decky_plugin.DECKY_USER_HOME, ".config", "decky-template"))
-        # Here's a migration example for runtime data:
-        # - `~/homebrew/template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_RUNTIME_DIR/`
-        # - `~/.local/share/decky-template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_RUNTIME_DIR/`
-        decky_plugin.migrate_runtime(
-            os.path.join(decky_plugin.DECKY_HOME, "template"),
-            os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
+
+        # Set the command to run your bash script
+        command = "/bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- \"Decky Plugin\"'"
+
+        # Log the command for debugging
+        decky_plugin.logger.info(f"Running command: {command}")
+
+        # Set up the environment for the new process
+        env = os.environ.copy()
+        env['DISPLAY'] = ':0'
+        env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
+
+        process = subprocess.Popen(command, shell=True, env=env)
+
+        # Wait for the script to complete and get the exit code
+        exit_code = process.wait()
+
+        # Log the exit code for debugging
+        decky_plugin.logger.info(f"Command exit code: {exit_code}")
+
+        if exit_code == 0:
+            decky_plugin.logger.info("Migration successful")
+        else:
+            decky_plugin.logger.error("Migration failed")
+
 
     async def install(self, selected_options, custom_websites, separate_app_ids, start_fresh, stop_game_scanner=False):
         decky_plugin.logger.info('install was called')
