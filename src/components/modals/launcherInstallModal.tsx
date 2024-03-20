@@ -1,0 +1,159 @@
+import {
+    DialogHeader,
+    ToggleField,
+    DialogBodyText,
+    DialogBody,
+    DialogButton,
+    Focusable,
+    ServerAPI,
+    ModalRoot,
+    SteamSpinner,
+    ProgressBarWithInfo
+} from "decky-frontend-lib";
+import { useState, VFC } from "react";
+import { notify } from "../../hooks/notify";
+import { useSettings } from "../../hooks/useSettings";
+import { scan, autoscan } from "../../hooks/scan";
+
+type LauncherInstallModalProps = {
+    closeModal?: () => void,
+    launcherOptions: {
+        name: string;
+        label: string;
+        URL: string;
+        streaming: boolean;
+        enabled: boolean;
+    }[],
+    serverAPI: ServerAPI
+};
+
+/**
+* The modal for selecting launchers.
+*/
+export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
+
+    const [progress, setProgress] = useState({ percent:0, status:'', description: '' });
+    const { settings, setAutoScan } = useSettings(serverAPI);
+    const [ options, setOptions ] = useState(launcherOptions);
+    const [ separateAppIds, setSeparateAppIds] = useState(false);
+
+    const handleToggle = (changeName: string, changeValue: boolean) => {
+        const newOptions = options.map(option => {
+            if (option.name === changeName) {
+                return {
+                    ...option,
+                    enabled: changeValue,
+                };
+            } else {
+                return option;
+            }
+        });
+        setOptions(newOptions);
+    };
+
+    const handleSeparateAppIdsToggle = (value: boolean) => {
+        setSeparateAppIds(value);
+    };
+
+    const handleInstallClick = async () => {
+        console.log('handleInstallClick called');
+        const selectedLaunchers = options
+            .filter(option => option.enabled && !option.streaming)
+           //.map(option => option.name.charAt(0).toUpperCase() + option.name.slice(1))
+        console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
+        let i = 0
+        let previousAutoScan = settings.autoscan
+        for (const launcher of selectedLaunchers) {
+          if (!launcher.streaming) {
+            setAutoScan(false)
+            console.log(`Calling install launcher method for ${launcher}`)
+            const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1))
+            await installLauncher(launcherParam, launcher.label, i)
+          }
+          i++
+        }
+        scan()
+        setAutoScan(previousAutoScan)
+        if (settings.autoscan) {autoscan()}
+       }
+      
+       const installLauncher = async (launcher: string, launcherLabel: string, index: number) => {
+        const total = options.filter(option => option.enabled).length
+        const startPercent = index === 0 ? 0 : index/total*100
+        const endPercent = (index + 1)/total*100
+        console.log(`Installing Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`)
+        setProgress({ 
+          percent: startPercent, 
+          status:`Installing Launcher ${index + 1} of ${total}`, 
+          description: `${launcherLabel}`});
+        try {
+            const result = await serverAPI.callPluginMethod("install", {
+                selected_options: launcher,
+                install_chrome: false,
+                separate_app_ids: separateAppIds,
+                start_fresh: false // Pass true for the start_fresh parameter
+            });
+      
+            if (result) {
+              setProgress({ percent: endPercent, status:`Installed Selection ${index + 1} of ${total}`, description: `${launcher}`});
+              notify.toast("Launcher Installed",`${launcherLabel} was installed successfully!`)
+            } else {
+              setProgress({ percent: endPercent, status:`Installing selection ${index + 1} of ${total} failed`, description: `Installing ${launcher} failed. See logs.`});
+              notify.toast("Install Failed",`${launcherLabel} was not installed.`)
+            }
+        } catch (error) {
+            setProgress({ percent: endPercent, status:`Installing selection ${index + 1} of ${total} failed`, description: `Installing ${launcher} failed. See logs.`});
+            notify.toast("Install Failed",`${launcherLabel} was not installed.`)
+            console.error('Error calling _main method on server-side plugin:', error);
+        }
+       };
+
+    return ((progress.status != '' && progress.percent < 100) ?
+        <ModalRoot>
+        <DialogHeader>
+            Installing Game Launchers
+        </DialogHeader>
+        <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
+        <DialogBody>
+            <SteamSpinner/>
+            <ProgressBarWithInfo
+                layout="inline"
+                bottomSeparator="none"
+                sOperationText={progress.status}
+                description={progress.description}
+                nProgress={progress.percent}
+            />
+        </DialogBody>
+        </ModalRoot>:
+        <ModalRoot onCancel={closeModal}>
+            <DialogHeader>
+                Select Game Launchers
+            </DialogHeader>
+            <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
+            <DialogBody>
+                {launcherOptions.map(({ name, label }) => (
+                    <ToggleField
+                        label={label}
+                        checked={options.find(option => option.name === name)?.enabled ? true : false} 
+                        onChange={(value) => handleToggle(name, value)}
+                    />
+                ))}
+            </DialogBody>
+            <p style={{ fontSize: 'small', marginTop: '20px' }}>
+                Note: If your launchers dont start, make sure force compatability is checked, shortcut properties are right and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
+            </p>
+            <Focusable>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <DialogButton
+                    style={{ width: "fit-content" }}
+                    onClick={handleInstallClick}
+                    disabled={options.every(option => option.enabled === false)}
+                    >
+                    Install
+                    </DialogButton>
+                    <ToggleField label="Separate Launcher Folders" checked={separateAppIds} onChange={handleSeparateAppIdsToggle} />
+                </div>
+            </Focusable>
+        </ModalRoot>
+    )
+};

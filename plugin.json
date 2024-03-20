@@ -1,10 +1,10 @@
 {
   "name": "NonSteamLaunchers",
-  "author": "moraroy",
+  "author": "moraroy, sysmoon14",
   "flags": ["debug"],
   "publish": {
-    "tags": ["template", "root"],
+    "tags": ["NonSteamLaunchers", "NSL", "steamdeck", "launchers", "non-steam"],
     "description": "NonSteamLaunchers - The easiest way to add your favorite Non-Steam Launchers.",
-    "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
+    "image": "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png"
   }
 }

@@ -6,7 +6,7 @@
 NonSteamLaunchers 🚀
 </h1>
 
-This script installs the latest GE-Proton, installs NonSteamLaunchers under one unique Proton prefix folder in your compatdata folder path called "NonSteamLaunchers" and adds them to your Steam Library. 
+This script installs the latest GE-Proton, installs NonSteamLaunchers under one unique Proton prefix folder in your compatdata folder path called "NonSteamLaunchers" and adds them to your Steam Library. It will also add the games automatically on every steam restart.
 So you can use them on Desktop or in Game Mode.
 
 <h1 align="center">
@@ -14,7 +14,7 @@ Features  ✅
 </h1>
 
 - Automatic installation of the most popular launchers in your Steam Deck 🎮
-- Handle automatically the download and installation of your chosen launchers ⌚
+- Handle automatically the download and installation of your chosen launchers and the games ⌚️ 
 - MicroSD Support 💾 This script supports moving the entire prefix to a microSD. The script will install launchers and games to your SD card, and the launchers in Steam will point to the SD card installation. This allows you to save internal storage space on your Steam Deck!
 
 <h1 align="center">
@@ -30,20 +30,18 @@ Supported Stores 🛍
 - IndieGala ✔️
 - Itch.io ✔️
 - Legacy Games ✔️
-- Origin (only working way) ✔️
 - Rockstar Games Launcher ✔️
 - Ubisoft Connect ✔️
 - Glyph ✔️
 - Minecraft ✔️
 - Playstation Plus ✔️
-- DMM Games Player ✔️
 - VK Play ✔️
 
 <h1 align="center">
 Supported Streaming Sites for games and as well as any website. 🌐
 </h1>
 
-- Shortcut Creator ✔️
+- Website Shortcut Creator ✔️
 - Xbox Game Pass ✔️
 - GeForce Now ✔️
 - Amazon Luna ✔️
@@ -53,17 +51,19 @@ Supported Streaming Sites for games and as well as any website. 🌐
 - Hulu ✔️
 - Youtube ✔️
 - Twitch ✔️
+- movie-web ✔️
 
 <h1 align="left">
-Find Games
-</h1>
-
-Use the "Find Games" button to load [Boilr](https://github.com/PhilipK/BoilR) this will open Boilr for you to set your settings so you can find your games easier. 
+Finds Games Automatically
+</h1> 
 
 "NSLGameScanner.service" is also live when you use this script and continues after the script is closed and even works after your Steam Deck has restarted. This works in the background as a service file to automatically add your games to your library on every Steam restart. Currently adds:
 - Epic Games 🎮
 - Ubisoft Connect 🎮
 - EA App 🎮
+- Gog Galaxy 🎮
+- Battle.net 🎮
+- Amazon games 🎮
 
 <h1 align="center">
 How to Install 🔧
@@ -85,22 +85,21 @@ How to Install 🔧
 ▶️ YouTube Tutorial 🡺🡺🡺 https://www.youtube.com/watch?v=svOj4MTEAVc 🡸🡸🡸 ▶️
 </p>
 <p align="center">
-📖 Step-by-step Article 🡺🡺🡺 https://www.steamdeckgaming.net/post/easy-launchers-install-on-steam-deck 🡸🡸🡸 📖
+📖 Step-by-step Article 🡺🡺🡺 <a href="https://steamdeckhq.com/news/nonsteamlaunchers-adds-scan-support-launchers">here</a> 🡸🡸🡸 📖
 </p>
 
 <h1 align="center">
 How to Uninstall 🗑
 </h1>
 
-+ Just run the script, select which launchers to remove. Press OK.
++ Just run the script, and hit "Uninstall". Alternatively, if you want to totally wipe evrything from NonSteamLaunchers click "Start Fresh".
 + That's it.
 
 <h1 align="center">
 Currently Working On 👷‍♂️
 </h1>
 
-* Decky Loader Plugin ❌ 
-* Integrate better with [BoilR](https://github.com/PhilipK/BoilR) ❌ 
+* Decky Loader Plugin is available [here](https://github.com/moraroy/NonSteamLaunchersDecky)
 
 <h1 align="center">
 Contributing 🤝
@@ -169,34 +168,113 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt 
 ```
 
+### Pre-commit hooks
+
+Pre-commit hooks are installed via `pre-commit` and are run automatically on `git commit`. 
+
+Most importantly, `ruff` is used to lint all python code.
+
+* Install [pre-commit](https://pre-commit.com/#install)
+* Install pre-commit hooks
+    ```bash
+    pre-commit install
+    ```
+* Trigger pre-commit hooks automatically on `git commit`
+    ```bash
+    git add .
+    git commit -m "commit message"
+    ```
+* Bypass pre-commit hooks
+  * Sometimes, it's necessary to bypass pre-commit hooks. This can be done with the `--no-verify` flag.
+    ```bash
+    git commit -m "commit message" --no-verify
+    ```
+
+### Conventional Commits
+
+While not currently enforced, by using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), it's possible to automatically generate changelogs and version numbers via [release-please](https://github.com/googleapis/release-please).
+
+To help with that, the [commitizen](https://commitizen-tools.github.io/commitizen/) tool can be installed.
+
+#### Usage
+
+```bash
+# install cz
+npm install -g commitizen cz-conventional-changelog
+
+# make repo cz friendly
+commitizen init cz-conventional-changelog --save-dev --save-exact
+npm install
+
+# add file to commit
+git add .gitignore
+
+# run cz
+λ git cz
+cz-cli@4.3.0, cz-conventional-changelog@3.3.0
+
+? Select the type of change that you're committing: chore:    Other changes that don't modify src or test files
+? What is the scope of this change (e.g. component or file name): (press enter to skip) .gitignore
+? Write a short, imperative tense description of the change (max 81 chars):
+ (17) update .gitignore
+? Provide a longer description of the change: (press enter to skip)
+
+? Are there any breaking changes? No
+? Does this change affect any open issues? No
+[main 0a9920d] chore(.gitignore): update .gitignore
+ 1 file changed, 131 insertions(+)
+
+λ git push
+```
+
+### Formatting
+
+> **TL;DR**: The [Ruff formatter](https://astral.sh/blog/the-ruff-formatter) is an extremely fast Python formatter, written in Rust. It’s over 30x faster than Black and 100x faster than YAPF, formatting large-scale Python projects in milliseconds — all while achieving >99.9% Black compatibility.
+
+* While it runs automatically on commits, it can also be run manually
+    ```bash
+    # check for errors
+    ruff check .
+
+    # fix (some) errors automatically
+    ruff check . --fix
+    ```
+
 ### Additional tooling
 
-Additional tooling includes but is not limited to:
+#### TODO
+
+* Add [devbox](https://www.jetpack.io/devbox/) 👌
 
 #### asdf
 
 * Install [asdf](https://asdf-vm.com/guide/getting-started.html#_2-download-asdf)
-* Usage
+* Add plugins
     ```bash
-    # add python plugin
     asdf plugin-add python
-
+    asdf plugin-add poetry https://github.com/asdf-community/asdf-poetry.git
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    ```
+* Usage
+  * Install local plugins in repo
+    ```bash
+    asdf install
+    ```
+  * Install specific plugins
+    ```bash
     # install stable python
     asdf install python <latest|3.11.4>
 
     # set stable to system python
     asdf global python latest
-
-    # add poetry asdf plugin
-    asdf plugin-add poetry https://github.com/asdf-community/asdf-poetry.git
-
-    # install latest version via asdf
-    asdf install poetry <latest|1.5.1>
-
-    # set latest version as default
-    asdf global poetry latest
     ```
 
 #### shellcheck
 
 `.shellcheckrc` excludes various [bash language rules](https://github.com/koalaman/shellcheck/wiki/Ignore#ignoring-one-or-more-types-of-errors-forever). Useful to control noise vs. legitimate warnings/errors when using the shellcheck extension.
+
+<h1 align="center">
+License 📝
+</h1>
+
+This project is licensed under the MIT License. See the `LICENSE` file for more information.
