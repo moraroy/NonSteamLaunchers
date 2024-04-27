@@ -6,7 +6,7 @@ def add_plugin_to_path():
     import sys
     plugin_dir = get_plugin_dir()
     decky_plugin.logger.info(f"{plugin_dir}")
-    directories = [["./"], ["python"], ["python", "lib"], ["python", "externals"]]
+    directories = [["./"], ["py_modules"], ["py_modules", "lib"], ["py_modules", "externals"]]
     for dir in directories:
         sys.path.append(str(plugin_dir.joinpath(*dir)))
 
