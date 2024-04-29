@@ -19,7 +19,7 @@ import re
 import asyncio
 from aiohttp import web
 from decky_plugin import DECKY_PLUGIN_DIR
-from python.lib.scanner import scan, addCustomSite
+from py_modules.lib.scanner import scan, addCustomSite
 from settings import SettingsManager
 from subprocess import Popen, run 
 
