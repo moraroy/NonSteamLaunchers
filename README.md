@@ -64,6 +64,7 @@ Finds Games Automatically
 - Gog Galaxy 🎮
 - Battle.net 🎮
 - Amazon games 🎮
+- Itch.io 🎮
 
 <h1 align="center">
 How to Install 🔧
