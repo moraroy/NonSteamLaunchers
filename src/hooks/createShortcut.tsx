@@ -26,8 +26,13 @@ export async function createShortcut(game: any) {
       SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions)
       SteamClient.Apps.SetShortcutExe(appId, exe)
       SteamClient.Apps.SetShortcutStartDir(appId,StartDir)
-      if (CompatTool != false) {
-        SteamClient.Apps.SpecifyCompatTool(appId,CompatTool)
+      let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId)
+      let CompatToolExists: boolean = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool)
+      if (CompatTool != false && CompatToolExists) {
+        SteamClient.Apps.SpecifyCompatTool(appId, CompatTool)
+      }
+      else if (CompatTool != false) {
+        SteamClient.Apps.SpecifyCompatTool(appId, 'proton_experimental')
       }
       SteamClient.Apps.SetCustomArtworkForApp(appId,Hero,'png',1)
       SteamClient.Apps.SetCustomArtworkForApp(appId,Logo,'png',2)
