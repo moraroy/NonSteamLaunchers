@@ -10,6 +10,7 @@ from scanners.ubisoft_scanner import ubisoft_scanner
 from scanners.gog_scanner import gog_scanner
 from scanners.battle_net_scanner import battle_net_scanner
 from scanners.amazon_scanner import amazon_scanner
+from scanners.itchio_scanner import itchio_games_scanner
 from get_env_vars import refresh_env_vars
 
 env_vars_path = f"{os.environ['HOME']}/.config/systemd/user/env_vars"
@@ -39,6 +40,8 @@ def initialiseVariables(env_vars):
     bnet_launcher = env_vars.get('bnet_launcher', '')
     global amazon_launcher
     amazon_launcher = env_vars.get('amazon_launcher', '')
+    global itchio_launcher
+    itchio_launcher = env_vars.get('itchio_launcher', '')
 
 
     #Variables of the Launchers
