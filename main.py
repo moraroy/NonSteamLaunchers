@@ -38,15 +38,17 @@ class Plugin:
         self.settings = SettingsManager(name="config", settings_directory=decky_plugin.DECKY_PLUGIN_SETTINGS_DIR)
         # Get the path to the Decky user's home directory
         decky_user_home = decky_plugin.DECKY_USER_HOME
+        # Set default settings for fallback
+        defaultSettings = {"autoscan": False, "customSites": ""}
 
         async def handleAutoScan(request):
             await asyncio.sleep(5)
             ws = web.WebSocketResponse()
             await ws.prepare(request)
-            decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', 'False')['autoscan']}")
-            while (self.settings.getSetting('settings', 'False')['autoscan'] is True):
+            decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', defaultSettings)['autoscan']}")
+            while (self.settings.getSetting('settings', defaultSettings)['autoscan'] is True):
                 decky_shortcuts = scan()
-                if self.settings.getSetting('settings', 'False')['autoscan'] is False:
+                if self.settings.getSetting('settings', defaultSettings)['autoscan'] is False:
                     decky_plugin.logger.info(f"Autoscan setting is false, stopping")
                     return ws
                 if not decky_shortcuts:

@@ -9,11 +9,9 @@ export type Settings = {
 
 export const useSettings = (serverApi: ServerAPI) => {
   const [settings, setSettings] = useState<Settings>({
-    autoscan: true,
+    autoscan: false,
     customSites: ""
   })
-
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getData = async () => {
@@ -24,7 +22,6 @@ export const useSettings = (serverApi: ServerAPI) => {
         })
       ).result as Settings
       setSettings(savedSettings)
-      setLoading(false)
     }
     getData()
   }, [])

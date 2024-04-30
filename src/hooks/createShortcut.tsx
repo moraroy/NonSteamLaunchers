@@ -3,7 +3,7 @@ import { notify } from "./notify";
 //Shortcut Creation Code
 // Define the createShortcut function
 export async function createShortcut(game: any) {
-    const { appid, appname, exe, StartDir, LaunchOptions, icon, CompatTool, Grid, WideGrid, Hero, Logo } = game;
+    const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo } = game;
   
     // Separate the executable path and arguments
     const match = exe.match(/"([^"]+)"/);
