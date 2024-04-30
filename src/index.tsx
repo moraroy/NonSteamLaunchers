@@ -84,7 +84,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       
       <PanelSection title= "Game Scanner">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          NSL can automatically detect and add shortcuts for the games you install in your non steam launchers, below you can enable automatic scanning or trigger a manual scan.
+          NSL can automatically detect and add shortcuts for the games you install in your non steam launchers in real time. Below you can enable automatic scanning or trigger a manual scan.
         </PanelSectionRow>
         <ToggleField
           label="Auto Scan Games"
