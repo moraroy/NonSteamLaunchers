@@ -99,6 +99,7 @@ def scan():
         gog_scanner(logged_in_home, gog_galaxy_launcher, create_new_entry)
         battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry)
         amazon_scanner(logged_in_home, amazon_launcher, create_new_entry)
+        itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry)
     return decky_shortcuts
 
 def addCustomSite(customSiteJSON):
