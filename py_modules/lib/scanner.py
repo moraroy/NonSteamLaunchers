@@ -119,13 +119,31 @@ def addCustomSite(customSiteJSON):
 def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
     # Load the existing shortcuts
     vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
-    if os.path.exists(vdf_path):
-        with open(vdf_path, 'rb') as file:
-            shortcuts = vdf.binary_loads(file.read())
-        if any((s.get('appname') == display_name or s.get('AppName') == display_name) and (s.get('exe') == exe_path or s.get('Exe') == exe_path) and s.get('StartDir') == start_dir and s.get('LaunchOptions') == launch_options for s in shortcuts['shortcuts'].values()):
-            decky_plugin.logger.info(f"Existing shortcut found based on matching fields for game {display_name}. Skipping creation.")
-            return True
-        shortcuts = ''
+    
+    # Check if the shortcuts file exists
+    if not os.path.exists(vdf_path):
+        # If the file does not exist, create a new file with an empty "shortcuts" section
+        with open(vdf_path, 'wb') as file:
+            vdf.binary_dumps({'shortcuts': {}}, file)
+    else:
+        # If the file exists, try to load it
+        try:
+            with open(vdf_path, 'rb') as file:
+                shortcuts = vdf.binary_loads(file.read())
+                # If the file is empty or does not contain the 'shortcuts' key, initialize an empty 'shortcuts' dictionary
+                if not shortcuts or 'shortcuts' not in shortcuts:
+                    shortcuts = {'shortcuts': {}}
+
+            if any((s.get('appname') == display_name or s.get('AppName') == display_name) and (s.get('exe') == exe_path or s.get('Exe') == exe_path) and s.get('StartDir') == start_dir and s.get('LaunchOptions') == launch_options for s in shortcuts['shortcuts'].values()):
+                decky_plugin.logger.info(f"Existing shortcut found based on matching fields for game {display_name}. Skipping creation.")
+                return True
+            shortcuts = ''
+        except Exception as e:
+            print(f"Error reading shortcuts file: {e}")
+            # If an error occurs when reading the file, create a new file with an empty "shortcuts" section
+            with open(vdf_path, 'wb') as file:
+                vdf.binary_dumps({'shortcuts': {}}, file)
+
 
 # Add or update the proton compatibility settings
 def add_compat_tool(launchoptions):
