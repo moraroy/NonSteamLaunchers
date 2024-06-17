@@ -143,21 +143,24 @@ class Plugin:
             selected_option_nice = camel_to_title(selected_options).replace('Geforce', 'GeForce').replace('Disney Plus', 'Disney+').replace('movieweb', 'movie-web')
         elif selected_options != 'separateAppIds':
             # Launcher option (excluding the Separate App IDs option)
-            selected_option_nice = camel_to_title(selected_options).replace('Ea App', 'EA App').replace('Uplay', 'Ubisoft Connect').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation Plus').replace('DMM', 'DMM Games')
+            selected_option_nice = camel_to_title(selected_options).replace('Ea App', 'EA App').replace('Uplay', 'Ubisoft Connect').replace('Gog Galaxy', 'GOG Galaxy').replace('Battle Net', 'Battle.net').replace('Itch Io', 'itch.io').replace('Humble Games', 'Humble Games Collection').replace('Indie Gala', 'IndieGala').replace('Rockstar', 'Rockstar Games Launcher').replace('Glyph', 'Glyph Launcher').replace('Ps Plus', 'Playstation Plus').replace('DMM', 'DMM Games').replace('Remote Play Whatever', 'RemotePlayWhatever')
 
         # Log the selected_options_list
         decky_plugin.logger.info(f"selected_option_nice: {selected_option_nice}")
 
-        # Set the command prefix
-        command_prefix = "/bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- "
+        # Make the script executable
+        script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
+
+        os.chmod(script_path, 0o755)
 
         # Temporarily disable access control for the X server
         run(['xhost', '+'])
 
         # Construct the command to run
-        command_suffix = ' '.join(([f'"{selected_option_nice}"'] if selected_option_nice != '' else []) + ([f'"Chrome"'] if install_chrome else []) + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + ([f'"DeckyPlugin"'])) + "'"
+        command_suffix = ' '.join(([f'"{selected_option_nice}"'] if selected_option_nice != '' else []) + ([f'"Chrome"'] if install_chrome else []) + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + [f'"DeckyPlugin"'])
 
-        command = command_prefix + command_suffix
+        # Construct the command to run
+        command = f"{script_path} {command_suffix}"
 
         # Log the command for debugging
         decky_plugin.logger.info(f"Running command: {command}")

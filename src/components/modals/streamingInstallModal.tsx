@@ -111,7 +111,7 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
         >
           Install
         </DialogButton>
-        <DialogBodyText style={{ fontSize: "small" }}>Note: Be sure that Google Chrome is installed from the Discover Store in Desktop Mode first.</DialogBodyText>
+        <DialogBodyText style={{ fontSize: "small" }}>Note: NSL will attempt to install Google Chrome. Be sure that Google Chrome is installed from the Discover Store in Desktop Mode first or from SteamOS.</DialogBodyText>
       </Focusable>
     </ModalRoot>
   )

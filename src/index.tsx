@@ -32,7 +32,6 @@ const initialOptions = [
   { name: 'indieGala', label: 'IndieGala Client', URL: '', streaming: false, enabled: false },
   { name: 'rockstarGamesLauncher', label: 'Rockstar Games Launcher', URL: '', streaming: false, enabled: false },
   { name: 'psPlus', label: 'Playstation Plus', URL: '', streaming: false, enabled: false },
-  { name: 'remotePlayWhatever', label: 'RemotePlayWhatever', URL: '', streaming: false, enabled: false },
   { name: 'xboxGamePass', label: 'Xbox Game Pass', URL: 'https://www.xbox.com/play', streaming: true, enabled: false },
   { name: 'fortnite', label: 'Fortnite (xCloud)', URL: 'https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2/', streaming: true, enabled: false },
   { name: 'geforceNow', label: 'GeForce Now', URL: 'https://play.geforcenow.com', streaming: true, enabled: false },
