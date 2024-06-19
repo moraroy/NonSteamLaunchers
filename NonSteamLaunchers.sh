@@ -232,8 +232,8 @@ eaapp_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamL
 eaapp_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/TheEAappLauncher/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EADesktop.exe"
 amazongames_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/Amazon Games/App/Amazon Games.exe"
 amazongames_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher/pfx/drive_c/users/steamuser/AppData/Local/Amazon Games/App/Amazon Games.exe"
-itchio_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/itch/app-25.6.2/itch.exe"
-itchio_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/itchioLauncher/pfx/drive_c/users/steamuser/AppData/Local/itch/app-25.6.2/itch.exe"
+itchio_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/itch/app-26.1.9/itch.exe"
+itchio_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/itchioLauncher/pfx/drive_c/users/steamuser/AppData/Local/itch/app-26.1.9/itch.exe"
 legacygames_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Legacy Games/Legacy Games Launcher/Legacy Games Launcher.exe"
 legacygames_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher/pfx/drive_c/Program Files/Legacy Games/Legacy Games Launcher/Legacy Games Launcher.exe"
 humblegames_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Humble App/Humble App.exe"
@@ -1154,14 +1154,15 @@ if [[ $options == *"Battle.net"* ]]; then
     max_attempts=20
     attempt=0
     while true; do
-        if pgrep -f "Battle.net.exe" || pgrep -f "BlizzardError.exe" > /dev/null; then
+        if pgrep -f "Battle.net.exe" > /dev/null || pgrep -f "BlizzardError.exe" > /dev/null; then
             pkill -f "Battle.net.exe" || pkill -f "BlizzardError.exe"
-            break
-        fi
-        sleep 1
-        ((attempt++))
-        if [ "$attempt" -ge "$max_attempts" ]; then
-            echo "Timeout: Battle.net process did not terminate."
+            sleep 5
+            ((attempt++))
+            if [ "$attempt" -ge "$max_attempts" ]; then
+                echo "Timeout: Battle.net process did not terminate."
+                break
+            fi
+        else
             break
         fi
     done
@@ -2452,6 +2453,7 @@ if [ "${deckyplugin}" = false ]; then
 	
 	python3 $python_script_path
 fi
+
 
 
 
