@@ -116,6 +116,7 @@ def addCustomSite(customSiteJSON):
         create_new_entry(env_vars.get('chromedirectory'), customSiteName, chromelaunch_options, env_vars.get('chrome_startdir'))
     return decky_shortcuts
 
+
 def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
     # Load the existing shortcuts
     vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
@@ -140,9 +141,6 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
             shortcuts = ''
         except Exception as e:
             print(f"Error reading shortcuts file: {e}")
-            # If an error occurs when reading the file, create a new file with an empty "shortcuts" section
-            with open(vdf_path, 'wb') as file:
-                vdf.binary_dumps({'shortcuts': {}}, file)
 
 
 # Add or update the proton compatibility settings
