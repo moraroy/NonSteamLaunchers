@@ -122,25 +122,27 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
     vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
     
     # Check if the shortcuts file exists
-    if not os.path.exists(vdf_path):
-        # If the file does not exist, create a new file with an empty "shortcuts" section
-        with open(vdf_path, 'wb') as file:
-            vdf.binary_dumps({'shortcuts': {}}, file)
-    else:
-        # If the file exists, try to load it
-        try:
-            with open(vdf_path, 'rb') as file:
-                shortcuts = vdf.binary_loads(file.read())
-                # If the file is empty or does not contain the 'shortcuts' key, initialize an empty 'shortcuts' dictionary
-                if not shortcuts or 'shortcuts' not in shortcuts:
-                    shortcuts = {'shortcuts': {}}
+    if os.path.exists(vdf_path):
+        # If the file is not executable, write the shortcuts dictionary and make it executable
+        if not os.access(vdf_path, os.X_OK):
+            print("The file is not executable. Writing an empty shortcuts dictionary and making it executable.")
+            with open(vdf_path, 'wb') as file:
+                vdf.binary_dumps({'shortcuts': {}}, file)
+            os.chmod(vdf_path, 0o755)
+        else:
+            # If the file exists, try to load it
+            try:
+                with open(vdf_path, 'rb') as file:
+                    shortcuts = vdf.binary_loads(file.read())
 
-            if any((s.get('appname') == display_name or s.get('AppName') == display_name) and (s.get('exe') == exe_path or s.get('Exe') == exe_path) and s.get('StartDir') == start_dir and s.get('LaunchOptions') == launch_options for s in shortcuts['shortcuts'].values()):
-                decky_plugin.logger.info(f"Existing shortcut found based on matching fields for game {display_name}. Skipping creation.")
-                return True
-            shortcuts = ''
-        except Exception as e:
-            print(f"Error reading shortcuts file: {e}")
+                if any((s.get('appname') == display_name or s.get('AppName') == display_name) and (s.get('exe') == exe_path or s.get('Exe') == exe_path) and s.get('StartDir') == start_dir and s.get('LaunchOptions') == launch_options for s in shortcuts['shortcuts'].values()):
+                    decky_plugin.logger.info(f"Existing shortcut found based on matching fields for game {display_name}. Skipping creation.")
+                    return True
+                else:
+                    shortcuts = ''
+            except Exception as e:
+                print(f"Error reading shortcuts file: {e}")
+
 
 
 # Add or update the proton compatibility settings
