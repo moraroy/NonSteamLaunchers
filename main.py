@@ -149,7 +149,7 @@ class Plugin:
         decky_plugin.logger.info(f"selected_option_nice: {selected_option_nice}")
 
         # Make the script executable
-        script_path = os.path.join(DECKY_PLUGIN_DIR, 'defaults', 'NonSteamLaunchers.sh')
+        script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
 
         os.chmod(script_path, 0o755)
 

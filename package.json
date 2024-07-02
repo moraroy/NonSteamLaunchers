@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "build": "^0.1.4",
-    "decky-frontend-lib": "^3.21.8",
+    "decky-frontend-lib": "^3.25.0",
     "jsesc": "^3.0.2",
     "pnpm": "^8.6.7",
     "react-icons": "^4.4.0",

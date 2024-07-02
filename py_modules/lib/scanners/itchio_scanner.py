@@ -15,7 +15,7 @@ def itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry):
     paths = parse_butler_db(shortcut_bytes)
 
     decky_plugin.logger.info("Converting paths to games...")
-    itchgames = [dbpath_to_game(path) for path in paths if dbpath_to_game(path) is not None]
+    itchgames = [dbpath_to_game(logged_in_home, itchio_launcher, path) for path in paths if dbpath_to_game(logged_in_home, itchio_launcher, path) is not None]
     # Remove duplicates
     itchgames = list(set(itchgames))
     decky_plugin.logger.info(f"Found {len(itchgames)} unique games.")
@@ -43,7 +43,7 @@ def parse_butler_db(content):
     decky_plugin.logger.info(f"Converted {len(matches)} matches to {len(db_paths)} database paths.")
     return db_paths
 
-def dbpath_to_game(paths):
+def dbpath_to_game(logged_in_home, itchio_launcher, paths):
     # Convert the Windows-style path from the database to a Unix-style path
     db_path = paths[0].replace("\\\\", "/").replace("C:", "")
     linux_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/pfx/drive_c" + db_path
