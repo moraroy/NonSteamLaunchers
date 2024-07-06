@@ -29,25 +29,8 @@ download_dir="${logged_in_home}/Downloads/NonSteamLaunchersInstallation"
 exec >> "${logged_in_home}/Downloads/NonSteamLaunchers-install.log" 2>&1
 
 # Version number (major.minor)
-version=v3.9.1
-
-# TODO: tighten logic to check whether major/minor version is up-to-date via `-eq`, `-lt`, or `-gt` operators
-# Check repo releases via GitHub API then display current stable version
-check_for_updates() {
-    # Set the URL to the GitHub API for the repository
-    local api_url="https://api.github.com/repos/moraroy/NonSteamLaunchers-On-Steam-Deck/releases/latest"
-
-    # Get the latest release tag from the GitHub API
-    local latest_version=$(curl -s "$api_url" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-
-    # Compare the version number in the script against the latest release tag
-    if [ "$version" != "$latest_version" ]; then
-        # Display a Zenity window to notify the user that a new version is available
-        zenity --info --text="A new version is available: $latest_version\nPlease download it from GitHub." --width=200 --height=100
-    else
-        echo "You are already running the latest version: $version"
-    fi
-}
+version=v3.9.2
+#NSL DECKY VERSION (NO RCE)
 
 
 # Get the command line arguments
@@ -86,115 +69,7 @@ if $installchrome; then
   fi
 fi
 
-if [ "${deckyplugin}" = false ]; then
-	#Download Modules
-	# Define the repository and the folders to clone
-	repo_url='https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/archive/refs/heads/main.zip'
-	folders_to_clone=('requests' 'urllib3' 'steamgrid' 'vdf' 'charset_normalizer')
 
-	# Define the parent folder
-	logged_in_home=$(eval echo ~$user)
-	parent_folder="${logged_in_home}/.config/systemd/user/Modules"
-	mkdir -p "${parent_folder}"
-
-	# Check if the folders already exist
-	folders_exist=true
-	for folder in "${folders_to_clone[@]}"; do
-	  if [ ! -d "${parent_folder}/${folder}" ]; then
-	    folders_exist=false
-	    break
-	  fi
-	done
-
-	if [ "${folders_exist}" = false ]; then
-	  # Download the repository as a zip file
-	  zip_file_path="${parent_folder}/repo.zip"
-	  wget -O "${zip_file_path}" "${repo_url}" || { echo 'Download failed with error code: $?'; exit 1; }
-
-	  # Extract the zip file
-	  unzip -d "${parent_folder}" "${zip_file_path}" || { echo 'Unzip failed with error code: $?'; exit 1; }
-
-	  # Move the folders to the parent directory and delete the unnecessary files
-	  for folder in "${folders_to_clone[@]}"; do
-	    destination_path="${parent_folder}/${folder}"
-	    source_path="${parent_folder}/NonSteamLaunchers-On-Steam-Deck-main/Modules/${folder}"
-	    if [ ! -d "${destination_path}" ]; then
-	      mv "${source_path}" "${destination_path}" || { echo 'Move failed with error code: $?'; exit 1; }
-	    fi
-	  done
-
-	  # Delete the downloaded zip file and the extracted repository folder
-	  rm "${zip_file_path}"
-	  rm -r "${parent_folder}/NonSteamLaunchers-On-Steam-Deck-main"
-	fi
-	#End of Download Modules
-
-
-	#Service File rough update
-	rm -rf ${logged_in_home}/.config/systemd/user/NSLGameScanner.py
-
-	# Delete the service file
-	rm -rf ${logged_in_home}/.config/systemd/user/nslgamescanner.service
-
-	# Remove the symlink
-	unlink ${logged_in_home}/.config/systemd/user/default.target.wants/nslgamescanner.service
-
-	# Reload the systemd user instance
-	systemctl --user daemon-reload
-
-	# Define your Python script path
-	python_script_path="${logged_in_home}/.config/systemd/user/NSLGameScanner.py"
-
-	# Define your GitHub link
-	github_link="https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NSLGameScanner.py"
-	curl -o $python_script_path $github_link
-
-	# Define the path to the env_vars file
-	env_vars="${logged_in_home}/.config/systemd/user/env_vars"
-	#End of Rough Update of the .py
-
-
-
-
-	if [ -f "$env_vars" ]; then
-	    echo "env_vars file found. Running the .py file."
-	    live="and is LIVE."
-	else
-	    echo "env_vars file not found. Not Running the .py file."
-	    live="and is not LIVE."
-	fi
-
-
-
-	# Check if "Decky Plugin" is one of the arguments
-	decky_plugin=false
-	for arg in "${args[@]}"; do
-	  if [ "$arg" = "Decky Plugin" ]; then
-	    decky_plugin=true
-	    break
-	  fi
-	done
-
-	# If the Decky Plugin argument is set, check if the env_vars file exists
-	if [ "$decky_plugin" = true ]; then
-	    if [ -f "$env_vars" ]; then
-	        # If the env_vars file exists, run the .py file and continue with the script
-	        echo "Decky Plugin argument set and env_vars file found. Running the .py file..."
-	        python3 $python_script_path
-	        echo "Python script ran. Continuing with the script..."
-	    else
-	        # If the env_vars file does not exist, exit the script
-	        echo "Decky Plugin argument set but env_vars file not found. Exiting the script."
-	        exit 0
-	    fi
-	else
-	    # If the Decky Plugin argument is not set, continue with the script
-	    echo "Decky Plugin argument not set. Continuing with the script..."
-	    python3 $python_script_path
-	    echo "env_vars file found. Running the .py file."
-	    live="and is LIVE."
-	fi
-fi
 
 
 
@@ -248,6 +123,8 @@ psplus_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteam
 psplus_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher/pfx/drive_c/Program Files (x86)/PlayStationPlus/pspluslauncher.exe"
 vkplay_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/GameCenter/GameCenter.exe"
 vkplay_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/VKPlayLauncher/pfx/drive_c/users/steamuser/AppData/Local/GameCenter/GameCenter.exe"
+hoyoplay_path1="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/HoYoPlay/launcher.exe"
+hoyoplay_path2="${logged_in_home}/.local/share/Steam/steamapps/compatdata/HoYoPlayLauncher/pfx/drive_c/Program Files/HoYoPlay/launcher.exe"
 
 # Chrome File Path
 # chrome_installpath="/app/bin/chrome"
@@ -258,9 +135,9 @@ chromedirectory="\"$chrome_path\""
 #Zenity Launcher Check Installation
 function CheckInstallations {
     declare -A paths1 paths2 names
-    paths1=(["epic_games"]="$epic_games_launcher_path1" ["gog_galaxy"]="$gog_galaxy_path1" ["uplay"]="$uplay_path1" ["battlenet"]="$battlenet_path1" ["eaapp"]="$eaapp_path1" ["amazongames"]="$amazongames_path1" ["itchio"]="$itchio_path1" ["legacygames"]="$legacygames_path1" ["humblegames"]="$humblegames_path1" ["indiegala"]="$indiegala_path1" ["rockstar"]="$rockstar_path1" ["glyph"]="$glyph_path1" ["psplus"]="$psplus_path1" ["vkplay"]="$vkplay_path1")
-    paths2=(["epic_games"]="$epic_games_launcher_path2" ["gog_galaxy"]="$gog_galaxy_path2" ["uplay"]="$uplay_path2" ["battlenet"]="$battlenet_path2" ["eaapp"]="$eaapp_path2" ["amazongames"]="$amazongames_path2" ["itchio"]="$itchio_path2" ["legacygames"]="$legacygames_path2" ["humblegames"]="$humblegames_path2" ["indiegala"]="$indiegala_path2" ["rockstar"]="$rockstar_path2" ["glyph"]="$glyph_path2" ["psplus"]="$psplus_path2" ["vkplay"]="$vkplay_path2")
-    names=(["epic_games"]="Epic Games" ["gog_galaxy"]="GOG Galaxy" ["uplay"]="Ubisoft Connect" ["battlenet"]="Battle.net" ["eaapp"]="EA App" ["amazongames"]="Amazon Games" ["itchio"]="itch.io" ["legacygames"]="Legacy Games" ["humblegames"]="Humble Games Collection" ["indiegala"]="IndieGala" ["rockstar"]="Rockstar Games Launcher" ["glyph"]="Glyph Launcher" ["psplus"]="Playstation Plus" ["vkplay"]="VK Play")
+    paths1=(["epic_games"]="$epic_games_launcher_path1" ["gog_galaxy"]="$gog_galaxy_path1" ["uplay"]="$uplay_path1" ["battlenet"]="$battlenet_path1" ["eaapp"]="$eaapp_path1" ["amazongames"]="$amazongames_path1" ["itchio"]="$itchio_path1" ["legacygames"]="$legacygames_path1" ["humblegames"]="$humblegames_path1" ["indiegala"]="$indiegala_path1" ["rockstar"]="$rockstar_path1" ["glyph"]="$glyph_path1" ["psplus"]="$psplus_path1" ["vkplay"]="$vkplay_path1" ["hoyoplay"]=$hoyoplay_path1)
+    paths2=(["epic_games"]="$epic_games_launcher_path2" ["gog_galaxy"]="$gog_galaxy_path2" ["uplay"]="$uplay_path2" ["battlenet"]="$battlenet_path2" ["eaapp"]="$eaapp_path2" ["amazongames"]="$amazongames_path2" ["itchio"]="$itchio_path2" ["legacygames"]="$legacygames_path2" ["humblegames"]="$humblegames_path2" ["indiegala"]="$indiegala_path2" ["rockstar"]="$rockstar_path2" ["glyph"]="$glyph_path2" ["psplus"]="$psplus_path2" ["vkplay"]="$vkplay_path2" ["hoyoplay"]=$hoyoplay_path2)
+    names=(["epic_games"]="Epic Games" ["gog_galaxy"]="GOG Galaxy" ["uplay"]="Ubisoft Connect" ["battlenet"]="Battle.net" ["eaapp"]="EA App" ["amazongames"]="Amazon Games" ["itchio"]="itch.io" ["legacygames"]="Legacy Games" ["humblegames"]="Humble Games Collection" ["indiegala"]="IndieGala" ["rockstar"]="Rockstar Games Launcher" ["glyph"]="Glyph Launcher" ["psplus"]="Playstation Plus" ["vkplay"]="VK Play" ["hoyoplay"]="HoYoPlay")
 
     for launcher in "${!names[@]}"; do
         if [[ -f "${paths1[$launcher]}" ]]; then
@@ -279,8 +156,8 @@ function CheckInstallations {
 # Verify launchers are installed
 function CheckInstallationDirectory {
     declare -A paths names
-    paths=(["nonsteamlauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers" ["epicgameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher" ["goggalaxylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher" ["uplaylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/UplayLauncher" ["battlenetlauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/Battle.netLauncher" ["eaapplauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/TheEAappLauncher" ["amazongameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher" ["itchiolauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/itchioLauncher" ["legacygameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher" ["humblegameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher" ["indiegalalauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher" ["rockstargameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher" ["glyphlauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/GlyphLauncher" ["pspluslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher" ["vkplaylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/VKPlayLauncher")
-    names=(["nonsteamlauncher"]="NonSteamLaunchers" ["epicgameslauncher"]="EpicGamesLauncher" ["goggalaxylauncher"]="GogGalaxyLauncher" ["uplaylauncher"]="UplayLauncher" ["battlenetlauncher"]="Battle.netLauncher" ["eaapplauncher"]="TheEAappLauncher" ["amazongameslauncher"]="AmazonGamesLauncher" ["itchiolauncher"]="itchioLauncher" ["legacygameslauncher"]="LegacyGamesLauncher" ["humblegameslauncher"]="HumbleGamesLauncher" ["indiegalalauncher"]="IndieGalaLauncher" ["rockstargameslauncher"]="RockstarGamesLauncher" ["glyphlauncher"]="GlyphLauncher" ["pspluslauncher"]="PlaystationPlusLauncher" ["vkplaylauncher"]="VKPlayLauncher")
+    paths=(["nonsteamlauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers" ["epicgameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher" ["goggalaxylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher" ["uplaylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/UplayLauncher" ["battlenetlauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/Battle.netLauncher" ["eaapplauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/TheEAappLauncher" ["amazongameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher" ["itchiolauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/itchioLauncher" ["legacygameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher" ["humblegameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher" ["indiegalalauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher" ["rockstargameslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher" ["glyphlauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/GlyphLauncher" ["pspluslauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher" ["vkplaylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/VKPlayLauncher" ["hoyoplaylauncher"]="${logged_in_home}/.local/share/Steam/steamapps/compatdata/HoYoPlayLauncher")
+    names=(["nonsteamlauncher"]="NonSteamLaunchers" ["epicgameslauncher"]="EpicGamesLauncher" ["goggalaxylauncher"]="GogGalaxyLauncher" ["uplaylauncher"]="UplayLauncher" ["battlenetlauncher"]="Battle.netLauncher" ["eaapplauncher"]="TheEAappLauncher" ["amazongameslauncher"]="AmazonGamesLauncher" ["itchiolauncher"]="itchioLauncher" ["legacygameslauncher"]="LegacyGamesLauncher" ["humblegameslauncher"]="HumbleGamesLauncher" ["indiegalalauncher"]="IndieGalaLauncher" ["rockstargameslauncher"]="RockstarGamesLauncher" ["glyphlauncher"]="GlyphLauncher" ["pspluslauncher"]="PlaystationPlusLauncher" ["vkplaylauncher"]="VKPlayLauncher" ["hoyoplaylauncher"]="HoYoPlayLauncher")
 
     for launcher in "${!names[@]}"; do
         if [[ -d "${paths[$launcher]}" ]]; then
@@ -373,7 +250,7 @@ separate_app_ids=false
 # Check if any command line arguments were provided
 if [ ${#args[@]} -eq 0 ]; then
     # No command line arguments were provided, so display the main zenity window
-    selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation, One Prefix, NonSteamLaunchers - updated the NSLGameScanner.py $live" FALSE "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $psplus_value "$psplus_text" $vkplay_value "$vkplay_text" FALSE "RemotePlayWhatever" FALSE "Fortnite" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "movie-web" FALSE "Youtube" FALSE "Twitch" --width=800 --height=740 --extra-button="Uninstall" --extra-button="Stop NSLGameScanner" --extra-button="Start Fresh" --extra-button="Move to SD Card" --extra-button="Update Proton-GE")
+    selected_launchers=$(zenity --list --text="Which launchers do you want to download and install?" --checklist --column="$version" --column="Default = one App ID Installation, One Prefix, NonSteamLaunchers - updated the NSLGameScanner.py $live" FALSE "SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX" $epic_games_value "$epic_games_text" $gog_galaxy_value "$gog_galaxy_text" $uplay_value "$uplay_text" $battlenet_value "$battlenet_text" $amazongames_value "$amazongames_text" $eaapp_value "$eaapp_text" $legacygames_value "$legacygames_text" $itchio_value "$itchio_text" $humblegames_value "$humblegames_text" $indiegala_value "$indiegala_text" $rockstar_value "$rockstar_text" $glyph_value "$glyph_text" $psplus_value "$psplus_text" $vkplay_value "$vkplay_text" $hoyoplay_value "$hoyoplay_text" FALSE "RemotePlayWhatever" FALSE "Fortnite" FALSE "Xbox Game Pass" FALSE "GeForce Now" FALSE "Amazon Luna" FALSE "Netflix" FALSE "Hulu" FALSE "Disney+" FALSE "Amazon Prime Video" FALSE "movie-web" FALSE "Youtube" FALSE "Twitch" --width=800 --height=740 --extra-button="Uninstall" --extra-button="Stop NSLGameScanner" --extra-button="Start Fresh" --extra-button="Move to SD Card" --extra-button="Update Proton-GE")
 
     # Check if the user clicked the 'Cancel' button or selected one of the extra buttons
     if [ $? -eq 1 ] || [[ $selected_launchers == "Start Fresh" ]] || [[ $selected_launchers == "Move to SD Card" ]] || [[ $selected_launchers == "Uninstall" ]]; then
@@ -468,10 +345,10 @@ function StartFreshFunction {
     other_dir="${logged_in_home}/.local/share/Steam/steamapps/shadercache/"
 
     # Define an array of original folder names
-    folder_names=("EpicGamesLauncher" "GogGalaxyLauncher" "UplayLauncher" "Battle.netLauncher" "TheEAappLauncher" "AmazonGamesLauncher" "itchioLauncher" "LegacyGamesLauncher" "HumbleGamesLauncher" "IndieGalaLauncher" "RockstarGamesLauncher" "GlyphLauncher" "PlaystationPlusLauncher" "VKPlayLauncher")
+    folder_names=("EpicGamesLauncher" "GogGalaxyLauncher" "UplayLauncher" "Battle.netLauncher" "TheEAappLauncher" "AmazonGamesLauncher" "itchioLauncher" "LegacyGamesLauncher" "HumbleGamesLauncher" "IndieGalaLauncher" "RockstarGamesLauncher" "GlyphLauncher" "PlaystationPlusLauncher" "VKPlayLauncher" "HoYoPlayLauncher")
 
     # Define an array of app IDs
-    app_ids=("3772819390" "4294900670" "4063097571" "3786021133" "3448088735" "3923904787" "3440562512" "2948446662" "3908676077" "4206469918" "3303169468" "3595505624" "4272271078" "3259996605" "2588786779" "4090616647" "3494943831" "2390200925" "4253976432" "2221882453" "2296676888" "2486751858" "3974004104" "3811372789" "3788101956" "3782277090" "3640061468" "3216372511" "2882622939" "2800812206" "2580882702")
+    app_ids=("3772819390" "4294900670" "4063097571" "3786021133" "3448088735" "3923904787" "3440562512" "2948446662" "3908676077" "4206469918" "3303169468" "3595505624" "4272271078" "3259996605" "2588786779" "4090616647" "3494943831" "2390200925" "4253976432" "2221882453" "2296676888" "2486751858" "3974004104" "3811372789" "3788101956" "3782277090" "3640061468" "3216372511" "2882622939" "2800812206" "2580882702" "4022508926")
 
     # Iterate over each folder name in the folder_names array
     for folder in "${folder_names[@]}"; do
@@ -564,6 +441,7 @@ function StartFreshFunction {
     rm -rf "/run/media/mmcblk0p1/GlyphLauncher/"
     rm -rf "/run/media/mmcblk0p1/PlaystationPlusLauncher/"
     rm -rf "/run/media/mmcblk0p1/VKPlayLauncher/"
+    rm -rf "/run/media/mmcblk0p1/HoYoPlayLauncher/"
     rm -rf ${logged_in_home}/Downloads/NonSteamLaunchersInstallation
     rm -rf ${logged_in_home}/.config/systemd/user/Modules
     rm -rf ${logged_in_home}/.config/systemd/user/env_vars
@@ -703,6 +581,13 @@ vkplay_url=https://static.gc.vkplay.ru/VKPlayLoader.exe
 
 # Set the path to save the VK Play Launcher to
 vkplay_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/VKPlayLoader.exe
+
+# Set the URL to download the VK Play Launcher file from
+hoyoplay_url="https://download-porter.hoyoverse.com/download-porter/2024/06/07/hyp_global_setup_1.0.5.exe?trace_key=HoYoPlay_install_ua_109daee2060b"
+
+# Set the path to save the Hoyo Play Launcher to
+hoyoplay_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/HoYoPlay_install_ua_109daee2060b.exe.exe
+
 #End of Downloads INFO
 
 
@@ -814,6 +699,7 @@ process_uninstall_options() {
             uninstall_launcher "$uninstall_options" "Glyph Launcher" "$glyph_path1" "$glyph_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/Glyph" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/GlyphLauncher" "glyph"
             uninstall_launcher "$uninstall_options" "Playstation Plus" "$psplus_path1" "$psplus_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/PlayStationPlus" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher" "psplus"
             uninstall_launcher "$uninstall_options" "VK Play" "$vkplay_path1" "$vkplay_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/GameCenter" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/VKPlayLauncher" "vkplay"
+            uninstall_launcher "$uninstall_options" "HoYoPlay" "$hoyoplay_path1" "$hoyoplay_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/HoYoPlay" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/HoYoPlayLauncher" "hoyoplay"
         fi
         return 0
     fi
@@ -867,6 +753,7 @@ else
             FALSE "Glyph Launcher" \
             FALSE "Playstation Plus" \
             FALSE "VK Play" \
+            FALSE "HoYoPlay" \
         )
         # Convert the returned string to an array
         IFS='|' read -r -a uninstall_options_array <<< "$uninstall_options"
@@ -914,7 +801,7 @@ else
     if [[ $options == "Move to SD Card" ]]; then
         CheckInstallationDirectory
 
-    move_options=$(zenity --list --text="Which launcher IDs do you want to move to the SD card?" --checklist --column="Select" --column="Launcher ID" $nonsteamlauncher_move_value "NonSteamLaunchers" $epicgameslauncher_move_value "EpicGamesLauncher" $goggalaxylauncher_move_value "GogGalaxyLauncher" $uplaylauncher_move_value "UplayLauncher" $battlenetlauncher_move_value "Battle.netLauncher" $eaapplauncher_move_value "TheEAappLauncher" $amazongameslauncher_move_value "AmazonGamesLauncher" $itchiolauncher_move_value "itchioLauncher" $legacygameslauncher_move_value "LegacyGamesLauncher" $humblegameslauncher_move_value "HumbleGamesLauncher" $indiegalalauncher_move_value "IndieGalaLauncher" $rockstargameslauncher_move_value "RockstarGamesLauncher" $glyphlauncher_move_value "GlyphLauncher" $pspluslauncher_move_value "PlaystationPlusLauncher" $vkplaylauncher_move_value "VKPlayLauncher" --width=335 --height=524)
+    move_options=$(zenity --list --text="Which launcher IDs do you want to move to the SD card?" --checklist --column="Select" --column="Launcher ID" $nonsteamlauncher_move_value "NonSteamLaunchers" $epicgameslauncher_move_value "EpicGamesLauncher" $goggalaxylauncher_move_value "GogGalaxyLauncher" $uplaylauncher_move_value "UplayLauncher" $battlenetlauncher_move_value "Battle.netLauncher" $eaapplauncher_move_value "TheEAappLauncher" $amazongameslauncher_move_value "AmazonGamesLauncher" $itchiolauncher_move_value "itchioLauncher" $legacygameslauncher_move_value "LegacyGamesLauncher" $humblegameslauncher_move_value "HumbleGamesLauncher" $indiegalalauncher_move_value "IndieGalaLauncher" $rockstargameslauncher_move_value "RockstarGamesLauncher" $glyphlauncher_move_value "GlyphLauncher" $pspluslauncher_move_value "PlaystationPlusLauncher" $vkplaylauncher_move_value "VKPlayLauncher" $hoyoplaylauncher_move_value "HoYoPlayLauncher" --width=335 --height=524)
 
     if [ $? -eq 0 ]; then
         zenity --info --text="The selected directories have been moved to the SD card and symbolic links have been created." --width=200 --height=150
@@ -1117,7 +1004,7 @@ function install_humblegames {
     export STEAM_COMPAT_CLIENT_INSTALL_PATH=~/.local/share/Steam
     export STEAM_COMPAT_DATA_PATH=~/.steam/steam/steamapps/compatdata/$appid
     FIXED_SCHEME="\$(echo "\$1" | sed "s/?/\//")"
-    echo \$FIXED_SCHEME > /home/deck/.local/share/Steam/steamapps/compatdata/$appid/pfx/drive_c/.auth
+    echo \$FIXED_SCHEME > "${logged_in_home}/.local/share/Steam/steamapps/compatdata/$appid/pfx/drive_c/.auth
     "$STEAM_RUNTIME" "$proton_dir/proton" run ~/.local/share/Steam/steamapps/compatdata/$appid/pfx/start-humble.cmd
 EOF
         chmod +x "${logged_in_home}/.local/share/Steam/steamapps/compatdata/$appid/pfx/handle-humble-scheme"
@@ -1383,6 +1270,9 @@ install_launcher "Playstation Plus" "PlaystationPlusLauncher" "$psplus_file" "$p
 
 # Install VK Play
 install_launcher "VK Play" "VKPlayLauncher" "$vkplay_file" "$vkplay_url" "$vkplay_file" "98" "" "install_vkplay" true
+
+# Install Hoyo Play
+install_launcher "HoYoPlay" "HoYoPlayLauncher" "$hoyoplay_file" "$hoyoplay_url" "$hoyoplay_file" "99" "" ""
 #End of Launcher Installations
 
 
@@ -1493,6 +1383,7 @@ check_and_write "rockstar" "$rockstar_path1" "$rockstar_path2" "NonSteamLauncher
 check_and_write "glyph" "$glyph_path1" "$glyph_path2" "NonSteamLaunchers" "GlyphLauncher" "" "glyph_launcher"
 check_and_write "psplus" "$psplus_path1" "$psplus_path2" "NonSteamLaunchers" "PlaystationPlusLauncher" "" "psplus_launcher"
 check_and_write "vkplay" "$vkplay_path1" "$vkplay_path2" "NonSteamLaunchers" "VKPlayLauncher" "" "vkplay_launcher"
+check_and_write "hoyoplay" "$hoyoplay_path1" "$hoyoplay_path2" "NonSteamLaunchers" "HoYoPlayLauncher" "" "hoyoplay_launcher"
 # End of writing to env_vars
 
 # Set the env_vars variable
@@ -1627,31 +1518,17 @@ if [ ${#custom_websites[@]} -gt 0 ]; then
     echo "export custom_websites_str=$custom_websites_str" >> ${logged_in_home}/.config/systemd/user/env_vars
 fi
 
-# Create the download directory if it doesn't exist
-mkdir -p "$download_dir"
 
-# Get the version of Python being used
-python_version=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-
-# Create a directory for the vdf module
-mkdir -p "${download_dir}/lib/python${python_version}/site-packages/vdf"
-
-# Download the vdf module from the GitHub repository
-download_url="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck/raw/main/Modules/vdf/__init__.py"
-wget -P "${download_dir}/lib/python${python_version}/site-packages/vdf" "$download_url"
-
-# Set the PYTHONPATH environment variable
-export PYTHONPATH="${download_dir}/lib/python${python_version}/site-packages/:$PYTHONPATH"
 
 # Set the default Steam directory
 steam_dir="${logged_in_home}/.local/share/Steam"
 
 # Check if the loginusers.vdf file exists in either of the two directories
-if [[ -f "${logged_in_home}/.steam/root/config/loginusers.vdf" ]] || [[ -f "/home/deck/.local/share/Steam/config/loginusers.vdf" ]]; then
+if [[ -f "${logged_in_home}/.steam/root/config/loginusers.vdf" ]] || [[ -f "${logged_in_home}/.local/share/Steam/config/loginusers.vdf" ]]; then
     if [[ -f "${logged_in_home}/.steam/root/config/loginusers.vdf" ]]; then
         file_path="${logged_in_home}/.steam/root/config/loginusers.vdf"
     else
-        file_path="/home/deck/.local/share/Steam/config/loginusers.vdf"
+        file_path="${logged_in_home}/.local/share/Steam/config/loginusers.vdf"
     fi
 
     # Extract the block of text for the most recent user
@@ -1785,44 +1662,6 @@ echo "export python_version=$python_version" >> ${logged_in_home}/.config/system
 echo "export chromedirectory=$chromedirectory" >> ${logged_in_home}/.config/systemd/user/env_vars
 echo "export chrome_startdir=$chrome_startdir" >> ${logged_in_home}/.config/systemd/user/env_vars
 
-
-
-# Check if either directory does not exist
-if [ "${deckyplugin}" = false ]; then
-    # Detach script from Steam process
-    nohup sh -c 'sleep 10; /usr/bin/steam' &
-
-    # Close all instances of Steam
-    steam_pid() { pgrep -x steam ; }
-    steam_running=$(steam_pid)
-    [[ -n "$steam_running" ]] && killall steam
-
-    # Wait for the steam process to exit
-    while steam_pid > /dev/null; do sleep 5; done
-
-	#Setup NSLGameScanner.service
-	python_script_path="${logged_in_home}/.config/systemd/user/NSLGameScanner.py"
-
-	# Define your GitHub link
-	github_link="https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NSLGameScanner.py"
-
-	# Check if the service is already running
-	service_status=$(systemctl --user is-active nslgamescanner.service)
-
-	if [ "$service_status" = "active" ] || [ "$service_status" = "activating" ]
-	then
-	    echo "Service is already running or activating. Stopping the service..."
-	    systemctl --user stop nslgamescanner.service
-	fi
-
-	echo "Updating Python script from GitHub..."
-
-	curl -o $python_script_path $github_link
-
-	echo "Starting the service..."
-
-	python3 $python_script_path
-fi
 
 
 
