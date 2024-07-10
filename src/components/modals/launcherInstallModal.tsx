@@ -55,7 +55,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setSeparateAppIds(value);
     };
 
-    const handleInstallClick = async () => {
+    const handleInstallClick = async (operation: string) => {
         console.log('handleInstallClick called');
         const selectedLaunchers = options
             .filter(option => option.enabled && !option.streaming)
@@ -68,7 +68,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             setAutoScan(false)
             console.log(`Calling install launcher method for ${launcher}`)
             const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1))
-            await installLauncher(launcherParam, launcher.label, i)
+            await installLauncher(launcherParam, launcher.label, i, operation)
           }
           i++
         }
@@ -77,7 +77,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         if (settings.autoscan) {autoscan()}
        }
       
-       const installLauncher = async (launcher: string, launcherLabel: string, index: number) => {
+       const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
         const total = options.filter(option => option.enabled).length
         const startPercent = index === 0 ? 0 : index/total*100
         const endPercent = (index + 1)/total*100
@@ -89,6 +89,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         try {
             const result = await serverAPI.callPluginMethod("install", {
                 selected_options: launcher,
+                operation: operation,
                 install_chrome: false,
                 separate_app_ids: separateAppIds,
                 start_fresh: false // Pass true for the start_fresh parameter
@@ -144,13 +145,22 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             </p>
             <Focusable>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <DialogButton
-                    style={{ width: "fit-content" }}
-                    onClick={handleInstallClick}
-                    disabled={options.every(option => option.enabled === false)}
-                    >
-                    Install
-                    </DialogButton>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <DialogButton
+                            style={{ width: "fit-content" }}
+                            onClick={() => handleInstallClick("Install")}
+                            disabled={options.every(option => option.enabled === false)}
+                        >
+                            Install
+                        </DialogButton>
+                        <DialogButton
+                            style={{ width: "fit-content", marginLeft: "10px", marginRight: "10px" }}
+                            onClick={() => handleInstallClick("Uninstall")}
+                            disabled={options.every(option => option.enabled === false)}
+                        >
+                            Uninstall
+                        </DialogButton>
+                    </div>
                     <ToggleField label="Separate Launcher Folders" checked={separateAppIds} onChange={handleSeparateAppIdsToggle} />
                 </div>
             </Focusable>
