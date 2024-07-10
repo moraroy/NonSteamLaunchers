@@ -122,7 +122,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           }}
         >
           <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
-            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games and Itchio.
+            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games.
           </span>
         </div>
       </Focusable>
