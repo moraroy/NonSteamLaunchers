@@ -127,7 +127,7 @@ class Plugin:
     async def get_setting(self, key, default):
         return self.settings.getSetting(key, default)
         
-    async def install(self, selected_options, install_chrome, separate_app_ids, start_fresh):
+    async def install(self, selected_options, install_chrome, separate_app_ids, start_fresh, operation="Install"):
         decky_plugin.logger.info('install was called')
 
         # Log the arguments for debugging
@@ -157,7 +157,7 @@ class Plugin:
         run(['xhost', '+'])
 
         # Construct the command to run
-        command_suffix = ' '.join(([f'"{selected_option_nice}"'] if selected_option_nice != '' else []) + ([f'"Chrome"'] if install_chrome else []) + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + [f'"DeckyPlugin"'])
+        command_suffix = ' '.join(([f'"{operation if operation == "Uninstall" else ""} {selected_option_nice}"'] if selected_option_nice != '' else []) + ([f'"Chrome"'] if install_chrome else []) + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + [f'"DeckyPlugin"'])
 
         # Construct the command to run
         command = f"{script_path} {command_suffix}"
