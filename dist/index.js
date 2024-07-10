@@ -399,6 +399,7 @@
       const { settings, setAutoScan } = useSettings(serverAPI);
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
+      const [operation, setOperation] = React.useState("");
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -417,6 +418,7 @@
           setSeparateAppIds(value);
       };
       const handleInstallClick = async (operation) => {
+          setOperation(operation);
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
@@ -459,11 +461,11 @@
               });
               if (result) {
                   setProgress({ percent: endPercent, status: `${operation} Selection ${index + 1} of ${total}`, description: `${launcher}` });
-                  notify.toast("Launcher Installed", `${launcherLabel} was ${operation.toLowerCase()}ed successfully!`);
+                  notify.toast(`Launcher ${operation}ed`, `${launcherLabel} was ${operation.toLowerCase()}ed successfully!`);
               }
               else {
                   setProgress({ percent: endPercent, status: `${operation} selection ${index + 1} of ${total} failed`, description: `${operation} ${launcher} failed. See logs.` });
-                  notify.toast("Install Failed", `${launcherLabel} was not ${operation.toLowerCase()}ed.`);
+                  notify.toast(`${operation} Failed`, `${launcherLabel} was not ${operation.toLowerCase()}ed.`);
               }
           }
           catch (error) {
@@ -474,7 +476,7 @@
       };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
-              window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Installing Game Launchers"),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation} Game Launchers`),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null,
                   "Selected options: ",
                   options.filter(option => option.enabled).map(option => option.label).join(', ')),
