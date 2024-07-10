@@ -448,7 +448,7 @@
           console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`);
           setProgress({
               percent: startPercent,
-              status: `${operation} Launcher ${index + 1} of ${total}`,
+              status: `${operation}ing Launcher ${index + 1} of ${total}`,
               description: `${launcherLabel}`
           });
           try {
@@ -476,7 +476,7 @@
       };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
-              window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation} Game Launchers`),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null,
                   "Selected options: ",
                   options.filter(option => option.enabled).map(option => option.label).join(', ')),

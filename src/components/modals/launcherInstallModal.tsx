@@ -87,7 +87,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`)
         setProgress({ 
           percent: startPercent, 
-          status:`${operation} Launcher ${index + 1} of ${total}`, 
+          status:`${operation}ing Launcher ${index + 1} of ${total}`, 
           description: `${launcherLabel}`})
         try {
             const result = await serverAPI.callPluginMethod("install", {
@@ -115,7 +115,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
         <DialogHeader>
-            {`${operation} Game Launchers`}
+            {`${operation}ing Game Launchers`}
         </DialogHeader>
         <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
         <DialogBody>
