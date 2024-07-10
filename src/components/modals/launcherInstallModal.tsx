@@ -36,6 +36,8 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const { settings, setAutoScan } = useSettings(serverAPI);
     const [ options, setOptions ] = useState(launcherOptions);
     const [ separateAppIds, setSeparateAppIds] = useState(false);
+    const [operation, setOperation] = useState("");
+
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -56,6 +58,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     };
 
     const handleInstallClick = async (operation: string) => {
+        setOperation(operation);
         console.log('handleInstallClick called');
         const selectedLaunchers = options
             .filter(option => option.enabled && !option.streaming)
@@ -66,7 +69,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         for (const launcher of selectedLaunchers) {
           if (!launcher.streaming) {
             setAutoScan(false)
-            console.log(`Calling install launcher method for ${launcher}`)
+            console.log(`Calling ${operation} launcher method for ${launcher}`)
             const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1))
             await installLauncher(launcherParam, launcher.label, i, operation)
           }
@@ -81,11 +84,11 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         const total = options.filter(option => option.enabled).length
         const startPercent = index === 0 ? 0 : index/total*100
         const endPercent = (index + 1)/total*100
-        console.log(`Installing Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`)
+        console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`)
         setProgress({ 
           percent: startPercent, 
-          status:`Installing Launcher ${index + 1} of ${total}`, 
-          description: `${launcherLabel}`});
+          status:`${operation}ing Launcher ${index + 1} of ${total}`, 
+          description: `${launcherLabel}`})
         try {
             const result = await serverAPI.callPluginMethod("install", {
                 selected_options: launcher,
@@ -96,12 +99,12 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             });
       
             if (result) {
-              setProgress({ percent: endPercent, status:`Installed Selection ${index + 1} of ${total}`, description: `${launcher}`});
-              notify.toast("Launcher Installed",`${launcherLabel} was installed successfully!`)
+                setProgress({ percent: endPercent, status:`${operation} Selection ${index + 1} of ${total}`, description: `${launcher}`});
+                notify.toast(`Launcher ${operation}ed`,`${launcherLabel} was ${operation.toLowerCase()}ed successfully!`)
             } else {
-              setProgress({ percent: endPercent, status:`Installing selection ${index + 1} of ${total} failed`, description: `Installing ${launcher} failed. See logs.`});
-              notify.toast("Install Failed",`${launcherLabel} was not installed.`)
-            }
+                setProgress({ percent: endPercent, status:`${operation} selection ${index + 1} of ${total} failed`, description: `${operation} ${launcher} failed. See logs.`});
+                notify.toast(`${operation} Failed`,`${launcherLabel} was not ${operation.toLowerCase()}ed.`)
+            }                       
         } catch (error) {
             setProgress({ percent: endPercent, status:`Installing selection ${index + 1} of ${total} failed`, description: `Installing ${launcher} failed. See logs.`});
             notify.toast("Install Failed",`${launcherLabel} was not installed.`)
@@ -112,7 +115,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
         <DialogHeader>
-            Installing Game Launchers
+            {`${operation}ing Game Launchers`}
         </DialogHeader>
         <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
         <DialogBody>
