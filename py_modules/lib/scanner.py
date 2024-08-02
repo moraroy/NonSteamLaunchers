@@ -83,8 +83,8 @@ def initialiseVariables(env_vars):
     chromedirectory = env_vars.get('chromedirectory')
 
 #Vars
-sgdb = SteamGridDB('36e4bedbfdda27f42f9ef4a44f80955c')
-api_key = '36e4bedbfdda27f42f9ef4a44f80955c'
+sgdb = SteamGridDB('e3bf9f166d7a80ae260387f90e36d10e')
+api_key = 'e3bf9f166d7a80ae260387f90e36d10e'
 decky_shortcuts = {}
 
 def scan():
@@ -222,16 +222,18 @@ def download_artwork(game_id, api_key, art_type, dimensions=None):
         url += f"?dimensions={dimensions}"
     headers = {'Authorization': f'Bearer {api_key}'}
     decky_plugin.logger.info(f"Sending request to: {url}")
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
         data = response.json()
-    else:
-        decky_plugin.logger.info(f"Error making API call: {response.status_code}")
-        return
+    except requests.exceptions.RequestException as e:
+        decky_plugin.logger.info(f"Error making API call: {e}")
+        return None
 
     # Continue with the rest of your function using `data`
     for artwork in data['data']:
-        if game_id == 5297303 and dimensions == "600x900": # get a better poster for Xbox Game Pass
+        if game_id == 5297303 and dimensions == "600x900":  # get a better poster for Xbox Game Pass
             image_url = "https://cdn2.steamgriddb.com/thumb/eea5656d3244578f512f32cb4043792a.jpg"
         else:
             image_url = artwork['thumb']
@@ -244,20 +246,25 @@ def download_artwork(game_id, api_key, art_type, dimensions=None):
         except requests.exceptions.RequestException as e:
             decky_plugin.logger.info(f"Error downloading image: {e}")
             if art_type == 'icons':
-                download_artwork(game_id, api_key, 'icons_ico')
+                return download_artwork(game_id, api_key, 'icons_ico', dimensions)
+    return None
 
 def get_game_id(game_name):
-    if game_name == "Disney+": #hardcode disney+ game ID
+    if game_name == "Disney+":  # hardcode disney+ game ID
         return 5260961
     decky_plugin.logger.info(f"Searching for game ID for: {game_name}")
-    games = sgdb.search_game(game_name)
-    for game in games:
-        if game.name == game_name:  # Case-sensitive comparison
-            decky_plugin.logger.info(f"Found game ID: {game.id}")
-            return game.id
-    # Fallback: return the ID of the first game in the search results
-    if games:
-        decky_plugin.logger.info(f"No exact match found. Using game ID of the first result: {games[0].name}: {games[0].id}")
-        return games[0].id
-    decky_plugin.logger.info("No game ID found")
-    return "default_game_id"  # Return a default value when no games are found
+    try:
+        games = sgdb.search_game(game_name)
+        for game in games:
+            if game.name == game_name:  # Case-sensitive comparison
+                decky_plugin.logger.info(f"Found game ID: {game.id}")
+                return game.id
+        # Fallback: return the ID of the first game in the search results
+        if games:
+            decky_plugin.logger.info(f"No exact match found. Using game ID of the first result: {games[0].name}: {games[0].id}")
+            return games[0].id
+        decky_plugin.logger.info("No game ID found")
+        return "default_game_id"  # Return a default value when no games are found
+    except Exception as e:  # Catching a general exception
+        decky_plugin.logger.info(f"Error searching for game ID: {e}")
+        return "default_game_id"  # Return a default value in case of an error
