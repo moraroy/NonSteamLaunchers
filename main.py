@@ -170,9 +170,13 @@ class Plugin:
         env['DISPLAY'] = ':0'
         env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
 
-        # Run the command and capture the output
-        process = Popen(command, shell=True, env=env)
-     
+        # Temporarily disable access control for the X server
+        run(['xhost', '+'])
+
+        # Run the command in a new xterm window
+        xterm_command = f"xterm -e {command}"
+        process = Popen(xterm_command, shell=True, env=env)
+
         # Wait for the script to complete and get the exit code
         exit_code = process.wait()
 
