@@ -49,7 +49,6 @@ version=v3.9.2
 
 
 
-
 # Get the command line arguments
 args=("$@")
 deckyplugin=false
