@@ -36,7 +36,6 @@ const initialOptions = [
   { name: 'fortnite', label: 'Fortnite (xCloud)', URL: 'https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2/', streaming: true, enabled: false },
   { name: 'geforceNow', label: 'GeForce Now', URL: 'https://play.geforcenow.com', streaming: true, enabled: false },
   { name: 'amazonLuna', label: 'Amazon Luna', URL: 'https://luna.amazon.com/', streaming: true, enabled: false },
-  { name: 'movieweb', label: 'movie-web', URL: 'https://sudo-flix.lol/', streaming: true, enabled: false },
   { name: 'netflix', label: 'Netflix', URL: 'https://www.netflix.com', streaming: true, enabled: false },
   { name: 'hulu', label: 'Hulu', URL: 'https://www.hulu.com/welcome', streaming: true, enabled: false },
   { name: 'disneyPlus', label: 'Disney+', URL: 'https://www.disneyplus.com', streaming: true, enabled: false },
