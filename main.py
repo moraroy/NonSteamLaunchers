@@ -17,6 +17,7 @@ import os
 import logging
 import re
 import asyncio
+import subprocess
 from aiohttp import web
 from decky_plugin import DECKY_PLUGIN_DIR
 from py_modules.lib.scanner import scan, addCustomSite
@@ -115,7 +116,53 @@ class Plugin:
         decky_plugin.logger.info("Server started at http://localhost:8675")
 
     async def _migration(self):
-        decky_plugin.logger.info("No migration needed")
+
+        decky_plugin.logger.info("Starting migration process")
+
+        # Get the path to the Decky user's home directory
+        decky_user_home = decky_plugin.DECKY_USER_HOME
+
+        # Define the paths for the service file, symlink, and NSLGameScanner.py
+        service_file = os.path.join(decky_user_home, '.config/systemd/user/nslgamescanner.service')
+        symlink = os.path.join(decky_user_home, '.config/systemd/user/default.target.wants/nslgamescanner.service')
+        nslgamescanner_py = os.path.join(decky_user_home, '.config/systemd/user/NSLGameScanner.py')
+
+        # Flags to check if any action was taken
+        service_file_deleted = False
+        symlink_removed = False
+        nslgamescanner_py_deleted = False
+
+        # Delete the service file
+        if os.path.exists(service_file):
+            os.remove(service_file)
+            service_file_deleted = True
+            decky_plugin.logger.info(f"Deleted service file: {service_file}")
+        else:
+            decky_plugin.logger.info(f"Service file not found: {service_file}")
+
+        # Remove the symlink
+        if os.path.islink(symlink):
+            os.unlink(symlink)
+            symlink_removed = True
+            decky_plugin.logger.info(f"Removed symlink: {symlink}")
+        else:
+            decky_plugin.logger.info(f"Symlink not found: {symlink}")
+
+        # Delete the NSLGameScanner.py file
+        if os.path.exists(nslgamescanner_py):
+            os.remove(nslgamescanner_py)
+            nslgamescanner_py_deleted = True
+            decky_plugin.logger.info(f"Deleted NSLGameScanner.py: {nslgamescanner_py}")
+        else:
+            decky_plugin.logger.info(f"NSLGameScanner.py not found: {nslgamescanner_py}")
+
+        # Reload the systemd daemon only if any action was taken
+        if service_file_deleted or symlink_removed or nslgamescanner_py_deleted:
+            subprocess.run(['systemctl', '--user', 'daemon-reload'])
+            decky_plugin.logger.info("Reloaded systemd daemon")
+        else:
+            decky_plugin.logger.info("No changes made, skipping daemon reload")
+
         
     async def _unload(self):
         decky_plugin.logger.info("Plugin Unloaded!")
