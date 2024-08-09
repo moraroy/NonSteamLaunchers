@@ -83,8 +83,7 @@ def initialiseVariables(env_vars):
     chromedirectory = env_vars.get('chromedirectory')
 
 #Vars
-sgdb = SteamGridDB('e3bf9f166d7a80ae260387f90e36d10e')
-api_key = 'e3bf9f166d7a80ae260387f90e36d10e'
+proxy_url = 'https://myproxycache-203e9b0bbe5b.herokuapp.com/api'
 decky_shortcuts = {}
 
 def scan():
@@ -203,28 +202,27 @@ def add_launchers():
 
 def get_sgdb_art(game_id):
     decky_plugin.logger.info(f"Downloading icon artwork...")
-    icon = download_artwork(game_id, api_key, "icons")
+    icon = download_artwork(game_id, "icons")
     decky_plugin.logger.info(f"Downloading logo artwork...")
-    logo64 = download_artwork(game_id, api_key, "logos")
+    logo64 = download_artwork(game_id, "logos")
     decky_plugin.logger.info(f"Downloading hero artwork...")
-    hero64 = download_artwork(game_id, api_key, "heroes")
+    hero64 = download_artwork(game_id, "heroes")
     decky_plugin.logger.info("Downloading grids artwork of size 600x900...")
-    gridp64 = download_artwork(game_id, api_key, "grids", "600x900")
+    gridp64 = download_artwork(game_id, "grids", "600x900")
     decky_plugin.logger.info("Downloading grids artwork of size 920x430...")
-    grid64 = download_artwork(game_id, api_key, "grids", "920x430")
+    grid64 = download_artwork(game_id, "grids", "920x430")
     return icon, logo64, hero64, gridp64, grid64
 
-def download_artwork(game_id, api_key, art_type, dimensions=None):
+def download_artwork(game_id, art_type, dimensions=None):
     # If the result is not in the cache, make the API call
-    decky_plugin.logger.info(f"Game ID: {game_id}, API Key: {api_key}")
-    url = f"https://www.steamgriddb.com/api/v2/{art_type}/game/{game_id}"
+    decky_plugin.logger.info(f"Game ID: {game_id}")
+    url = f"{proxy_url}/{art_type}/game/{game_id}"
     if dimensions:
         url += f"?dimensions={dimensions}"
-    headers = {'Authorization': f'Bearer {api_key}'}
     decky_plugin.logger.info(f"Sending request to: {url}")
-    
+
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url)
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:
@@ -246,7 +244,7 @@ def download_artwork(game_id, api_key, art_type, dimensions=None):
         except requests.exceptions.RequestException as e:
             decky_plugin.logger.info(f"Error downloading image: {e}")
             if art_type == 'icons':
-                return download_artwork(game_id, api_key, 'icons_ico', dimensions)
+                return download_artwork(game_id, 'icons_ico', dimensions)
     return None
 
 def get_game_id(game_name):
@@ -254,17 +252,16 @@ def get_game_id(game_name):
         return 5260961
     decky_plugin.logger.info(f"Searching for game ID for: {game_name}")
     try:
-        games = sgdb.search_game(game_name)
-        for game in games:
-            if game.name == game_name:  # Case-sensitive comparison
-                decky_plugin.logger.info(f"Found game ID: {game.id}")
-                return game.id
-        # Fallback: return the ID of the first game in the search results
-        if games:
-            decky_plugin.logger.info(f"No exact match found. Using game ID of the first result: {games[0].name}: {games[0].id}")
-            return games[0].id
+        url = f"{proxy_url}/search/{game_name}"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        if data['data']:
+            game_id = data['data'][0]['id']
+            decky_plugin.logger.info(f"Found game ID: {game_id}")
+            return game_id
         decky_plugin.logger.info("No game ID found")
         return "default_game_id"  # Return a default value when no games are found
-    except Exception as e:  # Catching a general exception
+    except requests.exceptions.RequestException as e:
         decky_plugin.logger.info(f"Error searching for game ID: {e}")
         return "default_game_id"  # Return a default value in case of an error
