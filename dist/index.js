@@ -462,7 +462,6 @@
           if (settings.autoscan) {
               autoscan();
           }
-          setLog(useLogUpdates()); // Fetch log data after operation
       };
       const installLauncher = async (launcher, launcherLabel, index, operation) => {
           const total = options.filter(option => option.enabled).length;
@@ -497,6 +496,14 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
+      // Use effect to update log data
+      React.useEffect(() => {
+          const logUpdates = useLogUpdates();
+          const interval = setInterval(() => {
+              setLog(logUpdates);
+          }, 1000); // Update log every second
+          return () => clearInterval(interval); // Cleanup interval on component unmount
+      }, []);
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),

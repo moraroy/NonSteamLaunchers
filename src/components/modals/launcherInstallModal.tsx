@@ -10,11 +10,11 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useState, useEffect, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
-import { useLogUpdates } from "../../hooks/useLogUpdates"; // Import the hook
+import { useLogUpdates } from "../../hooks/useLogUpdates";
 
 type LauncherInstallModalProps = {
     closeModal?: () => void,
@@ -78,7 +78,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         scan()
         setAutoScan(previousAutoScan)
         if (settings.autoscan) { autoscan() }
-        setLog(useLogUpdates()); // Fetch log data after operation
     }
 
     const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
@@ -113,6 +112,16 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             console.error('Error calling _main method on server-side plugin:', error);
         }
     };
+
+    // Use effect to update log data
+    useEffect(() => {
+        const logUpdates = useLogUpdates();
+        const interval = setInterval(() => {
+            setLog(logUpdates);
+        }, 1000); // Update log every second
+
+        return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
 
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
