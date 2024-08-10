@@ -39,9 +39,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [ separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
     const [showLog, setShowLog] = useState(false); // State to control log display
-    const [fetchLog, setFetchLog] = useState(false); // State to control when to fetch log updates
-
-    const log = fetchLog ? useLogUpdates() : ""; // Conditionally call the useLogUpdates hook
+    const log = useLogUpdates(); // Use the useLogUpdates hook to get log updates
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -64,7 +62,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const handleInstallClick = async (operation: string) => {
         setOperation(operation);
         setShowLog(true); // Show log updates after button click
-        setFetchLog(true); // Set fetchLog to true to fetch log updates
         console.log('handleInstallClick called');
         const selectedLaunchers = options
             .filter(option => option.enabled && !option.streaming)

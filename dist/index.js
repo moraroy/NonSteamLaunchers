@@ -421,8 +421,7 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
       const [showLog, setShowLog] = React.useState(false); // State to control log display
-      const [fetchLog, setFetchLog] = React.useState(false); // State to control when to fetch log updates
-      const log = fetchLog ? useLogUpdates() : ""; // Conditionally call the useLogUpdates hook
+      const log = useLogUpdates(); // Use the useLogUpdates hook to get log updates
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -443,7 +442,6 @@
       const handleInstallClick = async (operation) => {
           setOperation(operation);
           setShowLog(true); // Show log updates after button click
-          setFetchLog(true); // Set fetchLog to true to fetch log updates
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
