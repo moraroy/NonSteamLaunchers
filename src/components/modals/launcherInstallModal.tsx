@@ -121,18 +121,15 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
             <DialogBody>
                 <SteamSpinner />
-                <ProgressBarWithInfo
-                    layout="inline"
-                    bottomSeparator="none"
-                    sOperationText={progress.status}
-                    description={progress.description}
-                    nProgress={progress.percent}
-                />
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-                    <div style={{ flex: 1 }}>
-                        <DialogBodyText>{progress.description}</DialogBodyText>
-                    </div>
-                    <div style={{ flex: 2, maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                    <ProgressBarWithInfo
+                        layout="inline"
+                        bottomSeparator="none"
+                        sOperationText={progress.status}
+                        description={progress.description}
+                        nProgress={progress.percent}
+                    />
+                    <div style={{ flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333' }}>
                         {log.split('\n').map((line, index) => (
                             <div key={index}>{line}</div>
                         ))}
