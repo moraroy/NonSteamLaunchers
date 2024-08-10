@@ -445,7 +445,7 @@
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
-          console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
+          console.log(`Selected options: ${selectedLaunchers.map(option => option.label).join(', ')}`);
           let i = 0;
           let previousAutoScan = settings.autoscan;
           for (const launcher of selectedLaunchers) {
@@ -507,7 +507,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center', marginTop: '10px' } },
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
-                      window.SP_REACT.createElement("div", { style: { flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line))))),
+                      window.SP_REACT.createElement("div", { style: { flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333', maxHeight: '100px', overflowY: 'auto', border: '1px solid #ccc', padding: '5px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line))))),
                   " ")) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),

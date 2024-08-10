@@ -63,7 +63,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         console.log('handleInstallClick called');
         const selectedLaunchers = options
             .filter(option => option.enabled && !option.streaming)
-        console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
+        console.log(`Selected options: ${selectedLaunchers.map(option => option.label).join(', ')}`);
         let i = 0
         let previousAutoScan = settings.autoscan
         for (const launcher of selectedLaunchers) {
@@ -130,7 +130,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         description={progress.description}
                         nProgress={progress.percent}
                     />
-                    <div style={{ flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333' }}>
+                    <div style={{ flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333', maxHeight: '100px', overflowY: 'auto', border: '1px solid #ccc', padding: '5px', borderRadius: '5px' }}>
                         {log.split('\n').map((line, index) => (
                             <div key={index}>{line}</div>
                         ))}
