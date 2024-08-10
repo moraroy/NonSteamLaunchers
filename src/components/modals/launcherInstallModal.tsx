@@ -10,11 +10,11 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, useEffect, VFC } from "react";
+import { useState, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
-import { useLogUpdates } from "../../hooks/useLogUpdates";
+import { useLogUpdates } from "../../hooks/useLogUpdates"; // Import the hook
 
 type LauncherInstallModalProps = {
     closeModal?: () => void,
@@ -38,7 +38,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [options, setOptions] = useState(launcherOptions);
     const [separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
-    const [log, setLog] = useState(""); // State to store log data
+    const log = useLogUpdates(); // Use the hook to get log data
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -63,7 +63,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         console.log('handleInstallClick called');
         const selectedLaunchers = options
             .filter(option => option.enabled && !option.streaming)
-        console.log(`Selected options: ${selectedLaunchers.map(option => option.label).join(', ')}`);
+        console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
         let i = 0
         let previousAutoScan = settings.autoscan
         for (const launcher of selectedLaunchers) {
@@ -113,16 +113,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
-    // Use effect to update log data
-    useEffect(() => {
-        const logUpdates = useLogUpdates();
-        const interval = setInterval(() => {
-            setLog(logUpdates);
-        }, 1000); // Update log every second
-
-        return () => clearInterval(interval); // Cleanup interval on component unmount
-    }, []);
-
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
             <DialogHeader>
@@ -131,19 +121,17 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
             <DialogBody>
                 <SteamSpinner />
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-                    <ProgressBarWithInfo
-                        layout="inline"
-                        bottomSeparator="none"
-                        sOperationText={progress.status}
-                        description={progress.description}
-                        nProgress={progress.percent}
-                    />
-                    <div style={{ flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333', maxHeight: '100px', overflowY: 'auto', border: '1px solid #ccc', padding: '5px', borderRadius: '5px' }}>
-                        {log.split('\n').map((line, index) => (
-                            <div key={index}>{line}</div>
-                        ))}
-                    </div>
+                <ProgressBarWithInfo
+                    layout="inline"
+                    bottomSeparator="none"
+                    sOperationText={progress.status}
+                    description={progress.description}
+                    nProgress={progress.percent}
+                />
+                <div style={{ maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
+                    {log.split('\n').map((line, index) => (
+                        <div key={index}>{line}</div>
+                    ))}
                 </div> {/* Display the log data */}
             </DialogBody>
         </ModalRoot> :

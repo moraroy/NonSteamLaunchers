@@ -422,7 +422,7 @@
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
-      const [log, setLog] = React.useState(""); // State to store log data
+      const log = useLogUpdates(); // Use the hook to get log data
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -445,7 +445,7 @@
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
-          console.log(`Selected options: ${selectedLaunchers.map(option => option.label).join(', ')}`);
+          console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
           let i = 0;
           let previousAutoScan = settings.autoscan;
           for (const launcher of selectedLaunchers) {
@@ -496,14 +496,6 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
-      // Use effect to update log data
-      React.useEffect(() => {
-          const logUpdates = useLogUpdates();
-          const interval = setInterval(() => {
-              setLog(logUpdates);
-          }, 1000); // Update log every second
-          return () => clearInterval(interval); // Cleanup interval on component unmount
-      }, []);
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
@@ -512,9 +504,8 @@
                   options.filter(option => option.enabled).map(option => option.label).join(', ')),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
-                  window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center', marginTop: '10px' } },
-                      window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
-                      window.SP_REACT.createElement("div", { style: { flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333', maxHeight: '100px', overflowY: 'auto', border: '1px solid #ccc', padding: '5px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line))))),
+                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
+                  window.SP_REACT.createElement("div", { style: { maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line)))),
                   " ")) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
