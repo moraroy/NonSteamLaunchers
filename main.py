@@ -22,7 +22,7 @@ from aiohttp import web
 from decky_plugin import DECKY_PLUGIN_DIR
 from py_modules.lib.scanner import scan, addCustomSite
 from settings import SettingsManager
-from subprocess import Popen, run 
+from subprocess import Popen, run
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -65,7 +65,7 @@ class Plugin:
                 await asyncio.sleep(5)
             decky_plugin.logger.info(f"Autoscan setting is false, stopping")
             return ws
-        
+
         async def handleScan(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
@@ -81,7 +81,7 @@ class Plugin:
                     # Send the game data to the client
                     await ws.send_json(game)
             return ws
-        
+
         async def handleCustomSite(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
@@ -101,11 +101,27 @@ class Plugin:
                         await ws.send_json(game)
             return ws
 
+
+        async def handleLogUpdates(request):
+            ws = web.WebSocketResponse()
+            await ws.prepare(request)
+            log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
+            async with aiofiles.open(log_file_path, 'r') as log_file:
+                while True:
+                    line = await log_file.readline()
+                    if not line:
+                        await asyncio.sleep(1)
+                        continue
+                    decky_plugin.logger.info(f"Log line: {line.strip()}")
+                    await ws.send_str(line)
+            return ws
+
         # Create the server application
         app = web.Application()
         app.router.add_get('/autoscan', handleAutoScan)
         app.router.add_get('/scan', handleScan)
         app.router.add_get('/customSite', handleCustomSite)
+        app.router.add_get('/logUpdates', handleLogUpdates)
 
         # Run the server
         runner = web.AppRunner(app)
@@ -163,7 +179,7 @@ class Plugin:
         else:
             decky_plugin.logger.info("No changes made, skipping daemon reload")
 
-        
+
     async def _unload(self):
         decky_plugin.logger.info("Plugin Unloaded!")
         pass
@@ -173,7 +189,7 @@ class Plugin:
 
     async def get_setting(self, key, default):
         return self.settings.getSetting(key, default)
-        
+
     async def install(self, selected_options, install_chrome, separate_app_ids, start_fresh, operation="Install"):
         decky_plugin.logger.info('install was called')
 
