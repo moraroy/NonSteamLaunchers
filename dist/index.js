@@ -420,7 +420,7 @@
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
-      const logUpdates = useLogUpdates();
+      const log = useLogUpdates(); // Use the hook to get log data
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -443,7 +443,6 @@
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
-          //.map(option => option.name.charAt(0).toUpperCase() + option.name.slice(1))
           console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
           let i = 0;
           let previousAutoScan = settings.autoscan;
@@ -504,9 +503,8 @@
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
-                  window.SP_REACT.createElement("div", null,
-                      window.SP_REACT.createElement("h3", null, "Log Updates:"),
-                      window.SP_REACT.createElement("pre", null, logUpdates.join('\n'))))) :
+                  window.SP_REACT.createElement("div", { style: { maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line)))),
+                  " ")) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
