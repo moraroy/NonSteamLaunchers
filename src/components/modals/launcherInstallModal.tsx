@@ -14,6 +14,7 @@ import { useState, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
+import { useLogUpdates } from "../../hooks/useLogUpdates";
 
 type LauncherInstallModalProps = {
     closeModal?: () => void,
@@ -37,7 +38,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [ options, setOptions ] = useState(launcherOptions);
     const [ separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
-
+    const logUpdates = useLogUpdates();
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -127,6 +128,10 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 description={progress.description}
                 nProgress={progress.percent}
             />
+            <div>
+                <h3>Log Updates:</h3>
+                <pre>{logUpdates.join('\n')}</pre>
+            </div>
         </DialogBody>
         </ModalRoot>:
         <ModalRoot onCancel={closeModal}>

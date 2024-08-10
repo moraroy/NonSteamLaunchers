@@ -391,6 +391,26 @@
       };
   }
 
+  const useLogUpdates = () => {
+      const [log, setLog] = React.useState('');
+      React.useEffect(() => {
+          const logWs = new WebSocket('ws://localhost:8675/logUpdates');
+          logWs.onmessage = (e) => {
+              setLog((prevLog) => `${prevLog}\n${e.data}`);
+          };
+          logWs.onerror = (e) => {
+              console.error(`WebSocket error: ${e}`);
+          };
+          logWs.onclose = (e) => {
+              console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+          };
+          return () => {
+              logWs.close();
+          };
+      }, []);
+      return log;
+  };
+
   /**
   * The modal for selecting launchers.
   */
@@ -400,6 +420,7 @@
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
+      const logUpdates = useLogUpdates();
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -482,7 +503,10 @@
                   options.filter(option => option.enabled).map(option => option.label).join(', ')),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
-                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }))) :
+                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
+                  window.SP_REACT.createElement("div", null,
+                      window.SP_REACT.createElement("h3", null, "Log Updates:"),
+                      window.SP_REACT.createElement("pre", null, logUpdates.join('\n'))))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
