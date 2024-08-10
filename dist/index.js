@@ -420,7 +420,7 @@
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
-      const log = useLogUpdates(); // Use the hook to get log data
+      const [log, setLog] = React.useState(""); // State to store log data
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -460,6 +460,7 @@
           if (settings.autoscan) {
               autoscan();
           }
+          setLog(useLogUpdates()); // Fetch log data after operation
       };
       const installLauncher = async (launcher, launcherLabel, index, operation) => {
           const total = options.filter(option => option.enabled).length;
@@ -502,8 +503,9 @@
                   options.filter(option => option.enabled).map(option => option.label).join(', ')),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
-                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
-                  window.SP_REACT.createElement("div", { style: { maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line)))),
+                  window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center', marginTop: '10px' } },
+                      window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
+                      window.SP_REACT.createElement("div", { style: { flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line))))),
                   " ")) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),

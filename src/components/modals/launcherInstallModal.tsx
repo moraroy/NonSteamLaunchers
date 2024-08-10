@@ -38,7 +38,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [options, setOptions] = useState(launcherOptions);
     const [separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
-    const log = useLogUpdates(); // Use the hook to get log data
+    const [log, setLog] = useState(""); // State to store log data
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -78,6 +78,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         scan()
         setAutoScan(previousAutoScan)
         if (settings.autoscan) { autoscan() }
+        setLog(useLogUpdates()); // Fetch log data after operation
     }
 
     const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
@@ -121,17 +122,19 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
             <DialogBody>
                 <SteamSpinner />
-                <ProgressBarWithInfo
-                    layout="inline"
-                    bottomSeparator="none"
-                    sOperationText={progress.status}
-                    description={progress.description}
-                    nProgress={progress.percent}
-                />
-                <div style={{ maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
-                    {log.split('\n').map((line, index) => (
-                        <div key={index}>{line}</div>
-                    ))}
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                    <ProgressBarWithInfo
+                        layout="inline"
+                        bottomSeparator="none"
+                        sOperationText={progress.status}
+                        description={progress.description}
+                        nProgress={progress.percent}
+                    />
+                    <div style={{ flex: 1, marginLeft: '10px', fontSize: 'small', color: '#333' }}>
+                        {log.split('\n').map((line, index) => (
+                            <div key={index}>{line}</div>
+                        ))}
+                    </div>
                 </div> {/* Display the log data */}
             </DialogBody>
         </ModalRoot> :
