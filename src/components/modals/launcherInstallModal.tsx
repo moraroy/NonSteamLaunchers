@@ -14,7 +14,7 @@ import { useState, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
-import { useLogUpdates } from "../../hooks/useLogUpdates"; // Import the useLogUpdates hook
+// Remove the import of useLogUpdates from here
 
 type LauncherInstallModalProps = {
     closeModal?: () => void,
@@ -39,7 +39,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [ separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
     const [showLog, setShowLog] = useState(false); // State to control log display
-    const log = useLogUpdates(); // Use the useLogUpdates hook to get log updates
+    const [log, setLog] = useState(""); // State to store log updates
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -81,6 +81,10 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         scan()
         setAutoScan(previousAutoScan)
         if (settings.autoscan) {autoscan()}
+
+        // Fetch log updates after starting the installation process
+        const logUpdates = useLogUpdates();
+        setLog(logUpdates);
        }
       
        const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
