@@ -503,7 +503,10 @@
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
-                  window.SP_REACT.createElement("div", { style: { maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line)))),
+                  window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' } },
+                      window.SP_REACT.createElement("div", { style: { flex: 1 } },
+                          window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, progress.description)),
+                      window.SP_REACT.createElement("div", { style: { flex: 2, maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' } }, log.split('\n').map((line, index) => (window.SP_REACT.createElement("div", { key: index }, line))))),
                   " ")) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),

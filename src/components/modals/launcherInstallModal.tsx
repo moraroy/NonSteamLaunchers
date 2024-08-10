@@ -128,10 +128,15 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                     description={progress.description}
                     nProgress={progress.percent}
                 />
-                <div style={{ maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
-                    {log.split('\n').map((line, index) => (
-                        <div key={index}>{line}</div>
-                    ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                    <div style={{ flex: 1 }}>
+                        <DialogBodyText>{progress.description}</DialogBodyText>
+                    </div>
+                    <div style={{ flex: 2, maxHeight: '200px', overflowY: 'auto', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
+                        {log.split('\n').map((line, index) => (
+                            <div key={index}>{line}</div>
+                        ))}
+                    </div>
                 </div> {/* Display the log data */}
             </DialogBody>
         </ModalRoot> :
