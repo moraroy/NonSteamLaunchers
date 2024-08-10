@@ -107,6 +107,7 @@ class Plugin:
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
             async with aiofiles.open(log_file_path, 'r') as log_file:
+                await log_file.seek(0, os.SEEK_END)
                 while True:
                     line = await log_file.readline()
                     if not line:
