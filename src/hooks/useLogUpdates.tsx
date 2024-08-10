@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export const useLogUpdates = (): string => {
+export const useLogUpdates = (start: boolean): string => {
   const [log, setLog] = useState<string>('');
 
   useEffect(() => {
+    if (!start) return;
+
     const logWs = new WebSocket('ws://localhost:8675/logUpdates');
 
     logWs.onmessage = (e) => {
@@ -21,7 +23,7 @@ export const useLogUpdates = (): string => {
     return () => {
       logWs.close();
     };
-  }, []);
+  }, [start]);
 
   return log;
 };

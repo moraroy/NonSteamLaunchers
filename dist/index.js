@@ -391,9 +391,11 @@
       };
   }
 
-  const useLogUpdates = () => {
+  const useLogUpdates = (start) => {
       const [log, setLog] = React.useState('');
       React.useEffect(() => {
+          if (!start)
+              return;
           const logWs = new WebSocket('ws://localhost:8675/logUpdates');
           logWs.onmessage = (e) => {
               setLog((prevLog) => `${prevLog}\n${e.data}`);
@@ -407,7 +409,7 @@
           return () => {
               logWs.close();
           };
-      }, []);
+      }, [start]);
       return log;
   };
 
@@ -420,7 +422,7 @@
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
-      const log = useLogUpdates(); // Use the hook to get log data
+      const [log, setLog] = React.useState(""); // State to store log data
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -460,6 +462,7 @@
           if (settings.autoscan) {
               autoscan();
           }
+          setLog(useLogUpdates()); // Fetch log data after operation
       };
       const installLauncher = async (launcher, launcherLabel, index, operation) => {
           const total = options.filter(option => option.enabled).length;

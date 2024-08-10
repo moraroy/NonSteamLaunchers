@@ -38,7 +38,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [options, setOptions] = useState(launcherOptions);
     const [separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
-    const log = useLogUpdates(); // Use the hook to get log data
+    const [log, setLog] = useState(""); // State to store log data
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -78,6 +78,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         scan()
         setAutoScan(previousAutoScan)
         if (settings.autoscan) { autoscan() }
+        setLog(useLogUpdates()); // Fetch log data after operation
     }
 
     const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
