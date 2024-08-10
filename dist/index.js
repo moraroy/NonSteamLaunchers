@@ -391,11 +391,9 @@
       };
   }
 
-  const useLogUpdates = (start) => {
+  const useLogUpdates = () => {
       const [log, setLog] = React.useState('');
       React.useEffect(() => {
-          if (!start)
-              return;
           const logWs = new WebSocket('ws://localhost:8675/logUpdates');
           logWs.onmessage = (e) => {
               setLog((prevLog) => `${prevLog}\n${e.data}`);
@@ -409,7 +407,7 @@
           return () => {
               logWs.close();
           };
-      }, [start]);
+      }, []);
       return log;
   };
 
