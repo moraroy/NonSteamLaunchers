@@ -391,6 +391,26 @@
       };
   }
 
+  const useLogUpdates = () => {
+      const [log, setLog] = React.useState('');
+      React.useEffect(() => {
+          const logWs = new WebSocket('ws://localhost:8675/logUpdates');
+          logWs.onmessage = (e) => {
+              setLog((prevLog) => `${prevLog}\n${e.data}`);
+          };
+          logWs.onerror = (e) => {
+              console.error(`WebSocket error: ${e}`);
+          };
+          logWs.onclose = (e) => {
+              console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+          };
+          return () => {
+              logWs.close();
+          };
+      }, []);
+      return log;
+  };
+
   /**
   * The modal for selecting launchers.
   */
@@ -401,7 +421,8 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
       const [showLog, setShowLog] = React.useState(false); // State to control log display
-      const [log, setLog] = React.useState(""); // State to store log updates
+      // Conditionally call the useLogUpdates hook based on showLog state
+      const log = showLog ? useLogUpdates() : "";
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -443,9 +464,6 @@
           if (settings.autoscan) {
               autoscan();
           }
-          // Fetch log updates after starting the installation process
-          const logUpdates = useLogUpdates();
-          setLog(logUpdates);
       };
       const installLauncher = async (launcher, launcherLabel, index, operation) => {
           const total = options.filter(option => option.enabled).length;
