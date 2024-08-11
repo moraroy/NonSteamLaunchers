@@ -107,7 +107,14 @@ class Plugin:
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
             async with aiofiles.open(log_file_path, 'r') as log_file:
-    
+                # Read all existing lines
+                async for line in log_file:
+                    decky_plugin.logger.info(f"Log line: {line.strip()}")
+                    await ws.send_str(line)
+        
+                # Seek to the end of the file to read new lines
+                await log_file.seek(0, os.SEEK_END)
+        
                 while True:
                     line = await log_file.readline()
                     if not line:
