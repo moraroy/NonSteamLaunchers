@@ -391,6 +391,36 @@
       };
   }
 
+  const useLogUpdates = (trigger) => {
+      const [log, setLog] = React.useState([]);
+      const logWsRef = React.useRef(null);
+      React.useEffect(() => {
+          if (trigger && !logWsRef.current) {
+              logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
+              logWsRef.current.onmessage = (e) => {
+                  setLog((prevLog) => [...prevLog, e.data]);
+              };
+              logWsRef.current.onerror = (e) => {
+                  console.error(`WebSocket error: ${e}`);
+              };
+              logWsRef.current.onclose = (e) => {
+                  console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+                  // Attempt to reconnect after a delay
+                  setTimeout(() => {
+                      logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
+                  }, 5000);
+              };
+          }
+          return () => {
+              if (logWsRef.current) {
+                  logWsRef.current.close();
+                  logWsRef.current = null;
+              }
+          };
+      }, [trigger]);
+      return log;
+  };
+
   /**
   * The modal for selecting launchers.
   */
@@ -401,7 +431,8 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
       const [showLog, setShowLog] = React.useState(false); // State to control log display
-      const [log, setLog] = React.useState(''); // State to store log updates
+      const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false); // State to trigger log updates
+      const log = useLogUpdates(triggerLogUpdates); // Use the updated hook
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -422,6 +453,7 @@
       const handleInstallClick = async (operation) => {
           setOperation(operation);
           setShowLog(true); // Show log updates after button click
+          setTriggerLogUpdates(true); // Trigger log updates
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
@@ -461,17 +493,6 @@
                   separate_app_ids: separateAppIds,
                   start_fresh: false // Pass true for the start_fresh parameter
               });
-              // Start receiving log updates
-              const logWs = new WebSocket('ws://localhost:8675/logUpdates');
-              logWs.onmessage = (e) => {
-                  setLog((prevLog) => `${prevLog}\n${e.data}`);
-              };
-              logWs.onerror = (e) => {
-                  console.error(`WebSocket error: ${e}`);
-              };
-              logWs.onclose = (e) => {
-                  console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
-              };
               if (result) {
                   setProgress({ percent: endPercent, status: `${operation} Selection ${index + 1} of ${total}`, description: `${launcher}` });
                   notify.toast(`Launcher ${operation}ed`, `${launcherLabel} was ${operation.toLowerCase()}ed successfully!`);

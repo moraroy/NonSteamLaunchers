@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 
-export const useLogUpdates = (): string => {
-  const [log, setLog] = useState<string>('');
+export const useLogUpdates = (trigger: boolean): string[] => {
+  const [log, setLog] = useState<string[]>([]);
   const logWsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (!logWsRef.current) {
+    if (trigger && !logWsRef.current) {
       logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
 
       logWsRef.current.onmessage = (e) => {
-        setLog((prevLog) => `${prevLog}\n${e.data}`);
+        setLog((prevLog) => [...prevLog, e.data]);
       };
 
       logWsRef.current.onerror = (e) => {
@@ -18,6 +18,10 @@ export const useLogUpdates = (): string => {
 
       logWsRef.current.onclose = (e) => {
         console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+        // Attempt to reconnect after a delay
+        setTimeout(() => {
+          logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
+        }, 5000);
       };
     }
 
@@ -27,7 +31,7 @@ export const useLogUpdates = (): string => {
         logWsRef.current = null;
       }
     };
-  }, []);
+  }, [trigger]);
 
   return log;
 };
