@@ -391,32 +391,6 @@
       };
   }
 
-  const useLogUpdates = () => {
-      const [log, setLog] = React.useState('');
-      const logWsRef = React.useRef(null);
-      React.useEffect(() => {
-          if (!logWsRef.current) {
-              logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
-              logWsRef.current.onmessage = (e) => {
-                  setLog((prevLog) => `${prevLog}\n${e.data}`);
-              };
-              logWsRef.current.onerror = (e) => {
-                  console.error(`WebSocket error: ${e}`);
-              };
-              logWsRef.current.onclose = (e) => {
-                  console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
-              };
-          }
-          return () => {
-              if (logWsRef.current) {
-                  logWsRef.current.close();
-                  logWsRef.current = null;
-              }
-          };
-      }, []);
-      return log;
-  };
-
   /**
   * The modal for selecting launchers.
   */
@@ -427,7 +401,7 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
       const [showLog, setShowLog] = React.useState(false); // State to control log display
-      const log = useLogUpdates(); // Use the useLogUpdates hook to get log updates
+      const [log, setLog] = React.useState(''); // State to store log updates
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -488,6 +462,17 @@
                   separate_app_ids: separateAppIds,
                   start_fresh: false // Pass true for the start_fresh parameter
               });
+              // Start receiving log updates
+              const logWs = new WebSocket('ws://localhost:8675/logUpdates');
+              logWs.onmessage = (e) => {
+                  setLog((prevLog) => `${prevLog}\n${e.data}`);
+              };
+              logWs.onerror = (e) => {
+                  console.error(`WebSocket error: ${e}`);
+              };
+              logWs.onclose = (e) => {
+                  console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+              };
               if (result) {
                   setProgress({ percent: endPercent, status: `${operation} Selection ${index + 1} of ${total}`, description: `${launcher}` });
                   notify.toast(`Launcher ${operation}ed`, `${launcherLabel} was ${operation.toLowerCase()}ed successfully!`);

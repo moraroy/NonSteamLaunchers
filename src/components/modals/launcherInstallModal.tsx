@@ -14,7 +14,6 @@ import { useState, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
-import { useLogUpdates } from "../../hooks/useLogUpdates"; // Import the useLogUpdates hook
 
 type LauncherInstallModalProps = {
     closeModal?: () => void,
@@ -39,7 +38,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [ separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
     const [showLog, setShowLog] = useState(false); // State to control log display
-    const log = useLogUpdates(); // Use the useLogUpdates hook to get log updates
+    const [log, setLog] = useState<string>(''); // State to store log updates
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -100,7 +99,19 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 separate_app_ids: separateAppIds,
                 start_fresh: false // Pass true for the start_fresh parameter
             });
-      
+
+            // Start receiving log updates
+            const logWs = new WebSocket('ws://localhost:8675/logUpdates');
+            logWs.onmessage = (e) => {
+                setLog((prevLog) => `${prevLog}\n${e.data}`);
+            };
+            logWs.onerror = (e) => {
+                console.error(`WebSocket error: ${e}`);
+            };
+            logWs.onclose = (e) => {
+                console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+            };
+
             if (result) {
                 setProgress({ percent: endPercent, status:`${operation} Selection ${index + 1} of ${total}`, description: `${launcher}`});
                 notify.toast(`Launcher ${operation}ed`,`${launcherLabel} was ${operation.toLowerCase()}ed successfully!`)
