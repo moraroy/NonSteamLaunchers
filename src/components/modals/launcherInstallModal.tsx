@@ -137,6 +137,15 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         {log}
                     </div>
                 )} {/* Render log updates */}
+                <img src="https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg" alt="Custom Overlay" style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0.5,
+                    pointerEvents: 'none'
+                }} />
             </DialogBody>
         </ModalRoot> :
         <ModalRoot onCancel={closeModal}>

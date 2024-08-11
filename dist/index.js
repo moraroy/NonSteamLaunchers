@@ -518,7 +518,16 @@
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
                   showLog && (window.SP_REACT.createElement("div", { style: { fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' } }, log)),
-                  " ")) :
+                  " ",
+                  window.SP_REACT.createElement("img", { src: "https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg", alt: "Custom Overlay", style: {
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          opacity: 0.5,
+                          pointerEvents: 'none'
+                      } }))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
