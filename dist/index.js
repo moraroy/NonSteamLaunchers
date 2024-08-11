@@ -421,8 +421,13 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
       const [showLog, setShowLog] = React.useState(false); // State to control log display
-      // Conditionally call the useLogUpdates hook based on showLog state
-      const log = showLog ? useLogUpdates() : "";
+      const [log, setLog] = React.useState(""); // State to store log updates
+      React.useEffect(() => {
+          if (showLog) {
+              const logUpdates = useLogUpdates();
+              setLog(logUpdates);
+          }
+      }, [showLog]);
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {

@@ -10,7 +10,7 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useState, VFC, useEffect } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
@@ -39,9 +39,14 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [ separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
     const [showLog, setShowLog] = useState(false); // State to control log display
+    const [log, setLog] = useState(""); // State to store log updates
 
-    // Conditionally call the useLogUpdates hook based on showLog state
-    const log = showLog ? useLogUpdates() : "";
+    useEffect(() => {
+        if (showLog) {
+            const logUpdates = useLogUpdates();
+            setLog(logUpdates);
+        }
+    }, [showLog]);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -180,3 +185,4 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         </ModalRoot>
     )
 };
+
