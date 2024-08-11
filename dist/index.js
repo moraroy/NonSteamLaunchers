@@ -458,8 +458,6 @@
       const [showLog, setShowLog] = React.useState(false); // State to control log display
       const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false); // State to trigger log updates
       const log = useLogUpdates(triggerLogUpdates); // Use the updated hook
-      // State to keep track of the current image index
-      const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -534,12 +532,10 @@
               notify.toast("Install Failed", `${launcherLabel} was not installed.`);
               console.error('Error calling _main method on server-side plugin:', error);
           }
-          // Update the current image index
-          setCurrentImageIndex((prevIndex) => (prevIndex + 1) % Object.keys(launcherImages).length);
       };
       // Get the image URL for the selected launcher
       const selectedLauncher = options.find(option => option.enabled && !option.streaming);
-      selectedLauncher ? launcherImages[selectedLauncher.name] : '';
+      const imageUrl = selectedLauncher ? launcherImages[selectedLauncher.name] : '';
       // Add this style for the fade effect
       const fadeStyle = {
           position: 'absolute',
@@ -551,8 +547,6 @@
           pointerEvents: 'none',
           transition: 'opacity 1s ease-in-out'
       };
-      // Use the currentImageIndex to get the current image URL
-      const currentImageUrl = launcherImages[Object.keys(launcherImages)[currentImageIndex]];
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
@@ -564,11 +558,11 @@
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
                   showLog && (window.SP_REACT.createElement("div", { style: { fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' } }, log)),
                   " ",
-                  currentImageUrl && (window.SP_REACT.createElement("img", { src: currentImageUrl, alt: "Custom Overlay", style: fadeStyle })))) :
+                  imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: fadeStyle })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
-              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) })))),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { key: name, label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) })))),
               window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '20px' } }, "Note: If your launchers dont start, make sure force compatability is checked, shortcut properties are right and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually."),
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, null,
                   window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },

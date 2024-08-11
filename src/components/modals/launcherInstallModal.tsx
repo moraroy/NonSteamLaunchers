@@ -10,7 +10,7 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, useEffect, VFC } from "react";
+import { useState, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
@@ -67,9 +67,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [showLog, setShowLog] = useState(false); // State to control log display
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false); // State to trigger log updates
     const log = useLogUpdates(triggerLogUpdates); // Use the updated hook
-
-    // State to keep track of the current image index
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -144,8 +141,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             notify.toast("Install Failed", `${launcherLabel} was not installed.`);
             console.error('Error calling _main method on server-side plugin:', error);
         }
-        // Update the current image index
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % Object.keys(launcherImages).length);
     };
 
     // Get the image URL for the selected launcher
@@ -163,9 +158,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         pointerEvents: 'none',
         transition: 'opacity 1s ease-in-out'
     };
-
-    // Use the currentImageIndex to get the current image URL
-    const currentImageUrl = launcherImages[Object.keys(launcherImages)[currentImageIndex]];
 
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
@@ -187,8 +179,8 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         {log}
                     </div>
                 )} {/* Render log updates */}
-                {currentImageUrl && (
-                    <img src={currentImageUrl} alt="Custom Overlay" style={fadeStyle} />
+                {imageUrl && (
+                    <img src={imageUrl} alt="Overlay" style={fadeStyle} />
                 )}
             </DialogBody>
         </ModalRoot> :
@@ -200,6 +192,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBody>
                 {launcherOptions.map(({ name, label }) => (
                     <ToggleField
+                        key={name}
                         label={label}
                         checked={options.find(option => option.name === name)?.enabled ? true : false}
                         onChange={(value) => handleToggle(name, value)}
