@@ -425,7 +425,6 @@
           console.log('handleInstallClick called');
           const selectedLaunchers = options
               .filter(option => option.enabled && !option.streaming);
-          //.map(option => option.name.charAt(0).toUpperCase() + option.name.slice(1))
           console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
           let i = 0;
           let previousAutoScan = settings.autoscan;

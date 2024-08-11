@@ -32,10 +32,10 @@ type LauncherInstallModalProps = {
 */
 export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
 
-    const [progress, setProgress] = useState({ percent:0, status:'', description: '' });
+    const [progress, setProgress] = useState({ percent: 0, status: '', description: '' });
     const { settings, setAutoScan } = useSettings(serverAPI);
-    const [ options, setOptions ] = useState(launcherOptions);
-    const [ separateAppIds, setSeparateAppIds] = useState(false);
+    const [options, setOptions] = useState(launcherOptions);
+    const [separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
     const [showLog, setShowLog] = useState(false); // State to control log display
     const [log, setLog] = useState<string>(''); // State to store log updates
@@ -63,34 +63,34 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setShowLog(true); // Show log updates after button click
         console.log('handleInstallClick called');
         const selectedLaunchers = options
-            .filter(option => option.enabled && !option.streaming)
-           //.map(option => option.name.charAt(0).toUpperCase() + option.name.slice(1))
+            .filter(option => option.enabled && !option.streaming);
         console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
-        let i = 0
-        let previousAutoScan = settings.autoscan
+        let i = 0;
+        let previousAutoScan = settings.autoscan;
         for (const launcher of selectedLaunchers) {
-          if (!launcher.streaming) {
-            setAutoScan(false)
-            console.log(`Calling ${operation} launcher method for ${launcher}`)
-            const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1))
-            await installLauncher(launcherParam, launcher.label, i, operation)
-          }
-          i++
+            if (!launcher.streaming) {
+                setAutoScan(false);
+                console.log(`Calling ${operation} launcher method for ${launcher}`);
+                const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
+                await installLauncher(launcherParam, launcher.label, i, operation);
+            }
+            i++;
         }
-        scan()
-        setAutoScan(previousAutoScan)
-        if (settings.autoscan) {autoscan()}
-       }
-      
-       const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
-        const total = options.filter(option => option.enabled).length
-        const startPercent = index === 0 ? 0 : index/total*100
-        const endPercent = (index + 1)/total*100
-        console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`)
-        setProgress({ 
-          percent: startPercent, 
-          status:`${operation}ing Launcher ${index + 1} of ${total}`, 
-          description: `${launcherLabel}`})
+        scan();
+        setAutoScan(previousAutoScan);
+        if (settings.autoscan) { autoscan(); }
+    };
+
+    const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
+        const total = options.filter(option => option.enabled).length;
+        const startPercent = index === 0 ? 0 : index / total * 100;
+        const endPercent = (index + 1) / total * 100;
+        console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`);
+        setProgress({
+            percent: startPercent,
+            status: `${operation}ing Launcher ${index + 1} of ${total}`,
+            description: `${launcherLabel}`
+        });
         try {
             const result = await serverAPI.callPluginMethod("install", {
                 selected_options: launcher,
@@ -113,41 +113,41 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             };
 
             if (result) {
-                setProgress({ percent: endPercent, status:`${operation} Selection ${index + 1} of ${total}`, description: `${launcher}`});
-                notify.toast(`Launcher ${operation}ed`,`${launcherLabel} was ${operation.toLowerCase()}ed successfully!`)
+                setProgress({ percent: endPercent, status: `${operation} Selection ${index + 1} of ${total}`, description: `${launcher}` });
+                notify.toast(`Launcher ${operation}ed`, `${launcherLabel} was ${operation.toLowerCase()}ed successfully!`);
             } else {
-                setProgress({ percent: endPercent, status:`${operation} selection ${index + 1} of ${total} failed`, description: `${operation} ${launcher} failed. See logs.`});
-                notify.toast(`${operation} Failed`,`${launcherLabel} was not ${operation.toLowerCase()}ed.`)
-            }                       
+                setProgress({ percent: endPercent, status: `${operation} selection ${index + 1} of ${total} failed`, description: `${operation} ${launcher} failed. See logs.` });
+                notify.toast(`${operation} Failed`, `${launcherLabel} was not ${operation.toLowerCase()}ed.`);
+            }
         } catch (error) {
-            setProgress({ percent: endPercent, status:`Installing selection ${index + 1} of ${total} failed`, description: `Installing ${launcher} failed. See logs.`});
-            notify.toast("Install Failed",`${launcherLabel} was not installed.`)
+            setProgress({ percent: endPercent, status: `Installing selection ${index + 1} of ${total} failed`, description: `Installing ${launcher} failed. See logs.` });
+            notify.toast("Install Failed", `${launcherLabel} was not installed.`);
             console.error('Error calling _main method on server-side plugin:', error);
         }
-       };
+    };
 
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
-        <DialogHeader>
-            {`${operation}ing Game Launchers`}
-        </DialogHeader>
-        <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
-        <DialogBody>
-            <SteamSpinner/>
-            <ProgressBarWithInfo
-                layout="inline"
-                bottomSeparator="none"
-                sOperationText={progress.status}
-                description={progress.description}
-                nProgress={progress.percent}
-            />
-            {showLog && (
-                <div style={{ fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' }}>
-                    {log}
-                </div>
-            )} {/* Render log updates */}
-        </DialogBody>
-        </ModalRoot>:
+            <DialogHeader>
+                {`${operation}ing Game Launchers`}
+            </DialogHeader>
+            <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
+            <DialogBody>
+                <SteamSpinner />
+                <ProgressBarWithInfo
+                    layout="inline"
+                    bottomSeparator="none"
+                    sOperationText={progress.status}
+                    description={progress.description}
+                    nProgress={progress.percent}
+                />
+                {showLog && (
+                    <div style={{ fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' }}>
+                        {log}
+                    </div>
+                )} {/* Render log updates */}
+            </DialogBody>
+        </ModalRoot> :
         <ModalRoot onCancel={closeModal}>
             <DialogHeader>
                 Select Game Launchers
@@ -157,7 +157,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 {launcherOptions.map(({ name, label }) => (
                     <ToggleField
                         label={label}
-                        checked={options.find(option => option.name === name)?.enabled ? true : false} 
+                        checked={options.find(option => option.name === name)?.enabled ? true : false}
                         onChange={(value) => handleToggle(name, value)}
                     />
                 ))}
