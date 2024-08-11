@@ -28,6 +28,32 @@ type LauncherInstallModalProps = {
     serverAPI: ServerAPI
 };
 
+// Mapping of launcher names to their respective image URLs
+const launcherImages = {
+    epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
+    gogGalaxy: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg',
+    uplay: 'https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg', // Ubisoft Connect
+    battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
+    amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
+    eaApp: 'https://cdn2.steamgriddb.com/thumb/f1b499e8db3046ebec712209e22f830d.jpg',
+    legacyGames: 'https://cdn2.steamgriddb.com/thumb/86cfeb447e7f474a00adb7423c605875.jpg',
+    itchIo: 'https://cdn2.steamgriddb.com/thumb/a888a53ef574af0a7e4084a2f6c80cdb.jpg',
+    humbleGames: 'https://cdn2.steamgriddb.com/hero_thumb/4ae37d4f2d2dcd1f1083dc9fb9134ddc.jpg',
+    indieGala: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg',
+    rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg',
+    psPlus: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg',
+    xboxGamePass: 'https://cdn2.steamgriddb.com/hero_thumb/167b7d08b38facb1c06185861a5845dd.jpg',
+    fortnite: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg',
+    geforceNow: 'https://cdn2.steamgriddb.com/hero_thumb/5e7e6e76699ea804c65b0c37974c660c.jpg',
+    amazonLuna: 'https://cdn2.steamgriddb.com/thumb/5966577c1d725b37c26c3f7aa493dd9c.jpg',
+    netflix: 'https://cdn2.steamgriddb.com/hero_thumb/119f6887f5ebfd6d5b40213819263e68.jpg',
+    hulu: 'https://cdn2.steamgriddb.com/thumb/4bbddbaea593148384a27a8dcf498d30.jpg',
+    disneyPlus: 'https://cdn2.steamgriddb.com/hero_thumb/0dad24dc5419076f64f2ba93833b354e.png',
+    amazonPrimeVideo: 'https://cdn2.steamgriddb.com/hero_thumb/5e7cefa9b606dcd7b0faa082d82cdb1d.jpg',
+    youtube: 'https://cdn2.steamgriddb.com/thumb/786929ce1b2e187510aca9b04a0f7254.jpg',
+    twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
+};
+
 /**
 * The modal for selecting launchers.
 */
@@ -117,6 +143,10 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
+    // Get the image URL for the selected launcher
+    const selectedLauncher = options.find(option => option.enabled && !option.streaming);
+    const imageUrl = selectedLauncher ? launcherImages[selectedLauncher.name] : '';
+
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
             <DialogHeader>
@@ -137,15 +167,17 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         {log}
                     </div>
                 )} {/* Render log updates */}
-                <img src="https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg" alt="Custom Overlay" style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    opacity: 0.5,
-                    pointerEvents: 'none'
-                }} />
+                {imageUrl && (
+                    <img src={imageUrl} alt="Custom Overlay" style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        opacity: 0.5,
+                        pointerEvents: 'none'
+                    }} />
+                )}
             </DialogBody>
         </ModalRoot> :
         <ModalRoot onCancel={closeModal}>
