@@ -10,7 +10,7 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useState, useEffect, VFC } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
@@ -35,10 +35,10 @@ const launcherImages = {
     uplay: 'https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg', // Ubisoft Connect
     battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
     amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
-    eaApp: 'https://cdn2.steamgriddb.com/thumb/f1b499e8db3046ebec712209e22f830d.jpg',
+    eaApp: 'https://cdn2.steamgriddb.com/thumb/61370213c90759696536e996a5a61bd4.jpg',
     legacyGames: 'https://cdn2.steamgriddb.com/thumb/86cfeb447e7f474a00adb7423c605875.jpg',
-    itchIo: 'https://cdn2.steamgriddb.com/thumb/a888a53ef574af0a7e4084a2f6c80cdb.jpg',
-    humbleGames: 'https://cdn2.steamgriddb.com/hero_thumb/4ae37d4f2d2dcd1f1083dc9fb9134ddc.jpg',
+    itchIo: 'https://cdn2.steamgriddb.com/thumb/80f57a23cf01d17c0b65fa4e0d010aa2.jpg',
+    humbleGames: 'https://cdn2.steamgriddb.com/thumb/4cb3ded67cb7a539395ab873354a01c1.jpg',
     indieGala: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg',
     rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg',
     psPlus: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg',
@@ -67,6 +67,9 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [showLog, setShowLog] = useState(false); // State to control log display
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false); // State to trigger log updates
     const log = useLogUpdates(triggerLogUpdates); // Use the updated hook
+
+    // State to keep track of the current image index
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -141,11 +144,28 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             notify.toast("Install Failed", `${launcherLabel} was not installed.`);
             console.error('Error calling _main method on server-side plugin:', error);
         }
+        // Update the current image index
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % Object.keys(launcherImages).length);
     };
 
     // Get the image URL for the selected launcher
     const selectedLauncher = options.find(option => option.enabled && !option.streaming);
     const imageUrl = selectedLauncher ? launcherImages[selectedLauncher.name] : '';
+
+    // Add this style for the fade effect
+    const fadeStyle = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        opacity: 0.5,
+        pointerEvents: 'none',
+        transition: 'opacity 1s ease-in-out'
+    };
+
+    // Use the currentImageIndex to get the current image URL
+    const currentImageUrl = launcherImages[Object.keys(launcherImages)[currentImageIndex]];
 
     return ((progress.status != '' && progress.percent < 100) ?
         <ModalRoot>
@@ -167,16 +187,8 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         {log}
                     </div>
                 )} {/* Render log updates */}
-                {imageUrl && (
-                    <img src={imageUrl} alt="Custom Overlay" style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        opacity: 0.5,
-                        pointerEvents: 'none'
-                    }} />
+                {currentImageUrl && (
+                    <img src={currentImageUrl} alt="Custom Overlay" style={fadeStyle} />
                 )}
             </DialogBody>
         </ModalRoot> :
