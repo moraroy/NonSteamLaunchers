@@ -1,25 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export const useLogUpdates = (): string => {
   const [log, setLog] = useState<string>('');
+  const logWsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const logWs = new WebSocket('ws://localhost:8675/logUpdates');
+    if (!logWsRef.current) {
+      logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
 
-    logWs.onmessage = (e) => {
-      setLog((prevLog) => `${prevLog}\n${e.data}`);
-    };
+      logWsRef.current.onmessage = (e) => {
+        setLog((prevLog) => `${prevLog}\n${e.data}`);
+      };
 
-    logWs.onerror = (e) => {
-      console.error(`WebSocket error: ${e}`);
-    };
+      logWsRef.current.onerror = (e) => {
+        console.error(`WebSocket error: ${e}`);
+      };
 
-    logWs.onclose = (e) => {
-      console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
-    };
+      logWsRef.current.onclose = (e) => {
+        console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
+      };
+    }
 
     return () => {
-      logWs.close();
+      if (logWsRef.current) {
+        logWsRef.current.close();
+        logWsRef.current = null;
+      }
     };
   }, []);
 
