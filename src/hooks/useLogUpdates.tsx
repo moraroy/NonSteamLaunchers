@@ -5,11 +5,13 @@ export const useLogUpdates = (trigger: boolean): string[] => {
   const logWsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (trigger && !logWsRef.current) {
+    if (!logWsRef.current) {
       logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
 
       logWsRef.current.onmessage = (e) => {
-        setLog((prevLog) => [...prevLog, e.data]);
+        if (trigger) {
+          setLog((prevLog) => [...prevLog, e.data]);
+        }
       };
 
       logWsRef.current.onerror = (e) => {
@@ -31,7 +33,7 @@ export const useLogUpdates = (trigger: boolean): string[] => {
         logWsRef.current = null;
       }
     };
-  }, [trigger]);
+  }, []);
 
   return log;
 };

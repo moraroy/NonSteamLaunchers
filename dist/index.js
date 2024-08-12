@@ -395,10 +395,12 @@
       const [log, setLog] = React.useState([]);
       const logWsRef = React.useRef(null);
       React.useEffect(() => {
-          if (trigger && !logWsRef.current) {
+          if (!logWsRef.current) {
               logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
               logWsRef.current.onmessage = (e) => {
-                  setLog((prevLog) => [...prevLog, e.data]);
+                  if (trigger) {
+                      setLog((prevLog) => [...prevLog, e.data]);
+                  }
               };
               logWsRef.current.onerror = (e) => {
                   console.error(`WebSocket error: ${e}`);
@@ -417,7 +419,7 @@
                   logWsRef.current = null;
               }
           };
-      }, [trigger]);
+      }, []);
       return log;
   };
 
