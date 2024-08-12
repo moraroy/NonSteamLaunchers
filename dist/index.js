@@ -425,7 +425,7 @@
   const launcherImages = {
       epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
       gogGalaxy: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg',
-      uplay: 'https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg',
+      uplay: 'https://cdn2.steamgriddb.com/hero_thumb/9154498493d8e734d9c7489c2b6b26d7.webm',
       battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
       amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
       eaApp: 'https://cdn2.steamgriddb.com/thumb/61370213c90759696536e996a5a61bd4.jpg',
