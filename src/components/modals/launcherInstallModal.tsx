@@ -154,13 +154,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         transition: 'opacity 1s ease-in-out'
     };
 
-    const logContainerRef = useRef(null);
-    useEffect(() => {
-        if (logContainerRef.current) {
-            logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
-        }
-    }, [log]);
-
     return ((progress.status != '' && progress.percent < 100) ?
     <ModalRoot>
         <DialogHeader>

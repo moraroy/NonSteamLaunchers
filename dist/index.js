@@ -532,12 +532,6 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
-      const logContainerRef = useRef(null);
-      React.useEffect(() => {
-          if (logContainerRef.current) {
-              logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
-          }
-      }, [log]);
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
