@@ -484,7 +484,9 @@
       const handleInstallClick = async (operation) => {
           setOperation(operation);
           setShowLog(true);
-          setTriggerLogUpdates(true);
+          setTriggerLogUpdates(false); // Temporarily disable log updates
+          setLog([]); // Clear the log state
+          setTriggerLogUpdates(true); // Re-enable log updates
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
           let i = 0;
           let previousAutoScan = settings.autoscan;
