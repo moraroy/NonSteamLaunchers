@@ -446,18 +446,22 @@
       youtube: 'https://cdn2.steamgriddb.com/thumb/786929ce1b2e187510aca9b04a0f7254.jpg',
       twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
   };
-  /**
-  * The modal for selecting launchers.
-  */
   const LauncherInstallModal = ({ closeModal, launcherOptions, serverAPI }) => {
       const [progress, setProgress] = React.useState({ percent: 0, status: '', description: '' });
       const { settings, setAutoScan } = useSettings(serverAPI);
       const [options, setOptions] = React.useState(launcherOptions);
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
-      const [showLog, setShowLog] = React.useState(false); // State to control log display
-      const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false); // State to trigger log updates
-      const log = useLogUpdates(triggerLogUpdates); // Use the updated hook
+      const [showLog, setShowLog] = React.useState(false);
+      const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false);
+      const log = useLogUpdates(triggerLogUpdates);
+      const [imageUrl, setImageUrl] = React.useState('');
+      React.useEffect(() => {
+          const selectedLauncher = options.find(option => option.enabled && !option.streaming);
+          if (selectedLauncher) {
+              setImageUrl(launcherImages[selectedLauncher.name]);
+          }
+      }, [options]);
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
               if (option.name === changeName) {
@@ -477,18 +481,14 @@
       };
       const handleInstallClick = async (operation) => {
           setOperation(operation);
-          setShowLog(true); // Show log updates after button click
-          setTriggerLogUpdates(true); // Trigger log updates
-          console.log('handleInstallClick called');
-          const selectedLaunchers = options
-              .filter(option => option.enabled && !option.streaming);
-          console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
+          setShowLog(true);
+          setTriggerLogUpdates(true);
+          const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
           let i = 0;
           let previousAutoScan = settings.autoscan;
           for (const launcher of selectedLaunchers) {
               if (!launcher.streaming) {
                   setAutoScan(false);
-                  console.log(`Calling ${operation} launcher method for ${launcher}`);
                   const launcherParam = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
                   await installLauncher(launcherParam, launcher.label, i, operation);
               }
@@ -504,7 +504,6 @@
           const total = options.filter(option => option.enabled).length;
           const startPercent = index === 0 ? 0 : index / total * 100;
           const endPercent = (index + 1) / total * 100;
-          console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`);
           setProgress({
               percent: startPercent,
               status: `${operation}ing Launcher ${index + 1} of ${total}`,
@@ -516,7 +515,7 @@
                   operation: operation,
                   install_chrome: false,
                   separate_app_ids: separateAppIds,
-                  start_fresh: false // Pass true for the start_fresh parameter
+                  start_fresh: false
               });
               if (result) {
                   setProgress({ percent: endPercent, status: `${operation} Selection ${index + 1} of ${total}`, description: `${launcher}` });
@@ -533,17 +532,13 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
-      // Get the image URL for the selected launcher
-      const selectedLauncher = options.find(option => option.enabled && !option.streaming);
-      const imageUrl = selectedLauncher ? launcherImages[selectedLauncher.name] : '';
-      // Add this style for the fade effect
       const fadeStyle = {
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
           height: '100%',
-          opacity: 0.5,
+          opacity: 1,
           pointerEvents: 'none',
           transition: 'opacity 1s ease-in-out'
       };
@@ -557,7 +552,6 @@
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
                   showLog && (window.SP_REACT.createElement("div", { style: { fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' } }, log)),
-                  " ",
                   imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: fadeStyle })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
@@ -732,7 +726,7 @@
               scan();
               // Start the cooldown
               setIsCooldown(true);
-              setCooldownTime(15); // Set cooldown time in seconds
+              setCooldownTime(20); // Set cooldown time in seconds
           }
       };
       return (window.SP_REACT.createElement("div", { className: "decky-plugin" },

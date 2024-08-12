@@ -10,7 +10,7 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useState, VFC, useEffect } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
@@ -54,19 +54,24 @@ const launcherImages = {
     twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
 };
 
-/**
-* The modal for selecting launchers.
-*/
-export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
 
+export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
     const [progress, setProgress] = useState({ percent: 0, status: '', description: '' });
     const { settings, setAutoScan } = useSettings(serverAPI);
     const [options, setOptions] = useState(launcherOptions);
     const [separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
-    const [showLog, setShowLog] = useState(false); // State to control log display
-    const [triggerLogUpdates, setTriggerLogUpdates] = useState(false); // State to trigger log updates
-    const log = useLogUpdates(triggerLogUpdates); // Use the updated hook
+    const [showLog, setShowLog] = useState(false);
+    const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
+    const log = useLogUpdates(triggerLogUpdates);
+    const [imageUrl, setImageUrl] = useState('');
+
+    useEffect(() => {
+        const selectedLauncher = options.find(option => option.enabled && !option.streaming);
+        if (selectedLauncher) {
+            setImageUrl(launcherImages[selectedLauncher.name]);
+        }
+    }, [options]);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -88,18 +93,14 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
 
     const handleInstallClick = async (operation: string) => {
         setOperation(operation);
-        setShowLog(true); // Show log updates after button click
-        setTriggerLogUpdates(true); // Trigger log updates
-        console.log('handleInstallClick called');
-        const selectedLaunchers = options
-            .filter(option => option.enabled && !option.streaming);
-        console.log(`Selected options: ${selectedLaunchers.join(', ')}`);
+        setShowLog(true);
+        setTriggerLogUpdates(true);
+        const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         let i = 0;
         let previousAutoScan = settings.autoscan;
         for (const launcher of selectedLaunchers) {
             if (!launcher.streaming) {
                 setAutoScan(false);
-                console.log(`Calling ${operation} launcher method for ${launcher}`);
                 const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
                 await installLauncher(launcherParam, launcher.label, i, operation);
             }
@@ -114,7 +115,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         const total = options.filter(option => option.enabled).length;
         const startPercent = index === 0 ? 0 : index / total * 100;
         const endPercent = (index + 1) / total * 100;
-        console.log(`${operation} Launcher: ${launcherLabel}, Index: ${index}, StartPercent: ${startPercent}, EndPercent: ${endPercent}`);
         setProgress({
             percent: startPercent,
             status: `${operation}ing Launcher ${index + 1} of ${total}`,
@@ -126,7 +126,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 operation: operation,
                 install_chrome: false,
                 separate_app_ids: separateAppIds,
-                start_fresh: false // Pass true for the start_fresh parameter
+                start_fresh: false
             });
 
             if (result) {
@@ -143,18 +143,13 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
-    // Get the image URL for the selected launcher
-    const selectedLauncher = options.find(option => option.enabled && !option.streaming);
-    const imageUrl = selectedLauncher ? launcherImages[selectedLauncher.name] : '';
-
-    // Add this style for the fade effect
     const fadeStyle = {
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        opacity: 0.5,
+        opacity: 1,
         pointerEvents: 'none',
         transition: 'opacity 1s ease-in-out'
     };
@@ -178,7 +173,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                     <div style={{ fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' }}>
                         {log}
                     </div>
-                )} {/* Render log updates */}
+                )}
                 {imageUrl && (
                     <img src={imageUrl} alt="Overlay" style={fadeStyle} />
                 )}

@@ -86,7 +86,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
       // Start the cooldown
       setIsCooldown(true);
-      setCooldownTime(15); // Set cooldown time in seconds
+      setCooldownTime(20); // Set cooldown time in seconds
     }
   };
 
