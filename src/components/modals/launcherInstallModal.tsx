@@ -54,7 +54,6 @@ const launcherImages = {
     twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
 };
 
-
 export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
     const [progress, setProgress] = useState({ percent: 0, status: '', description: '' });
     const { settings, setAutoScan } = useSettings(serverAPI);
@@ -65,11 +64,16 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
     const [imageUrl, setImageUrl] = useState('');
+    const [fadeOpacity, setFadeOpacity] = useState(1);
 
     useEffect(() => {
         const selectedLauncher = options.find(option => option.enabled && !option.streaming);
         if (selectedLauncher) {
-            setImageUrl(launcherImages[selectedLauncher.name]);
+            setFadeOpacity(0); // Start fade out
+            setTimeout(() => {
+                setImageUrl(launcherImages[selectedLauncher.name]);
+                setFadeOpacity(1); // Fade in new image
+            }, 500); // Duration of fade out
         }
     }, [options]);
 
@@ -143,16 +147,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
-    const fadeStyle = {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        opacity: 1,
-        pointerEvents: 'none',
-        transition: 'opacity 1s ease-in-out'
-    };
 
     return ((progress.status != '' && progress.percent < 100) ?
     <ModalRoot>
@@ -175,7 +169,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             </div>
             {imageUrl && (
-                <img src={imageUrl} alt="Overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.5, pointerEvents: 'none', transition: 'opacity 1s ease-in-out' }} />
+                <img src={imageUrl} alt="Overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: fadeOpacity, pointerEvents: 'none', transition: 'opacity 0.5s ease-in-out' }} />
             )}
         </DialogBody>
     </ModalRoot> :

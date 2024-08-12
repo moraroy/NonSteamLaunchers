@@ -456,10 +456,15 @@
       const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false);
       const log = useLogUpdates(triggerLogUpdates);
       const [imageUrl, setImageUrl] = React.useState('');
+      const [fadeOpacity, setFadeOpacity] = React.useState(1);
       React.useEffect(() => {
           const selectedLauncher = options.find(option => option.enabled && !option.streaming);
           if (selectedLauncher) {
-              setImageUrl(launcherImages[selectedLauncher.name]);
+              setFadeOpacity(0); // Start fade out
+              setTimeout(() => {
+                  setImageUrl(launcherImages[selectedLauncher.name]);
+                  setFadeOpacity(1); // Fade in new image
+              }, 500); // Duration of fade out
           }
       }, [options]);
       const handleToggle = (changeName, changeValue) => {
@@ -543,7 +548,7 @@
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '150px' } }, showLog && log),
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
-                  imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.5, pointerEvents: 'none', transition: 'opacity 1s ease-in-out' } })))) :
+                  imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: fadeOpacity, pointerEvents: 'none', transition: 'opacity 0.5s ease-in-out' } })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
