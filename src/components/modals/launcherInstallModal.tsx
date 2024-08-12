@@ -176,18 +176,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             </div>
             {currentLauncher && (
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                    <div 
-                        style={{ 
-                            width: '100%', 
-                            height: '100%', 
-                            backgroundImage: `url(${launcherImages[currentLauncher]})`, 
-                            backgroundSize: 'cover', 
-                            backgroundPosition: 'center', 
-                            opacity: 0.5 
-                        }} 
-                    />
-                </div>
+                <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
             )}
         </DialogBody>
     </ModalRoot> :
@@ -231,5 +220,5 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             </div>
         </Focusable>
     </ModalRoot>
-)
-};
+);
+}
