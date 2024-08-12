@@ -155,14 +155,14 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     };
     
     return ((progress.status != '' && progress.percent < 100) ?
-    <ModalRoot style={{ maxWidth: '600px', height: '80vh', overflow: 'hidden' }}>
+    <ModalRoot style={{ maxWidth: '600px', height: '80vh', display: 'flex', flexDirection: 'column' }}>
         <DialogHeader>
             {`${operation}ing Game Launchers`}
         </DialogHeader>
         <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
-        <DialogBody style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <DialogBody style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <SteamSpinner />
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '150px', width: '100%' }}>
                     {showLog && log}
                 </div>
