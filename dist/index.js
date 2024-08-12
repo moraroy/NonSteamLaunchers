@@ -425,7 +425,7 @@
   const launcherImages = {
       epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
       gogGalaxy: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg',
-      uplay: 'https://cdn2.steamgriddb.com/hero_thumb/9154498493d8e734d9c7489c2b6b26d7.webm',
+      uplay: 'https://cdn2.steamgriddb.com/thumb/4229b97043a62d2f2ac6aad8acad49fb.jpg',
       battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
       amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
       eaApp: 'https://cdn2.steamgriddb.com/thumb/61370213c90759696536e996a5a61bd4.jpg',
@@ -456,9 +456,11 @@
       const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false);
       const log = useLogUpdates(triggerLogUpdates);
       const [currentLauncher, setCurrentLauncher] = React.useState(null);
+      const [previousLauncher, setPreviousLauncher] = React.useState(null);
       React.useEffect(() => {
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
           if (selectedLaunchers.length > 0) {
+              setPreviousLauncher(currentLauncher);
               setCurrentLauncher(selectedLaunchers[0].name);
           }
       }, [options]);
@@ -554,7 +556,17 @@
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' } }, showLog && log),
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
-                  currentLauncher && (window.SP_REACT.createElement("img", { src: launcherImages[currentLauncher], alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } })))) :
+                  currentLauncher && (window.SP_REACT.createElement("div", { style: { position: 'relative', width: '100%', height: '100%' } },
+                      previousLauncher && (window.SP_REACT.createElement("img", { src: launcherImages[previousLauncher], alt: "Previous Launcher", style: {
+                              ...fadeStyle,
+                              animation: 'fade 1s ease-in-out',
+                              opacity: 0
+                          } })),
+                      window.SP_REACT.createElement("img", { src: launcherImages[currentLauncher], alt: "Current Launcher", style: {
+                              ...fadeStyle,
+                              animation: 'fade 1s ease-in-out',
+                              opacity: 1
+                          } }))))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
