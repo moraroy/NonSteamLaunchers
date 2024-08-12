@@ -32,7 +32,7 @@ type LauncherInstallModalProps = {
 const launcherImages = {
     epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
     gogGalaxy: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg',
-    uplay: 'https://cdn2.steamgriddb.com/thumb/4229b97043a62d2f2ac6aad8acad49fb.jpg', // Ubisoft Connect
+    uplay: 'https://cdn2.steamgriddb.com/thumb/5070c1f86e4885d73865919ce537fd21.jpg', // Ubisoft Connect
     battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
     amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
     eaApp: 'https://cdn2.steamgriddb.com/thumb/61370213c90759696536e996a5a61bd4.jpg',
@@ -65,17 +65,13 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
     const [currentLauncher, setCurrentLauncher] = useState<string | null>(null);
-    const [previousLauncher, setPreviousLauncher] = useState<string | null>(null);
-
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         if (selectedLaunchers.length > 0) {
-            setPreviousLauncher(currentLauncher);
             setCurrentLauncher(selectedLaunchers[0].name);
         }
     }, [options]);
-    
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -159,14 +155,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         transition: 'opacity 1s ease-in-out'
     };
     
-
-    const styles = `
-    @keyframes fade {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    `;
-    
     return ((progress.status != '' && progress.percent < 100) ?
     <ModalRoot>
         <DialogHeader>
@@ -188,28 +176,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             </div>
             {currentLauncher && (
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                    {previousLauncher && (
-                        <img 
-                            src={launcherImages[previousLauncher]} 
-                            alt="Previous Launcher" 
-                            style={{ 
-                                ...fadeStyle, 
-                                animation: 'fade 1s ease-in-out', 
-                                opacity: 0 
-                            }} 
-                        />
-                    )}
-                    <img 
-                        src={launcherImages[currentLauncher]} 
-                        alt="Current Launcher" 
-                        style={{ 
-                            ...fadeStyle, 
-                            animation: 'fade 1s ease-in-out', 
-                            opacity: 1 
-                        }} 
-                    />
-                </div>
+                <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
             )}
         </DialogBody>
     </ModalRoot> :
@@ -253,5 +220,5 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             </div>
         </Focusable>
     </ModalRoot>
-    )
-};
+);
+}
