@@ -162,20 +162,20 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
             <DialogBody>
                 <SteamSpinner />
-                <ProgressBarWithInfo
-                    layout="inline"
-                    bottomSeparator="none"
-                    sOperationText={progress.status}
-                    description={progress.description}
-                    nProgress={progress.percent}
-                />
-                {showLog && (
-                    <div style={{ fontSize: 'small', marginTop: '10px', whiteSpace: 'pre-wrap' }}>
-                        {log}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap' }}>
+                        {showLog && log}
                     </div>
-                )}
+                    <ProgressBarWithInfo
+                        layout="inline"
+                        bottomSeparator="none"
+                        sOperationText={progress.status}
+                        description={progress.description}
+                        nProgress={progress.percent}
+                    />
+                </div>
                 {imageUrl && (
-                    <img src={imageUrl} alt="Overlay" style={fadeStyle} />
+                    <img src={imageUrl} alt="Overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.5, pointerEvents: 'none', transition: 'opacity 1s ease-in-out' }} />
                 )}
             </DialogBody>
         </ModalRoot> :
