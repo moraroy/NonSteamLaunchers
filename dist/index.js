@@ -543,17 +543,17 @@
           transition: 'opacity 1s ease-in-out'
       };
       return ((progress.status != '' && progress.percent < 100) ?
-          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { style: { maxWidth: '600px' } },
+          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { style: { maxWidth: '600px', height: '80vh', overflow: 'hidden' } },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null,
                   "Selected options: ",
                   options.filter(option => option.enabled).map(option => option.label).join(', ')),
-              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, { style: { display: 'flex', flexDirection: 'column', height: '100%' } },
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
-                  window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center', flexDirection: 'column' } },
+                  window.SP_REACT.createElement("div", { style: { display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' } },
                       window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '150px', width: '100%' } }, showLog && log),
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
-                  imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } })))) :
+                  imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: { ...fadeStyle, opacity: 0.5, maxHeight: '150px', objectFit: 'contain' } })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
