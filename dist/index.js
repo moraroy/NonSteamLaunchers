@@ -509,8 +509,6 @@
               status: `${operation}ing Launcher ${index + 1} of ${total}`,
               description: `${launcherLabel}`
           });
-          // Update the imageUrl state for each launcher
-          setImageUrl(launcherImages[launcher.toLowerCase()]);
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: launcher,
@@ -553,7 +551,7 @@
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
-                      window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '50px' } }, showLog && log),
+                      window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' } }, showLog && log),
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
                   imageUrl && (window.SP_REACT.createElement("img", { src: imageUrl, alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
