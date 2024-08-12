@@ -54,6 +54,7 @@ const launcherImages = {
     twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
 };
 
+
 export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
     const [progress, setProgress] = useState({ percent: 0, status: '', description: '' });
     const { settings, setAutoScan } = useSettings(serverAPI);
@@ -64,16 +65,11 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
     const [imageUrl, setImageUrl] = useState('');
-    const [fadeOpacity, setFadeOpacity] = useState(1);
 
     useEffect(() => {
         const selectedLauncher = options.find(option => option.enabled && !option.streaming);
         if (selectedLauncher) {
-            setFadeOpacity(0); // Start fade out
-            setTimeout(() => {
-                setImageUrl(launcherImages[selectedLauncher.name]);
-                setFadeOpacity(1); // Fade in new image
-            }, 500); // Duration of fade out
+            setImageUrl(launcherImages[selectedLauncher.name]);
         }
     }, [options]);
 
@@ -147,71 +143,81 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
-
+    const fadeStyle = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        opacity: 1,
+        pointerEvents: 'none',
+        transition: 'opacity 1s ease-in-out'
+    };
+    
     return ((progress.status != '' && progress.percent < 100) ?
-    <ModalRoot>
-        <DialogHeader>
-            {`${operation}ing Game Launchers`}
-        </DialogHeader>
-        <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
-        <DialogBody>
-            <SteamSpinner />
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '150px' }}>
-                    {showLog && log}
-                </div>
-                <ProgressBarWithInfo
-                    layout="inline"
-                    bottomSeparator="none"
-                    sOperationText={progress.status}
-                    description={progress.description}
-                    nProgress={progress.percent}
-                />
-            </div>
-            {imageUrl && (
-                <img src={imageUrl} alt="Overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: fadeOpacity, pointerEvents: 'none', transition: 'opacity 0.5s ease-in-out' }} />
-            )}
-        </DialogBody>
-    </ModalRoot> :
-    <ModalRoot onCancel={closeModal}>
-        <DialogHeader>
-            Select Game Launchers
-        </DialogHeader>
-        <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
-        <DialogBody>
-            {launcherOptions.map(({ name, label }) => (
-                <ToggleField
-                    key={name}
-                    label={label}
-                    checked={options.find(option => option.name === name)?.enabled ? true : false}
-                    onChange={(value) => handleToggle(name, value)}
-                />
-            ))}
-        </DialogBody>
-        <p style={{ fontSize: 'small', marginTop: '20px' }}>
-            Note: If your launchers dont start, make sure force compatability is checked, shortcut properties are right and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
-        </p>
-        <Focusable>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <ModalRoot>
+            <DialogHeader>
+                {`${operation}ing Game Launchers`}
+            </DialogHeader>
+            <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
+            <DialogBody>
+                <SteamSpinner />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <DialogButton
-                        style={{ width: "fit-content" }}
-                        onClick={() => handleInstallClick("Install")}
-                        disabled={options.every(option => option.enabled === false)}
-                    >
-                        Install
-                    </DialogButton>
-                    <DialogButton
-                        style={{ width: "fit-content", marginLeft: "10px", marginRight: "10px" }}
-                        onClick={() => handleInstallClick("Uninstall")}
-                        disabled={options.every(option => option.enabled === false)}
-                    >
-                        Uninstall
-                    </DialogButton>
+                    <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '150px' }}>
+                        {showLog && log}
+                    </div>
+                    <ProgressBarWithInfo
+                        layout="inline"
+                        bottomSeparator="none"
+                        sOperationText={progress.status}
+                        description={progress.description}
+                        nProgress={progress.percent}
+                    />
                 </div>
-                <ToggleField label="Separate Launcher Folders" checked={separateAppIds} onChange={handleSeparateAppIdsToggle} />
-            </div>
-        </Focusable>
-    </ModalRoot>
-)
+                {imageUrl && (
+                    <img src={imageUrl} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
+                )}
+            </DialogBody>
+        </ModalRoot> :
+        <ModalRoot onCancel={closeModal}>
+            <DialogHeader>
+                Select Game Launchers
+            </DialogHeader>
+            <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
+            <DialogBody>
+                {launcherOptions.map(({ name, label }) => (
+                    <ToggleField
+                        key={name}
+                        label={label}
+                        checked={options.find(option => option.name === name)?.enabled ? true : false}
+                        onChange={(value) => handleToggle(name, value)}
+                    />
+                ))}
+            </DialogBody>
+            <p style={{ fontSize: 'small', marginTop: '20px' }}>
+                Note: If your launchers dont start, make sure force compatability is checked, shortcut properties are right and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
+            </p>
+            <Focusable>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <DialogButton
+                            style={{ width: "fit-content" }}
+                            onClick={() => handleInstallClick("Install")}
+                            disabled={options.every(option => option.enabled === false)}
+                        >
+                            Install
+                        </DialogButton>
+                        <DialogButton
+                            style={{ width: "fit-content", marginLeft: "10px", marginRight: "10px" }}
+                            onClick={() => handleInstallClick("Uninstall")}
+                            disabled={options.every(option => option.enabled === false)}
+                        >
+                            Uninstall
+                        </DialogButton>
+                    </div>
+                    <ToggleField label="Separate Launcher Folders" checked={separateAppIds} onChange={handleSeparateAppIdsToggle} />
+                </div>
+            </Focusable>
+        </ModalRoot>
+    )    
 };
