@@ -64,12 +64,13 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [showLog, setShowLog] = useState(false);
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
-    const [imageUrls, setImageUrls] = useState<string[]>([]);
+    const [currentLauncher, setCurrentLauncher] = useState<string | null>(null);
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
-        const urls = selectedLaunchers.map(launcher => launcherImages[launcher.name]);
-        setImageUrls(urls);
+        if (selectedLaunchers.length > 0) {
+            setCurrentLauncher(selectedLaunchers[0].name);
+        }
     }, [options]);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
@@ -101,6 +102,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             if (!launcher.streaming) {
                 setAutoScan(false);
                 const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
+                setCurrentLauncher(launcher.name);
                 await installLauncher(launcherParam, launcher.label, i, operation);
             }
             i++;
@@ -162,7 +164,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBody>
                 <SteamSpinner />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height:'100px' }}>
+                    <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height:'100px' }}>
                         {showLog && log}
                     </div>
                     <ProgressBarWithInfo
@@ -173,9 +175,11 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         nProgress={progress.percent}
                     />
                 </div>
-                {imageUrls.map((url, index) => (
-                    <img key={index} src={url} alt="Launcher" style={{ ...fadeStyle, opacity: 0.5 }} />
-                ))}
+                {currentLauncher && (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                        <img src={launcherImages[currentLauncher]} alt="Launcher" style={{ width: '100px', height: '100px', opacity: 0.5 }} />
+                    </div>
+                )}
             </DialogBody>
         </ModalRoot> :
         <ModalRoot onCancel={closeModal}>
@@ -194,7 +198,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 ))}
             </DialogBody>
             <p style={{ fontSize: 'small', marginTop: '20px' }}>
-                Note: If your launchers dont start, make sure force compatability is checked, shortcut properties are right and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
+                Note: If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
             </p>
             <Focusable>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -218,5 +222,5 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 </div>
             </Focusable>
         </ModalRoot>
-    )    
+    );
 };

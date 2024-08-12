@@ -455,11 +455,12 @@
       const [showLog, setShowLog] = React.useState(false);
       const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false);
       const log = useLogUpdates(triggerLogUpdates);
-      const [imageUrls, setImageUrls] = React.useState([]);
+      const [currentLauncher, setCurrentLauncher] = React.useState(null);
       React.useEffect(() => {
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
-          const urls = selectedLaunchers.map(launcher => launcherImages[launcher.name]);
-          setImageUrls(urls);
+          if (selectedLaunchers.length > 0) {
+              setCurrentLauncher(selectedLaunchers[0].name);
+          }
       }, [options]);
       const handleToggle = (changeName, changeValue) => {
           const newOptions = options.map(option => {
@@ -489,6 +490,7 @@
               if (!launcher.streaming) {
                   setAutoScan(false);
                   const launcherParam = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
+                  setCurrentLauncher(launcher.name);
                   await installLauncher(launcherParam, launcher.label, i, operation);
               }
               i++;
@@ -531,16 +533,6 @@
               console.error('Error calling _main method on server-side plugin:', error);
           }
       };
-      const fadeStyle = {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          opacity: 1,
-          pointerEvents: 'none',
-          transition: 'opacity 1s ease-in-out'
-      };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
@@ -552,12 +544,13 @@
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' } }, showLog && log),
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
-                  imageUrls.map((url, index) => (window.SP_REACT.createElement("img", { key: index, src: url, alt: "Launcher", style: { ...fadeStyle, opacity: 0.5 } }))))) :
+                  currentLauncher && (window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'center', marginTop: '10px' } },
+                      window.SP_REACT.createElement("img", { src: launcherImages[currentLauncher], alt: "Launcher", style: { width: '100px', height: '100px', opacity: 0.5 } }))))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { key: name, label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) })))),
-              window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '20px' } }, "Note: If your launchers dont start, make sure force compatability is checked, shortcut properties are right and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually."),
+              window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '20px' } }, "Note: If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually."),
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, null,
                   window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
