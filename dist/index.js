@@ -395,12 +395,10 @@
       const [log, setLog] = React.useState([]);
       const logWsRef = React.useRef(null);
       React.useEffect(() => {
-          if (!logWsRef.current) {
+          if (trigger && !logWsRef.current) {
               logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
               logWsRef.current.onmessage = (e) => {
-                  if (trigger) {
-                      setLog((prevLog) => [...prevLog, e.data]);
-                  }
+                  setLog((prevLog) => [...prevLog, e.data]);
               };
               logWsRef.current.onerror = (e) => {
                   console.error(`WebSocket error: ${e}`);
@@ -419,7 +417,7 @@
                   logWsRef.current = null;
               }
           };
-      }, []);
+      }, [trigger]);
       return log;
   };
 
@@ -484,9 +482,7 @@
       const handleInstallClick = async (operation) => {
           setOperation(operation);
           setShowLog(true);
-          setTriggerLogUpdates(false); // Temporarily disable log updates
-          setLog([]); // Clear the log state
-          setTriggerLogUpdates(true); // Re-enable log updates
+          setTriggerLogUpdates(true);
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
           let i = 0;
           let previousAutoScan = settings.autoscan;
