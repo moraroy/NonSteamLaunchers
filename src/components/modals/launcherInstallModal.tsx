@@ -64,13 +64,12 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [showLog, setShowLog] = useState(false);
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
-    const [imageUrl, setImageUrl] = useState('');
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
 
     useEffect(() => {
-        const selectedLauncher = options.find(option => option.enabled && !option.streaming);
-        if (selectedLauncher) {
-            setImageUrl(launcherImages[selectedLauncher.name]);
-        }
+        const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
+        const urls = selectedLaunchers.map(launcher => launcherImages[launcher.name]);
+        setImageUrls(urls);
     }, [options]);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
@@ -174,9 +173,9 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                         nProgress={progress.percent}
                     />
                 </div>
-                {imageUrl && (
-                    <img src={imageUrl} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
-                )}
+                {imageUrls.map((url, index) => (
+                    <img key={index} src={url} alt="Launcher" style={{ ...fadeStyle, opacity: 0.5 }} />
+                ))}
             </DialogBody>
         </ModalRoot> :
         <ModalRoot onCancel={closeModal}>
