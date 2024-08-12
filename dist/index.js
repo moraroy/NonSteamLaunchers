@@ -509,6 +509,8 @@
               status: `${operation}ing Launcher ${index + 1} of ${total}`,
               description: `${launcherLabel}`
           });
+          // Update the imageUrl state for each launcher
+          setImageUrl(launcherImages[launcher.toLowerCase()]);
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: launcher,

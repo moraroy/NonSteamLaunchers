@@ -120,6 +120,10 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             status: `${operation}ing Launcher ${index + 1} of ${total}`,
             description: `${launcherLabel}`
         });
+    
+        // Update the imageUrl state for each launcher
+        setImageUrl(launcherImages[launcher.toLowerCase()]);
+    
         try {
             const result = await serverAPI.callPluginMethod("install", {
                 selected_options: launcher,
@@ -128,7 +132,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 separate_app_ids: separateAppIds,
                 start_fresh: false
             });
-
+    
             if (result) {
                 setProgress({ percent: endPercent, status: `${operation} Selection ${index + 1} of ${total}`, description: `${launcher}` });
                 notify.toast(`Launcher ${operation}ed`, `${launcherLabel} was ${operation.toLowerCase()}ed successfully!`);
@@ -142,6 +146,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             console.error('Error calling _main method on server-side plugin:', error);
         }
     };
+    
 
     const fadeStyle = {
         position: 'absolute',
