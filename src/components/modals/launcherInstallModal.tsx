@@ -95,8 +95,13 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setOperation(operation);
         setShowLog(true);
         setTriggerLogUpdates(false); // Temporarily disable log updates
-        setLog([]); // Clear the log state
-        setTriggerLogUpdates(true); // Re-enable log updates
+    
+        // Clear the log state after a short delay to ensure the state updates are applied correctly
+        setTimeout(() => {
+            setLog([]); // Clear the log state
+            setTriggerLogUpdates(true); // Re-enable log updates
+        }, 100);
+    
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         let i = 0;
         let previousAutoScan = settings.autoscan;
@@ -112,6 +117,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setAutoScan(previousAutoScan);
         if (settings.autoscan) { autoscan(); }
     };
+    
 
     const installLauncher = async (launcher: string, launcherLabel: string, index: number, operation: string) => {
         const total = options.filter(option => option.enabled).length;
