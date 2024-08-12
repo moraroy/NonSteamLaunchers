@@ -163,7 +163,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             <DialogBody>
                 <SteamSpinner />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '150px', height: '150px' }}>
+                    <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto' }}>
                         {showLog && log}
                     </div>
                     <ProgressBarWithInfo
