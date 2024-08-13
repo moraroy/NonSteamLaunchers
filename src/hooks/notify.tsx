@@ -23,8 +23,8 @@ export class notify {
               src={iconUrl}
               alt="icon"
               style={{
-                width: '20px',  // Increase the width
-                height: '20px', // Increase the height
+                width: '30px',  // Increase the width
+                height: '30px', // Increase the height
                 position: 'absolute', // Position it absolutely
                 top: '-20px', // Adjust the top position
                 left: '-5px', // Adjust the left position

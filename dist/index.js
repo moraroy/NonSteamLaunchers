@@ -97,8 +97,8 @@
                       body: message,
                       duration: 8000,
                       icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
-                              width: '20px',
-                              height: '20px',
+                              width: '30px',
+                              height: '30px',
                               position: 'absolute',
                               top: '-20px',
                               left: '-5px',
