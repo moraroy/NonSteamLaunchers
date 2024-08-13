@@ -107,7 +107,6 @@ class Plugin:
         app.router.add_get('/autoscan', handleAutoScan)
         app.router.add_get('/scan', handleScan)
         app.router.add_get('/customSite', handleCustomSite)
-        app.router.add_get('/logUpdates', handleLogUpdates)
 
         # Run the server
         runner = web.AppRunner(app)

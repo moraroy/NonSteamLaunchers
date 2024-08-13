@@ -14,7 +14,7 @@ import { useState, VFC, useEffect } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
-//import { useLogUpdates } from "../../hooks/useLogUpdates";
+import { useLogUpdates } from "../../hooks/useLogUpdates";
 
 type LauncherInstallModalProps = {
     closeModal?: () => void,
