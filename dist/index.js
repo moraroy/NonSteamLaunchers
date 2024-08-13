@@ -554,6 +554,10 @@
           pointerEvents: 'none',
           transition: 'opacity 1s ease-in-out'
       };
+      const progressBarStyles = {
+          pointerEvents: 'none',
+          cursor: 'default' // Change cursor to default
+      };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
@@ -564,7 +568,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' } }, showLog && log),
-                      window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
+                      window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { style: progressBarStyles, layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
                   currentLauncher && (window.SP_REACT.createElement("img", { src: launcherImages[currentLauncher], alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
