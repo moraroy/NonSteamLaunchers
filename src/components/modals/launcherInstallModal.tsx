@@ -37,7 +37,7 @@ const launcherImages = {
     amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
     eaApp: 'https://cdn2.steamgriddb.com/hero_thumb/6458ed5e1bb03b8da47c065c2f647b26.jpg',
     legacyGames: 'https://cdn2.steamgriddb.com/thumb/86cfeb447e7f474a00adb7423c605875.jpg',
-    itchIo: 'https://cdn2.steamgriddb.com/thumb/80f57a23cf01d17c0b65fa4e0d010aa2.jpg',
+    itchIo: 'https://i.pcmag.com/imagery/reviews/044PXMK6FlED1dNwOXkecXV-4.fit_scale.size_1028x578.v1597354669.jpg',
     humbleGames: 'https://cdn2.steamgriddb.com/thumb/4cb3ded67cb7a539395ab873354a01c1.jpg',
     indieGala: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg',
     rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg',
