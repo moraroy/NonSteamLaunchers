@@ -100,8 +100,8 @@
                               width: '30px',
                               height: '30px',
                               position: 'absolute',
-                              top: '-20px',
-                              left: '-5px',
+                              top: '-15px',
+                              left: '0px',
                               borderRadius: '50%',
                               boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
                           } })) : undefined,
