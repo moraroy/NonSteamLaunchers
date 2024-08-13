@@ -37,9 +37,14 @@ def parse_butler_db(content):
     for match in matches:
         base_path = match[0].decode(errors='ignore')
         candidates_json = b'[' + match[1] + b']'
-        candidates = json.loads(candidates_json.decode(errors='ignore'))
-        paths = [candidate['path'] for candidate in candidates]
-        db_paths.append((base_path, paths))
+        decky_plugin.logger.info(f"Candidates JSON: {candidates_json}")
+        try:
+            candidates = json.loads(candidates_json.decode(errors='ignore'))
+            paths = [candidate['path'] for candidate in candidates]
+            db_paths.append((base_path, paths))
+        except json.JSONDecodeError as e:
+            decky_plugin.logger.error(f"JSON decoding error: {e}. Skipping this entry and continuing...")
+            continue
     decky_plugin.logger.info(f"Converted {len(matches)} matches to {len(db_paths)} database paths.")
     return db_paths
 
