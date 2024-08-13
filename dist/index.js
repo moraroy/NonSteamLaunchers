@@ -95,7 +95,7 @@
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
-                      duration: 5000,
+                      duration: 8000,
                       icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
                               width: '40px',
                               height: '40px',

@@ -17,7 +17,7 @@ export class notify {
         return this.serverAPI.toaster.toast({
           title: title,
           body: message,
-          duration: 5000,
+          duration: 8000,
           icon: iconUrl ? (
             <img
               src={iconUrl}
