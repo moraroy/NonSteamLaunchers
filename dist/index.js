@@ -97,10 +97,10 @@
                       body: message,
                       duration: 8000,
                       icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
-                              width: '35px',
-                              height: '35px',
+                              width: '30px',
+                              height: '30px',
                               position: 'absolute',
-                              top: '-10px',
+                              top: '-15px',
                               left: '0px',
                               borderRadius: '50%',
                               boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
