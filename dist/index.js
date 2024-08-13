@@ -425,7 +425,7 @@
   const launcherImages = {
       epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
       gogGalaxy: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg',
-      uplay: 'https://cdn2.steamgriddb.com/hero_thumb/e0a0a80333d75c4728e228b869e94579.jpg',
+      uplay: 'https://cdn2.steamgriddb.com/hero_thumb/525d57e5f56f04be298e821454ced9bc.png',
       battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
       amazonGames: 'https://cdn2.steamgriddb.com/thumb/32846afc71fcbc30af34643123838c57.jpg',
       eaApp: 'https://cdn2.steamgriddb.com/hero_thumb/6458ed5e1bb03b8da47c065c2f647b26.jpg',
@@ -433,7 +433,7 @@
       itchIo: 'https://cdn2.steamgriddb.com/thumb/80f57a23cf01d17c0b65fa4e0d010aa2.jpg',
       humbleGames: 'https://cdn2.steamgriddb.com/thumb/4cb3ded67cb7a539395ab873354a01c1.jpg',
       indieGala: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg',
-      rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/048e2f1447691907b18b2a37e7ed2322.jpg',
+      rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/be1c84442cfada4acab36fb92233f0b4.jpg',
       psPlus: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg',
       xboxGamePass: 'https://cdn2.steamgriddb.com/hero_thumb/167b7d08b38facb1c06185861a5845dd.jpg',
       fortnite: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg',
