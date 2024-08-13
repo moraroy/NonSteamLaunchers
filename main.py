@@ -18,7 +18,6 @@ import logging
 import re
 import asyncio
 import subprocess
-import aiofiles
 from aiohttp import web
 from decky_plugin import DECKY_PLUGIN_DIR
 from py_modules.lib.scanner import scan, addCustomSite
@@ -102,37 +101,6 @@ class Plugin:
                         await ws.send_json(game)
             return ws
 
-        async def handleLogUpdates(request):
-            ws = web.WebSocketResponse()
-            await ws.prepare(request)
-            log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
-            last_size = 0
-
-            while True:
-                try:
-                    current_size = os.path.getsize(log_file_path)
-                    if current_size < last_size:
-                        # File has been recreated, reopen it
-                        last_size = 0
-
-                    async with aiofiles.open(log_file_path, 'r') as log_file:
-                        if last_size > 0:
-                            await log_file.seek(last_size)
-
-                        while True:
-                            line = await log_file.readline()
-                            if not line:
-                                await asyncio.sleep(1)
-                                break
-                            last_size += len(line)
-                            decky_plugin.logger.info(f"Log line: {line.strip()}")
-                            await ws.send_str(line)
-                except FileNotFoundError:
-                    # Handle the case where the log file does not exist
-                    await asyncio.sleep(1)
-                    continue
-
-            return ws
 
         # Create the server application
         app = web.Application()

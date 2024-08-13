@@ -402,36 +402,6 @@
       };
   }
 
-  const useLogUpdates = (trigger) => {
-      const [log, setLog] = React.useState([]);
-      const logWsRef = React.useRef(null);
-      React.useEffect(() => {
-          if (trigger && !logWsRef.current) {
-              logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
-              logWsRef.current.onmessage = (e) => {
-                  setLog((prevLog) => [...prevLog, e.data]);
-              };
-              logWsRef.current.onerror = (e) => {
-                  console.error(`WebSocket error: ${e}`);
-              };
-              logWsRef.current.onclose = (e) => {
-                  console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
-                  // Attempt to reconnect after a delay
-                  setTimeout(() => {
-                      logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
-                  }, 5000);
-              };
-          }
-          return () => {
-              if (logWsRef.current) {
-                  logWsRef.current.close();
-                  logWsRef.current = null;
-              }
-          };
-      }, [trigger]);
-      return log;
-  };
-
   // Mapping of launcher names to their respective image URLs
   const launcherImages = {
       epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
