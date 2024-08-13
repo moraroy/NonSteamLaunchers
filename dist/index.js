@@ -92,12 +92,13 @@
       static toast(title, message, iconUrl) {
           return (() => {
               try {
+                  const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
                   const isValidIconUrl = iconUrl && iconUrl.trim() !== "";
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
                       duration: 8000,
-                      icon: isValidIconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
+                      icon: (window.SP_REACT.createElement("img", { src: isValidIconUrl ? iconUrl : defaultIconUrl, alt: "icon", style: {
                               width: '30px',
                               height: '30px',
                               position: 'absolute',
@@ -105,7 +106,7 @@
                               left: '0px',
                               borderRadius: '50%',
                               boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                          } })) : undefined,
+                          } })),
                   });
               }
               catch (e) {

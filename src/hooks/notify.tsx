@@ -14,14 +14,15 @@ export class notify {
   static toast(title: string, message: string, iconUrl?: string): void {
     return (() => {
       try {
+        const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
         const isValidIconUrl = iconUrl && iconUrl.trim() !== "";
         return this.serverAPI.toaster.toast({
           title: title,
           body: message,
           duration: 8000,
-          icon: isValidIconUrl ? (
+          icon: (
             <img
-              src={iconUrl}
+              src={isValidIconUrl ? iconUrl : defaultIconUrl}
               alt="icon"
               style={{
                 width: '30px',
@@ -33,11 +34,12 @@ export class notify {
                 boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
               }}
             />
-          ) : undefined,
+          ),
         });
       } catch (e) {
         console.log("Toaster Error", e);
       }
     })();
   }
-}  
+}
+ 
