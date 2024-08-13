@@ -544,9 +544,9 @@
           left: 0,
           width: '100%',
           height: '100%',
-          opacity: 1,
+          opacity: fade ? 0 : 1,
           pointerEvents: 'none',
-          transition: 'opacity 5s ease-in-out'
+          transition: 'opacity 0.5s ease-in-out'
       };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
@@ -559,7 +559,7 @@
                   window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' } }, showLog && log),
                       window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent })),
-                  currentLauncher && (window.SP_REACT.createElement("img", { src: launcherImages[currentLauncher], alt: "Overlay", style: { ...fadeStyle, opacity: fade ? 0 : 1 } })))) :
+                  currentLauncher && (window.SP_REACT.createElement("img", { src: launcherImages[currentLauncher], alt: "Overlay", style: fadeStyle })))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),

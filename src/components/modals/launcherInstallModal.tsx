@@ -54,7 +54,6 @@ const launcherImages = {
     twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
 };
 
-
 export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
     const [progress, setProgress] = useState({ percent: 0, status: '', description: '' });
     const { settings, setAutoScan } = useSettings(serverAPI);
@@ -66,7 +65,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const log = useLogUpdates(triggerLogUpdates);
     const [currentLauncher, setCurrentLauncher] = useState<string | null>(null);
     const [fade, setFade] = useState(false);
-
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
@@ -156,51 +154,51 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         left: 0,
         width: '100%',
         height: '100%',
-        opacity: 1,
+        opacity: fade ? 0 : 1,
         pointerEvents: 'none',
-        transition: 'opacity 5s ease-in-out'
+        transition: 'opacity 0.5s ease-in-out'
     };
-    
+
     return ((progress.status != '' && progress.percent < 100) ?
-    <ModalRoot>
-        <DialogHeader>
-            {`${operation}ing Game Launchers`}
-        </DialogHeader>
-        <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
-        <DialogBody>
-            <SteamSpinner />
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height:'100px' }}>
-                    {showLog && log}
+        <ModalRoot>
+            <DialogHeader>
+                {`${operation}ing Game Launchers`}
+            </DialogHeader>
+            <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
+            <DialogBody>
+                <SteamSpinner />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' }}>
+                        {showLog && log}
+                    </div>
+                    <ProgressBarWithInfo
+                        layout="inline"
+                        bottomSeparator="none"
+                        sOperationText={progress.status}
+                        description={progress.description}
+                        nProgress={progress.percent}
+                    />
                 </div>
-                <ProgressBarWithInfo
-                    layout="inline"
-                    bottomSeparator="none"
-                    sOperationText={progress.status}
-                    description={progress.description}
-                    nProgress={progress.percent}
-                />
-            </div>
-            {currentLauncher && (
-                <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: fade ? 0 : 1 }} />
-            )}
-        </DialogBody>
-    </ModalRoot> :
-    <ModalRoot onCancel={closeModal}>
-        <DialogHeader>
-            Select Game Launchers
-        </DialogHeader>
-        <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
-        <DialogBody>
-            {launcherOptions.map(({ name, label }) => (
-                <ToggleField
-                    key={name}
-                    label={label}
-                    checked={options.find(option => option.name === name)?.enabled ? true : false}
-                    onChange={(value) => handleToggle(name, value)}
-                />
-            ))}
-        </DialogBody>
+                {currentLauncher && (
+                    <img src={launcherImages[currentLauncher]} alt="Overlay" style={fadeStyle} />
+                )}
+            </DialogBody>
+        </ModalRoot> :
+        <ModalRoot onCancel={closeModal}>
+            <DialogHeader>
+                Select Game Launchers
+            </DialogHeader>
+            <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
+            <DialogBody>
+                {launcherOptions.map(({ name, label }) => (
+                    <ToggleField
+                        key={name}
+                        label={label}
+                        checked={options.find(option => option.name === name)?.enabled ? true : false}
+                        onChange={(value) => handleToggle(name, value)}
+                    />
+                ))}
+            </DialogBody>
         <p style={{ fontSize: 'small', marginTop: '20px' }}>
             Note: If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
         </p>
