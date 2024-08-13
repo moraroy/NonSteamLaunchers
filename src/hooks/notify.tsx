@@ -26,7 +26,7 @@ export class notify {
                 width: '30px',  // Increase the width
                 height: '30px', // Increase the height
                 position: 'absolute', // Position it absolutely
-                top: '-15px', // Adjust the top position
+                top: '-12px', // Adjust the top position
                 left: '0px', // Adjust the left position
                 borderRadius: '50%', // Make it circular
                 boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
