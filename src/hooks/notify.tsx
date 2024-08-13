@@ -18,7 +18,21 @@ export class notify {
           title: title,
           body: message,
           duration: 5000,
-          icon: iconUrl ? <img src={iconUrl} alt="icon" style={{ width: '20px', height: '20px' }} /> : undefined,
+          icon: iconUrl ? (
+            <img
+              src={iconUrl}
+              alt="icon"
+              style={{
+                width: '40px',  // Increase the width
+                height: '40px', // Increase the height
+                position: 'absolute', // Position it absolutely
+                top: '10px', // Adjust the top position
+                left: '10px', // Adjust the left position
+                borderRadius: '50%', // Make it circular
+                boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
+              }}
+            />
+          ) : undefined,
         });
       } catch (e) {
         console.log("Toaster Error", e);

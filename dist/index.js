@@ -96,7 +96,15 @@
                       title: title,
                       body: message,
                       duration: 5000,
-                      icon: iconUrl ? window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: { width: '20px', height: '20px' } }) : undefined,
+                      icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
+                              width: '40px',
+                              height: '40px',
+                              position: 'absolute',
+                              top: '10px',
+                              left: '10px',
+                              borderRadius: '50%',
+                              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
+                          } })) : undefined,
                   });
               }
               catch (e) {
