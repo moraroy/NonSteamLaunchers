@@ -92,18 +92,19 @@
       static toast(title, message, iconUrl) {
           return (() => {
               try {
+                  const isValidIconUrl = iconUrl && iconUrl.trim() !== "";
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
                       duration: 8000,
-                      icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
+                      icon: isValidIconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
                               width: '30px',
                               height: '30px',
                               position: 'absolute',
                               top: '-12px',
                               left: '0px',
                               borderRadius: '50%',
-                              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
+                              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                           } })) : undefined,
                   });
               }

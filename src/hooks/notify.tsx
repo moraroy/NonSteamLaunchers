@@ -14,22 +14,23 @@ export class notify {
   static toast(title: string, message: string, iconUrl?: string): void {
     return (() => {
       try {
+        const isValidIconUrl = iconUrl && iconUrl.trim() !== "";
         return this.serverAPI.toaster.toast({
           title: title,
           body: message,
           duration: 8000,
-          icon: iconUrl ? (
+          icon: isValidIconUrl ? (
             <img
               src={iconUrl}
               alt="icon"
               style={{
-                width: '30px',  // Increase the width
-                height: '30px', // Increase the height
-                position: 'absolute', // Position it absolutely
-                top: '-12px', // Adjust the top position
-                left: '0px', // Adjust the left position
-                borderRadius: '50%', // Make it circular
-                boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
+                width: '30px',
+                height: '30px',
+                position: 'absolute',
+                top: '-12px',
+                left: '0px',
+                borderRadius: '50%',
+                boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
               }}
             />
           ) : undefined,
@@ -39,4 +40,4 @@ export class notify {
       }
     })();
   }
-}
+}  
