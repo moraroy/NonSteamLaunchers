@@ -551,7 +551,7 @@
           height: '100%',
           opacity: 1,
           pointerEvents: 'none',
-          transition: 'opacity 5s ease-in-out'
+          transition: 'opacity 1s ease-in-out'
       };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
