@@ -433,7 +433,7 @@
       itchIo: 'https://cdn2.steamgriddb.com/thumb/80f57a23cf01d17c0b65fa4e0d010aa2.jpg',
       humbleGames: 'https://cdn2.steamgriddb.com/thumb/4cb3ded67cb7a539395ab873354a01c1.jpg',
       indieGala: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg',
-      rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/be1c84442cfada4acab36fb92233f0b4.jpg',
+      rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg',
       psPlus: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg',
       xboxGamePass: 'https://cdn2.steamgriddb.com/hero_thumb/167b7d08b38facb1c06185861a5845dd.jpg',
       fortnite: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg',
