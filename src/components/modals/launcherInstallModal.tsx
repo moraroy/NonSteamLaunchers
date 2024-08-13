@@ -65,11 +65,17 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
     const [currentLauncher, setCurrentLauncher] = useState<string | null>(null);
+    const [fade, setFade] = useState(false);
+
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         if (selectedLaunchers.length > 0) {
-            setCurrentLauncher(selectedLaunchers[0].name);
+            setFade(true);
+            setTimeout(() => {
+                setCurrentLauncher(selectedLaunchers[0].name);
+                setFade(false);
+            }, 500); // Half of the transition duration
         }
     }, [options]);
 
@@ -176,7 +182,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             </div>
             {currentLauncher && (
-                <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
+                <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: fade ? 0 : 1 }} />
             )}
         </DialogBody>
     </ModalRoot> :
