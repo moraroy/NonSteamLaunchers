@@ -3,7 +3,7 @@ import { notify } from "./notify";
 //Shortcut Creation Code
 // Define the createShortcut function
 export async function createShortcut(game: any) {
-    const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo } = game;
+  const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon } = game;
   
     // Separate the executable path and arguments
     const match = exe.match(/"([^"]+)"/);
@@ -20,7 +20,8 @@ export async function createShortcut(game: any) {
     // Use the addShortcut method directly
     const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
     if (appId) {
-      notify.toast("New Shortcut Created",`${appname} has been added to your library!`)
+      const iconUrl = `data:image/x-icon;base64,${Icon}`;  // Use the base64-encoded icon
+      notify.toast("New Shortcut Created", `${appname} has been added to your library!`, iconUrl);
       console.log(`AppID for ${appname} = ${appId}`);
       SteamClient.Apps.SetShortcutName(appId, appname);
       SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions)

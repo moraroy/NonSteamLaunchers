@@ -83,19 +83,20 @@
 
   class notify {
       /**
-       * Sets the interop's severAPI.
+       * Sets the interop's serverAPI.
        * @param serv The ServerAPI for the interop to use.
        */
       static setServer(serv) {
           this.serverAPI = serv;
       }
-      static toast(title, message) {
+      static toast(title, message, iconUrl) {
           return (() => {
               try {
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
                       duration: 5000,
+                      icon: iconUrl ? window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: { width: '20px', height: '20px' } }) : undefined,
                   });
               }
               catch (e) {
@@ -108,7 +109,7 @@
   //Shortcut Creation Code
   // Define the createShortcut function
   async function createShortcut(game) {
-      const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo } = game;
+      const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon } = game;
       // Separate the executable path and arguments
       const match = exe.match(/"([^"]+)"/);
       if (!match) {
@@ -121,7 +122,8 @@
       // Use the addShortcut method directly
       const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
       if (appId) {
-          notify.toast("New Shortcut Created", `${appname} has been added to your library!`);
+          const iconUrl = `data:image/x-icon;base64,${Icon}`; // Use the base64-encoded icon
+          notify.toast("New Shortcut Created", `${appname} has been added to your library!`, iconUrl);
           console.log(`AppID for ${appname} = ${appId}`);
           SteamClient.Apps.SetShortcutName(appId, appname);
           SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);

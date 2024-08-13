@@ -179,6 +179,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir):
         'Grid': gridp64,
         'Hero': hero64,
         'Logo': logo64,
+        'Icon': icon,
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
