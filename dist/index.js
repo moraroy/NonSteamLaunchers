@@ -137,6 +137,7 @@
           SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);
           SteamClient.Apps.SetShortcutExe(appId, exe);
           SteamClient.Apps.SetShortcutStartDir(appId, StartDir);
+          SteamClient.Apps.SetShortcutIcon(appId, Icon); // Set the icon for the shortcut
           let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
           let CompatToolExists = AvailableCompatTools.some((e) => e.strToolName === CompatTool);
           if (CompatTool != false && CompatToolExists) {
