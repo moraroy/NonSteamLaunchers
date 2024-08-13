@@ -10,7 +10,7 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, VFC, useEffect } from "react";
+import { useState, useEffect, CSSProperties } from 'react';
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
@@ -150,7 +150,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
-    const fadeStyle = {
+    const fadeStyle: CSSProperties = {
         position: 'absolute',
         top: 0,
         left: 0,
