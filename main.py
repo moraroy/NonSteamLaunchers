@@ -101,27 +101,37 @@ class Plugin:
                         # Send the game data to the client
                         await ws.send_json(game)
             return ws
-        
+
         async def handleLogUpdates(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
-            async with aiofiles.open(log_file_path, 'r') as log_file:
-                # Read all existing lines
-                async for line in log_file:
-                    decky_plugin.logger.info(f"Log line: {line.strip()}")
-                    await ws.send_str(line)
-        
-                # Seek to the end of the file to read new lines
-                await log_file.seek(0, os.SEEK_END)
-        
-                while True:
-                    line = await log_file.readline()
-                    if not line:
-                        await asyncio.sleep(1)
-                        continue
-                    decky_plugin.logger.info(f"Log line: {line.strip()}")
-                    await ws.send_str(line)
+            last_size = 0
+
+            while True:
+                try:
+                    current_size = os.path.getsize(log_file_path)
+                    if current_size < last_size:
+                        # File has been recreated, reopen it
+                        last_size = 0
+
+                    async with aiofiles.open(log_file_path, 'r') as log_file:
+                        if last_size > 0:
+                            await log_file.seek(last_size)
+
+                        while True:
+                            line = await log_file.readline()
+                            if not line:
+                                await asyncio.sleep(1)
+                                break
+                            last_size += len(line)
+                            decky_plugin.logger.info(f"Log line: {line.strip()}")
+                            await ws.send_str(line)
+                except FileNotFoundError:
+                    # Handle the case where the log file does not exist
+                    await asyncio.sleep(1)
+                    continue
+
             return ws
 
         # Create the server application
