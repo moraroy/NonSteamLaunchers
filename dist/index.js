@@ -92,21 +92,19 @@
       static toast(title, message, iconUrl) {
           return (() => {
               try {
-                  const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
-                  const isValidIconUrl = iconUrl && iconUrl.trim() !== "";
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
                       duration: 8000,
-                      icon: (window.SP_REACT.createElement("img", { src: isValidIconUrl ? iconUrl : defaultIconUrl, alt: "icon", style: {
+                      icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
                               width: '30px',
                               height: '30px',
                               position: 'absolute',
                               top: '-12px',
                               left: '0px',
                               borderRadius: '50%',
-                              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                          } })),
+                              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
+                          } })) : undefined,
                   });
               }
               catch (e) {
@@ -116,7 +114,7 @@
       }
   }
 
-  //Shortcut Creation Code
+  // Shortcut Creation Code
   // Define the createShortcut function
   async function createShortcut(game) {
       const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon } = game;
@@ -132,7 +130,8 @@
       // Use the addShortcut method directly
       const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
       if (appId) {
-          const iconUrl = `data:image/x-icon;base64,${Icon}`; // Use the base64-encoded icon
+          const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
+          const iconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl; // Use the base64-encoded icon or default icon
           notify.toast("New Shortcut Created", `${appname} has been added to your library!`, iconUrl);
           console.log(`AppID for ${appname} = ${appId}`);
           SteamClient.Apps.SetShortcutName(appId, appname);
@@ -141,10 +140,10 @@
           SteamClient.Apps.SetShortcutStartDir(appId, StartDir);
           let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
           let CompatToolExists = AvailableCompatTools.some((e) => e.strToolName === CompatTool);
-          if (CompatTool != false && CompatToolExists) {
+          if (CompatTool && CompatToolExists) {
               SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
           }
-          else if (CompatTool != false) {
+          else if (CompatTool) {
               SteamClient.Apps.SpecifyCompatTool(appId, 'proton_experimental');
           }
           SteamClient.Apps.SetCustomArtworkForApp(appId, Hero, 'png', 1);
@@ -159,7 +158,7 @@
           return false;
       }
   }
-  //End of Shortcut Creation Code
+  // End of Shortcut Creation Code
 
   const installSite = async (sites, serverAPI, { setProgress }, total) => {
       console.log('installSite called');
