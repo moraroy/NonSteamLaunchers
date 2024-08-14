@@ -101,6 +101,7 @@ class Plugin:
                         await ws.send_json(game)
             return ws
 
+
         # Create the server application
         app = web.Application()
         app.router.add_get('/autoscan', handleAutoScan)
