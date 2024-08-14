@@ -154,11 +154,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         pointerEvents: 'none',
         transition: 'opacity 1s ease-in-out'
     };
-
-    const progressBarStyles = {
-        pointerEvents: 'none', // Disable click events
-        cursor: 'default' // Change cursor to default
-    };
     
     return ((progress.status != '' && progress.percent < 100) ?
     <ModalRoot>
@@ -173,7 +168,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                     {showLog && log}
                 </div>
                 <ProgressBarWithInfo
-                    style={progressBarStyles}
                     layout="inline"
                     bottomSeparator="none"
                     sOperationText={progress.status}
