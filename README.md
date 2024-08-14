@@ -57,7 +57,7 @@ Supported Streaming Sites for games and as well as any website. 🌐
 Finds Games Automatically
 </h1> 
 
-"NSLGameScanner" is avalaible in the decky version through a manual scan and a auto scan feature for real time shortcuts. No Need to restart steam anymore! Currently adds:
+"NSLGameScanner" is avalaible through a manual scan and a auto scan feature for real time shortcuts. No Need to restart steam anymore! Currently adds:
 - Epic Games 🎮         💾 Full SD Card Support
 - Ubisoft Connect 🎮
 - EA App 🎮
@@ -66,41 +66,6 @@ Finds Games Automatically
 - Amazon games 🎮       💾 Full SD Card Support
 - Itch.io 🎮
 
-<h1 align="center">
-How to Install 🔧
-</h1>
-
-<p align="center">
-  <a name="download button" href="https://github.com/cchrkk/NSLOSD-DL/releases/download/DlLinkFix/NonSteamLaunchers.desktop"><img src="https://user-images.githubusercontent.com/98482469/242361563-33f31d3d-9a69-4fca-a928-207a5d17a98f.png"  alt="Download NonSteamLaunchers" width="350px" style="padding-top: 15px;"></a>
-</p>
-<!--- Thanks https://github.com/Heus-Sueh -->
-
-* Go to desktop mode, right click the download button above and save the .desktop file to your Steam Deck desktop. 
-* Go to your desktop, click the NonSteamLaunchers icon, it will download and run the latest NonSteamLaunchers.sh from this repository and run it.
-* You will simply have to choose which launcher to install and let the script handle the rest. 💻 No files are left in your "Downloads" they are deleted after installation.
-* After running the script, launch Steam on your Steam Deck. You'll find the new launchers in your library under the non-steam tab. Click a launcher to see your installed games from that store, and launch them directly from Steam! If you have downloaded a game inside of your launcher, restart your deck or steam adn the NSLGameScanner.service should add it to your library. Even in gamemode 🥳
-
-<!--- TODO: handful of broken icons (cf. 🡺🡺🡺 ); probably should remove or replace them with more common font to handle unicode-->
-
-<p align="center">
-▶️ YouTube Tutorial 🡺🡺🡺 https://www.youtube.com/watch?v=svOj4MTEAVc 🡸🡸🡸 ▶️
-</p>
-<p align="center">
-📖 Step-by-step Article 🡺🡺🡺 <a href="https://steamdeckhq.com/news/nonsteamlaunchers-adds-scan-support-launchers">here</a> 🡸🡸🡸 📖
-</p>
-
-<h1 align="center">
-How to Uninstall 🗑
-</h1>
-
-+ Just run the script, and hit "Uninstall". Alternatively, if you want to totally wipe evrything from NonSteamLaunchers click "Start Fresh".
-+ That's it.
-
-<h1 align="center">
-Currently Working On 👷‍♂️
-</h1>
-
-* Decky Loader Plugin is available [here](https://github.com/moraroy/NonSteamLaunchersDecky)
 
 <h1 align="center">
 Contributing 🤝
