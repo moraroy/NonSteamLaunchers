@@ -21,6 +21,7 @@ type StreamingInstallModalProps = {
       URL: string;
       streaming: boolean;
       enabled: boolean;
+      urlimage: string; // Add this line
   }[],
   serverAPI: ServerAPI
 };
@@ -32,6 +33,7 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
 
   const [progress, setProgress] = useState({ percent:0, status:'', description: '' });
   const [options, setOptions ] = useState(streamingOptions);
+  const [currentStreamingSite, setCurrentStreamingSite] = useState<typeof streamingOptions[0] | null>(null);
 
   const handleInstallClick = async () => {
     console.log('handleInstallClick called');
@@ -51,6 +53,7 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
         status:`Installing ${selectedStreamingSites.length} Streaming Sites`, 
         description: `${selectedStreamingSites.map(site => site.siteName).join(', ')}`
       });
+      setCurrentStreamingSite(options.find(option => option.enabled && option.streaming) || null);
       await installSite(selectedStreamingSites, serverAPI, { setProgress }, total)
     }
    }
@@ -71,6 +74,18 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
 
   const cancelOperation = () => {
     setProgress({ percent: 0, status: '', description: '' });
+    setCurrentStreamingSite(null);
+  };
+
+  const fadeStyle = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    opacity: 1,
+    pointerEvents: 'none',
+    transition: 'opacity 1s ease-in-out'
   };
 
   return ((progress.status != '' && progress.percent < 100) ?
@@ -88,6 +103,9 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
             description={progress.description}
             nProgress={progress.percent}
         />
+        {currentStreamingSite && (
+            <img src={currentStreamingSite.urlimage} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
+        )}
         <DialogButton onClick={cancelOperation} style={{ width: '25px' }}>Back</DialogButton>
     </DialogBody>
   </ModalRoot>:

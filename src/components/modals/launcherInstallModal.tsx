@@ -168,15 +168,13 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         </DialogHeader>
         <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
         <DialogBody>
-            {launcherOptions.map(({ name, label, urlimage }) => (
-                <div key={name} style={{ display: 'flex', alignItems: 'center' }}>
-                    <img src={urlimage} alt={label} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
-                    <ToggleField
-                        label={label}
-                        checked={options.find(option => option.name === name)?.enabled ? true : false}
-                        onChange={(value) => handleToggle(name, value)}
-                    />
-                </div>
+            {launcherOptions.map(({ name, label }) => (
+                <ToggleField
+                    key={name}
+                    label={label}
+                    checked={options.find(option => option.name === name)?.enabled ? true : false}
+                    onChange={(value) => handleToggle(name, value)}
+                />
             ))}
         </DialogBody>
         <p style={{ fontSize: 'small', marginTop: '20px' }}>

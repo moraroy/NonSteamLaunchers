@@ -555,9 +555,7 @@
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Select Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
-              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, launcherOptions.map(({ name, label, urlimage }) => (window.SP_REACT.createElement("div", { key: name, style: { display: 'flex', alignItems: 'center' } },
-                  window.SP_REACT.createElement("img", { src: urlimage, alt: label, style: { width: '50px', height: '50px', marginRight: '10px' } }),
-                  window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) }))))),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { key: name, label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) })))),
               window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '20px' } }, "Note: If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually."),
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, null,
                   window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
@@ -573,6 +571,7 @@
   const StreamingInstallModal = ({ closeModal, streamingOptions, serverAPI }) => {
       const [progress, setProgress] = React.useState({ percent: 0, status: '', description: '' });
       const [options, setOptions] = React.useState(streamingOptions);
+      const [currentStreamingSite, setCurrentStreamingSite] = React.useState(null);
       const handleInstallClick = async () => {
           console.log('handleInstallClick called');
           const selectedStreamingSites = options
@@ -591,6 +590,7 @@
                   status: `Installing ${selectedStreamingSites.length} Streaming Sites`,
                   description: `${selectedStreamingSites.map(site => site.siteName).join(', ')}`
               });
+              setCurrentStreamingSite(options.find(option => option.enabled && option.streaming) || null);
               await installSite(selectedStreamingSites, serverAPI, { setProgress }, total);
           }
       };
@@ -610,6 +610,17 @@
       };
       const cancelOperation = () => {
           setProgress({ percent: 0, status: '', description: '' });
+          setCurrentStreamingSite(null);
+      };
+      const fadeStyle = {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          opacity: 1,
+          pointerEvents: 'none',
+          transition: 'opacity 1s ease-in-out'
       };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
@@ -620,6 +631,7 @@
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
+                  currentStreamingSite && (window.SP_REACT.createElement("img", { src: currentStreamingSite.urlimage, alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } })),
                   window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { onClick: cancelOperation, style: { width: '25px' } }, "Back"))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Install Game/Media Streaming Sites"),
