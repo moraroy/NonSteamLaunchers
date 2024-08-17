@@ -94,7 +94,7 @@ export const CustomSiteModal: VFC<CustomSiteModalProps> = ({closeModal, serverAP
           <DialogBodyText>Creating shortcuts for sites: {sites.map(site => site.siteName).join(', ')}</DialogBodyText>
           <DialogBody>
               <SteamSpinner/>
-              <DialogButton onClick={cancelOperation}>Back</DialogButton>
+              <DialogButton onClick={cancelOperation} style={{ width: '25px' }}>Back</DialogButton>
           </DialogBody>
       </ModalRoot> :
       <div>

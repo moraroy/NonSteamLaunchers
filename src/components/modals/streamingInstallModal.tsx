@@ -88,7 +88,7 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
             description={progress.description}
             nProgress={progress.percent}
         />
-        <DialogButton onClick={cancelOperation}>Back</DialogButton>
+        <DialogButton onClick={cancelOperation} style={{ width: '25px' }}>Back</DialogButton>
     </DialogBody>
   </ModalRoot>:
     <ModalRoot
