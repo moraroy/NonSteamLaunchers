@@ -144,6 +144,13 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         }
     };
 
+    const cancelOperation = () => {
+        setProgress({ percent: 0, status: '', description: '' });
+        setShowLog(false);
+        setTriggerLogUpdates(false);
+        setCurrentLauncher(null);
+    };
+    
     const fadeStyle = {
         position: 'absolute',
         top: 0,
@@ -178,6 +185,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             {currentLauncher && (
                 <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
             )}
+            <DialogButton onClick={cancelOperation}>Cancel</DialogButton>
         </DialogBody>
     </ModalRoot> :
     <ModalRoot onCancel={closeModal}>
@@ -220,5 +228,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             </div>
         </Focusable>
     </ModalRoot>
-);
-}
+    )   
+};
+    
