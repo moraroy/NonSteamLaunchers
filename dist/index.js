@@ -635,7 +635,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { onClick: cancelOperation, style: { width: '25px' } }, "Back"))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: closeModal },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Install Game/Media Streaming Sites"),
-              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "NSL will install and use Chrome to launch these sites. Non-Steam shortcuts will be created for each selection. Toggle Auto Scan \"on\" to for these."),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "NSL will install and use Chrome to launch these sites. Non-Steam shortcuts will be created for each selection. Toggle Auto Scan \"on\" for these."),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, streamingOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) })))),
               window.SP_REACT.createElement("p", null),
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, { style: { display: "flex", alignItems: "center", gap: "10px" } },

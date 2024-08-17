@@ -115,7 +115,7 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
       <DialogHeader>
           Install Game/Media Streaming Sites
       </DialogHeader>
-      <DialogBodyText>NSL will install and use Chrome to launch these sites. Non-Steam shortcuts will be created for each selection. Toggle Auto Scan "on" to for these.</DialogBodyText>
+      <DialogBodyText>NSL will install and use Chrome to launch these sites. Non-Steam shortcuts will be created for each selection. Toggle Auto Scan "on" for these.</DialogBodyText>
       <DialogBody>
         {streamingOptions.map(({ name, label }) => (
             <ToggleField
