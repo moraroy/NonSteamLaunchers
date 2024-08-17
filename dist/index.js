@@ -225,8 +225,8 @@
   }
 
   /**
-   * The modal for updating custom sites.
-   */
+  * The modal for updating custom sites.
+  */
   const CustomSiteModal = ({ closeModal, serverAPI }) => {
       const [sites, setSites] = React.useState([{ siteName: "", siteURL: "" }]);
       const [canSave, setCanSave] = React.useState(false);
@@ -282,14 +282,18 @@
               await installSite(sites, serverAPI, { setProgress }, sites.length);
           }
       }
+      const cancelOperation = () => {
+          setProgress({ percent: 0, status: '', description: '' });
+      };
       return ((progress.percent > 0 && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Installing Custom Sites"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null,
-                  "Creating shortucts for sites: ",
+                  "Creating shortcuts for sites: ",
                   sites.map(site => site.siteName).join(', ')),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
-                  window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null))) :
+                  window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
+                  window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { onClick: cancelOperation }, "Back"))) :
           window.SP_REACT.createElement("div", null,
               window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { bAllowFullSize: true, onCancel: closeModal, onEscKeypress: closeModal, strMiddleButtonText: 'Add Another Site', onMiddleButton: addSiteFields, bMiddleDisabled: !canSave, bOKDisabled: !canSave, onOK: onSave, strOKButtonText: "Create Shortcuts", strTitle: "Enter Custom Websites" },
                   window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "NSL will install and use Chrome to launch these sites. Non-Steam shortcuts will be created for each site entered."),
