@@ -185,7 +185,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             {currentLauncher && (
                 <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
             )}
-            <DialogButton onClick={cancelOperation}>Cancel</DialogButton>
+            <DialogButton onClick={cancelOperation}>Back</DialogButton>
         </DialogBody>
     </ModalRoot> :
     <ModalRoot onCancel={closeModal}>
