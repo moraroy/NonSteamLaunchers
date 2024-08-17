@@ -24,36 +24,10 @@ type LauncherInstallModalProps = {
         URL: string;
         streaming: boolean;
         enabled: boolean;
+        urlimage: string;
     }[],
     serverAPI: ServerAPI
 };
-
-// Mapping of launcher names to their respective image URLs
-const launcherImages = {
-    epicGames: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg',
-    gogGalaxy: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg',
-    uplay: 'https://cdn2.steamgriddb.com/hero_thumb/525d57e5f56f04be298e821454ced9bc.png', // Ubisoft Connect
-    battleNet: 'https://cdn2.steamgriddb.com/hero_thumb/9f319422ca17b1082ea49820353f14ab.jpg',
-    amazonGames: 'https://cdn2.steamgriddb.com/hero_thumb/a70145bf8b173e4496b554ce57969e24.jpg',
-    eaApp: 'https://cdn2.steamgriddb.com/hero_thumb/6458ed5e1bb03b8da47c065c2f647b26.jpg',
-    legacyGames: 'https://cdn2.steamgriddb.com/thumb/86cfeb447e7f474a00adb7423c605875.jpg',
-    itchIo: 'https://i.pcmag.com/imagery/reviews/044PXMK6FlED1dNwOXkecXV-4.fit_scale.size_1028x578.v1597354669.jpg',
-    humbleGames: 'https://cdn2.steamgriddb.com/thumb/4cb3ded67cb7a539395ab873354a01c1.jpg',
-    indieGala: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg',
-    rockstarGamesLauncher: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg',
-    psPlus: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg',
-    xboxGamePass: 'https://cdn2.steamgriddb.com/hero_thumb/167b7d08b38facb1c06185861a5845dd.jpg',
-    fortnite: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg',
-    geforceNow: 'https://cdn2.steamgriddb.com/hero_thumb/5e7e6e76699ea804c65b0c37974c660c.jpg',
-    amazonLuna: 'https://cdn2.steamgriddb.com/thumb/5966577c1d725b37c26c3f7aa493dd9c.jpg',
-    netflix: 'https://cdn2.steamgriddb.com/hero_thumb/119f6887f5ebfd6d5b40213819263e68.jpg',
-    hulu: 'https://cdn2.steamgriddb.com/thumb/4bbddbaea593148384a27a8dcf498d30.jpg',
-    disneyPlus: 'https://cdn2.steamgriddb.com/hero_thumb/0dad24dc5419076f64f2ba93833b354e.png',
-    amazonPrimeVideo: 'https://cdn2.steamgriddb.com/hero_thumb/5e7cefa9b606dcd7b0faa082d82cdb1d.jpg',
-    youtube: 'https://cdn2.steamgriddb.com/thumb/786929ce1b2e187510aca9b04a0f7254.jpg',
-    twitch: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg'
-};
-
 
 export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModal, launcherOptions, serverAPI }) => {
     const [progress, setProgress] = useState({ percent: 0, status: '', description: '' });
@@ -64,12 +38,12 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [showLog, setShowLog] = useState(false);
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
-    const [currentLauncher, setCurrentLauncher] = useState<string | null>(null);
+    const [currentLauncher, setCurrentLauncher] = useState<typeof launcherOptions[0] | null>(null);
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         if (selectedLaunchers.length > 0) {
-            setCurrentLauncher(selectedLaunchers[0].name);
+            setCurrentLauncher(selectedLaunchers[0]);
         }
     }, [options]);
 
@@ -102,7 +76,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             if (!launcher.streaming) {
                 setAutoScan(false);
                 const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
-                setCurrentLauncher(launcher.name);
+                setCurrentLauncher(launcher);
                 await installLauncher(launcherParam, launcher.label, i, operation);
             }
             i++;
@@ -183,7 +157,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             </div>
             {currentLauncher && (
-                <img src={launcherImages[currentLauncher]} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
+                <img src={currentLauncher.urlimage} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
             )}
             <DialogButton onClick={cancelOperation} style={{ width: '25px' }}>Back</DialogButton>
         </DialogBody>
@@ -194,13 +168,15 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         </DialogHeader>
         <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
         <DialogBody>
-            {launcherOptions.map(({ name, label }) => (
-                <ToggleField
-                    key={name}
-                    label={label}
-                    checked={options.find(option => option.name === name)?.enabled ? true : false}
-                    onChange={(value) => handleToggle(name, value)}
-                />
+            {launcherOptions.map(({ name, label, urlimage }) => (
+                <div key={name} style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src={urlimage} alt={label} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
+                    <ToggleField
+                        label={label}
+                        checked={options.find(option => option.name === name)?.enabled ? true : false}
+                        onChange={(value) => handleToggle(name, value)}
+                    />
+                </div>
             ))}
         </DialogBody>
         <p style={{ fontSize: 'small', marginTop: '20px' }}>
@@ -228,6 +204,5 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             </div>
         </Focusable>
     </ModalRoot>
-    )   
+)
 };
-    
