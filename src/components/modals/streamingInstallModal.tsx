@@ -69,6 +69,10 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
       setOptions(newOptions);
      };
 
+  const cancelOperation = () => {
+    setProgress({ percent: 0, status: '', description: '' });
+  };
+
   return ((progress.status != '' && progress.percent < 100) ?
   <ModalRoot>
     <DialogHeader>
@@ -84,6 +88,7 @@ export const StreamingInstallModal: VFC<StreamingInstallModalProps> = ({closeMod
             description={progress.description}
             nProgress={progress.percent}
         />
+        <DialogButton onClick={cancelOperation}>Back</DialogButton>
     </DialogBody>
   </ModalRoot>:
     <ModalRoot
