@@ -92,6 +92,7 @@
       static toast(title, message, icons) {
           return (() => {
               try {
+                  console.log("Icons object:", icons); // Log the icons object to check its content
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
@@ -106,7 +107,7 @@
                                   borderRadius: '50%',
                                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                               } }),
-                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '35px', marginTop: '-10px' } },
+                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '100px', marginTop: '-10px' } },
                               window.SP_REACT.createElement("img", { src: icons.launcherIconUrl, alt: "Launcher Icon", style: {
                                       width: '20px',
                                       height: '20px',

@@ -14,6 +14,7 @@ export class notify {
   static toast(title: string, message: string, icons?: { gameIconUrl: string, launcherIconUrl: string }): void {
     return (() => {
       try {
+        console.log("Icons object:", icons); // Log the icons object to check its content
         return this.serverAPI.toaster.toast({
           title: title,
           body: message,
@@ -33,7 +34,7 @@ export class notify {
                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                 }}
               />
-              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '35px', marginTop: '-10px' }}>
+              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '100px', marginTop: '-10px' }}>
                 <img
                   src={icons.launcherIconUrl}
                   alt="Launcher Icon"
@@ -53,4 +54,4 @@ export class notify {
       }
     })();
   }
-}  
+}
