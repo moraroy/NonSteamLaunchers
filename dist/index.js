@@ -89,22 +89,28 @@
       static setServer(serv) {
           this.serverAPI = serv;
       }
-      static toast(title, message, iconUrl) {
+      static toast(title, message, icons) {
           return (() => {
               try {
                   return this.serverAPI.toaster.toast({
                       title: title,
                       body: message,
                       duration: 8000,
-                      icon: iconUrl ? (window.SP_REACT.createElement("img", { src: iconUrl, alt: "icon", style: {
-                              width: '30px',
-                              height: '30px',
-                              position: 'absolute',
-                              top: '-12px',
-                              left: '0px',
-                              borderRadius: '50%',
-                              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', // Add a shadow for emphasis
-                          } })) : undefined,
+                      icon: icons ? (window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
+                          window.SP_REACT.createElement("img", { src: icons.gameIconUrl, alt: "Game Icon", style: {
+                                  width: '30px',
+                                  height: '30px',
+                                  borderRadius: '50%',
+                                  boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                                  marginRight: '5px',
+                              } }),
+                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center' } },
+                              window.SP_REACT.createElement("img", { src: icons.launcherIconUrl, alt: "Launcher Icon", style: {
+                                      width: '30px',
+                                      height: '30px',
+                                      borderRadius: '50%',
+                                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                                  } })))) : undefined,
                   });
               }
               catch (e) {
@@ -117,7 +123,7 @@
   // Shortcut Creation Code
   // Define the createShortcut function
   async function createShortcut(game) {
-      const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon } = game;
+      const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
       // Separate the executable path and arguments
       const match = exe.match(/"([^"]+)"/);
       if (!match) {
@@ -131,8 +137,10 @@
       const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
       if (appId) {
           const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
-          const iconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl; // Use the base64-encoded icon or default icon
-          notify.toast("New Shortcut Created", `${appname} has been added to your library!`, iconUrl);
+          const gameIconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl; // Use the base64-encoded icon or default icon
+          const launcherIconUrl = LauncherIcon ? `data:image/x-icon;base64,${LauncherIcon}` : defaultIconUrl; // Use the base64-encoded launcher icon or default icon
+          // Pass both icons to the notification
+          notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl, launcherIconUrl });
           console.log(`AppID for ${appname} = ${appId}`);
           SteamClient.Apps.SetShortcutName(appId, appname);
           SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);

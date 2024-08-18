@@ -24,7 +24,7 @@ def epic_games_scanner(logged_in_home, epic_games_launcher, create_new_entry):
                 # Check if the game is still installed
                 for game in dat_data['InstallationList']:
                     if game['AppName'] == item_data['AppName']:
-                        create_new_entry(exe_path, display_name, launch_options, start_dir)
+                        create_new_entry(exe_path, display_name, launch_options, start_dir, "Epic Games")
 
     else:
         decky_plugin.logger.info("Epic Games Launcher data not found. Skipping scanning for installed Epic Games.")
