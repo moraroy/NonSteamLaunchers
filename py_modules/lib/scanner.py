@@ -165,14 +165,12 @@ def create_new_entry(exe, appname, launchoptions, startingdir):
         return
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
-    # Skip artwork download for specific shortcuts
-    if appname not in ['NonSteamLaunchers', 'Repair EA App']:
-        # Get artwork
-        game_id = get_game_id(appname)
-        if game_id is not None:
-            icon, logo64, hero64, gridp64, grid64 = get_sgdb_art(game_id)
+    #Get artwork
+    game_id = get_game_id(appname)
+    if game_id is not None:
+        icon, logo64, hero64, gridp64, grid64  = get_sgdb_art(game_id)
     # Create a new entry for the Steam shortcut
-    compatTool = add_compat_tool(launchoptions)
+    compatTool= add_compat_tool(launchoptions) #add_compat_tool(launchoptions)
     decky_entry = {
         'appname': appname,
         'exe': exe,
