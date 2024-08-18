@@ -78,6 +78,8 @@ def initialiseVariables(env_vars):
     psplusshortcutdirectory = env_vars.get('psplusshortcutdirectory')
     global vkplayhortcutdirectory
     vkplayhortcutdirectory = env_vars.get('vkplayhortcutdirectory')
+    global repaireaappshortcutdirectory 
+    repaireaappshortcutdirectory = env_vars.get('repaireaappshortcutdirectory')
     #Streaming
     global chromedirectory
     chromedirectory = env_vars.get('chromedirectory')
@@ -163,12 +165,14 @@ def create_new_entry(exe, appname, launchoptions, startingdir):
         return
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
-    #Get artwork
-    game_id = get_game_id(appname)
-    if game_id is not None:
-        icon, logo64, hero64, gridp64, grid64  = get_sgdb_art(game_id)
+    # Skip artwork download for specific shortcuts
+    if appname not in ['NonSteamLaunchers', 'Repair EA App']:
+        # Get artwork
+        game_id = get_game_id(appname)
+        if game_id is not None:
+            icon, logo64, hero64, gridp64, grid64 = get_sgdb_art(game_id)
     # Create a new entry for the Steam shortcut
-    compatTool= add_compat_tool(launchoptions) #add_compat_tool(launchoptions)
+    compatTool = add_compat_tool(launchoptions)
     decky_entry = {
         'appname': appname,
         'exe': exe,
@@ -183,6 +187,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir):
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
+
 
 def add_launchers():
     create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'))
@@ -200,6 +205,7 @@ def add_launchers():
     create_new_entry(env_vars.get('minecraftshortcutdirectory'), 'Minecraft: Java Edition', env_vars.get('minecraftlaunchoptions'), env_vars.get('minecraftstartingdir'))
     create_new_entry(env_vars.get('psplusshortcutdirectory'), 'Playstation Plus', env_vars.get('pspluslaunchoptions'), env_vars.get('psplusstartingdir'))
     create_new_entry(env_vars.get('vkplayhortcutdirectory'), 'VK Play', env_vars.get('vkplaylaunchoptions'), env_vars.get('vkplaystartingdir'))
+    create_new_entry(env_vars.get('repaireaappshortcutdirectory'), 'Repair EA App', env_vars.get('repaireaapplaunchoptions'), env_vars.get('repaireaappstartingdir'))
 
 def get_sgdb_art(game_id):
     decky_plugin.logger.info(f"Downloading icon artwork...")
