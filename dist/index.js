@@ -100,15 +100,17 @@
                           window.SP_REACT.createElement("img", { src: icons.gameIconUrl, alt: "Game Icon", style: {
                                   width: '30px',
                                   height: '30px',
+                                  position: 'absolute',
+                                  top: '-12px',
+                                  left: '0px',
                                   borderRadius: '50%',
                                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                                  marginRight: '5px',
                               } }),
-                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center' } },
+                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '35px', marginTop: '-10px' } },
                               window.SP_REACT.createElement("img", { src: icons.launcherIconUrl, alt: "Launcher Icon", style: {
-                                      width: '30px',
-                                      height: '30px',
-                                      borderRadius: '50%',
+                                      width: '20px',
+                                      height: '20px',
+                                      borderRadius: '10%',
                                       boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                                   } })))) : undefined,
                   });
