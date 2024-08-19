@@ -230,7 +230,7 @@ def get_sgdb_art(game_id, launcher):
     launcher_icons = {
         "Epic Games": "5255885",
         "Amazon Games": "5255884",
-        "GOG Galaxy": "34605",
+        "Gog Galaxy": "34605",
         "Battle.net": "5248250",
         "EA App": "5306742",
         "itch.io": "5259585",
