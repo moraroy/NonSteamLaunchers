@@ -33,7 +33,7 @@ export class notify {
                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                 }}
               />
-              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '100px', marginTop: '-10px' }}>
+              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '150px', marginTop: '-5px' }}>
                 <img
                   src={icons.launcherIconUrl}
                   alt="Launcher Icon"
@@ -54,3 +54,4 @@ export class notify {
     })();
   }
 }
+

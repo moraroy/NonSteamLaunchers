@@ -228,13 +228,16 @@ def get_sgdb_art(game_id, launcher):
     
     # Fetch launcher icon based on the launcher type
     if launcher == "Epic Games":
-        launcher_icon = download_artwork("5255885", "icons")  # Replace with actual ID if needed
+        launcher_icon = download_artwork("5255885", "icons")
     elif launcher == "Amazon Games":
-        launcher_icon = download_artwork("5255884", "icons")  # Replace with actual ID if needed
+        launcher_icon = download_artwork("5255884", "icons")
+    elif launcher == "GOG Galaxy":
+        launcher_icon = download_artwork("34605", "icons") 
     else:
         launcher_icon = None
-    
+
     return icon, logo64, hero64, gridp64, grid64, launcher_icon
+
 
 
 def download_artwork(game_id, art_type, dimensions=None):
