@@ -49,5 +49,5 @@ def ubisoft_scanner(logged_in_home, ubisoft_connect_launcher, create_new_entry):
                 launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/\" %command% \"uplay://launch/{uplay_id}/0\""
                 exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/upc.exe\""
                 start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/\""
-                create_new_entry(exe_path, game, launch_options, start_dir)
+                create_new_entry(exe_path, game, launch_options, start_dir, "Ubisoft Connect")
 # End of Ubisoft Game Scanner

@@ -41,7 +41,7 @@ def legacy_games_scanner(logged_in_home, legacy_launcher, create_new_entry):
                     print(f"GameExe found in user.reg: {game_exe_reg.group(1)}")
                     start_dir = f"{legacy_dir}{game_dir}"
                     launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{legacy_launcher}\" %command%"
-                    create_new_entry(f'"{exe_path}"', game_name, launch_options, f'"{start_dir}"')
+                    create_new_entry(f'"{exe_path}"', game_name, launch_options, f'"{start_dir}", "Legacy Games")
                 else:
                     print(f"No matching .exe file found for game: {game_dir}")
             else:
