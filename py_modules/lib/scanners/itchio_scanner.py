@@ -24,7 +24,7 @@ def itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry):
         exe_path = f"\"{os.path.join(linux_path, executable)}\""
         start_dir = f"\"{linux_path}\""
         launchoptions = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/\" %command%"
-        create_new_entry(exe_path, game_title, launchoptions, start_dir)
+        create_new_entry(exe_path, game_title, launchoptions, start_dir, "itch.io")
 
 def parse_butler_db(content):
     decky_plugin.logger.info("Finding matches in the database content...")
