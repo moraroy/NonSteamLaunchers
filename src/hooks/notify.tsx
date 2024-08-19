@@ -14,7 +14,6 @@ export class notify {
   static toast(title: string, message: string, icons?: { gameIconUrl: string, launcherIconUrl: string }): void {
     return (() => {
       try {
-        console.log("Icons object:", icons); // Log the icons object to check its content
         return this.serverAPI.toaster.toast({
           title: title,
           body: message,
