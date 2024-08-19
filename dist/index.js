@@ -106,13 +106,13 @@
                                   borderRadius: '50%',
                                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                               } }),
-                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '140px', marginTop: '0px' } },
+                          icons.launcherIconUrl && (window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '140px', marginTop: '0px' } },
                               window.SP_REACT.createElement("img", { src: icons.launcherIconUrl, alt: "Launcher Icon", style: {
                                       width: '15px',
                                       height: '15px',
                                       borderRadius: '10%',
                                       boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                                  } })))) : undefined,
+                                  } }))))) : undefined,
                   });
               }
               catch (e) {
@@ -140,9 +140,14 @@
       if (appId) {
           const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
           const gameIconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl; // Use the base64-encoded icon or default icon
-          const launcherIconUrl = LauncherIcon ? `data:image/x-icon;base64,${LauncherIcon}` : defaultIconUrl; // Use the base64-encoded launcher icon or default icon
+          const launcherIconUrl = LauncherIcon ? `data:image/x-icon;base64,${LauncherIcon}` : null; // Use the base64-encoded launcher icon or null
           // Pass both icons to the notification
-          notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl, launcherIconUrl });
+          if (launcherIconUrl) {
+              notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl, launcherIconUrl });
+          }
+          else {
+              notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl });
+          }
           console.log(`AppID for ${appname} = ${appId}`);
           SteamClient.Apps.SetShortcutName(appId, appname);
           SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);

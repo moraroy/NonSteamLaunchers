@@ -11,7 +11,7 @@ export class notify {
     this.serverAPI = serv;
   }
 
-  static toast(title: string, message: string, icons?: { gameIconUrl: string, launcherIconUrl: string }): void {
+  static toast(title: string, message: string, icons?: { gameIconUrl: string, launcherIconUrl?: string }): void {
     return (() => {
       try {
         return this.serverAPI.toaster.toast({
@@ -33,18 +33,20 @@ export class notify {
                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                 }}
               />
-              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '140px', marginTop: '0px' }}>
-                <img
-                  src={icons.launcherIconUrl}
-                  alt="Launcher Icon"
-                  style={{
-                    width: '15px', // Smaller width
-                    height: '15px', // Smaller height
-                    borderRadius: '10%', // Rounded edges
-                    boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                  }}
-                />
-              </div>
+              {icons.launcherIconUrl && (
+                <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '140px', marginTop: '0px' }}>
+                  <img
+                    src={icons.launcherIconUrl}
+                    alt="Launcher Icon"
+                    style={{
+                      width: '15px', // Smaller width
+                      height: '15px', // Smaller height
+                      borderRadius: '10%', // Rounded edges
+                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                    }}
+                  />
+                </div>
+              )}
             </div>
           ) : undefined,
         });
@@ -54,4 +56,5 @@ export class notify {
     })();
   }
 }
+
 
