@@ -231,6 +231,8 @@ def get_sgdb_art(game_id, launcher):
         launcher_icon = download_artwork("5255885", "icons")  # Replace with actual ID if needed
     elif launcher == "Amazon Games":
         launcher_icon = download_artwork("5255884", "icons")  # Replace with actual ID if needed
+    elif launcher == "Gog Galaxy":
+        launcher_icon = download_artwork("3702", "icons")  # Replace with actual ID if needed
     else:
         launcher_icon = None
     

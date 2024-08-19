@@ -69,6 +69,6 @@ def gog_scanner(logged_in_home, gog_galaxy_launcher, create_new_entry):
                 launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{gog_galaxy_launcher}/\" %command% /command=runGame /gameId={game_info['id']} /path=\"{exe_path}\""
                 exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{gog_galaxy_launcher}/pfx/drive_c/Program Files (x86)/GOG Galaxy/GalaxyClient.exe\""
                 start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{gog_galaxy_launcher}/pfx/drive_c/Program Files (x86)/GOG Galaxy/\""
-                create_new_entry(exe_path, display_name, launch_options, start_dir, "Gog Galaxy")
+                create_new_entry(exe_path, game, launch_options, start_dir, "Gog Galaxy")
 
 # End of Gog Galaxy Scanner

@@ -106,10 +106,10 @@
                                   borderRadius: '50%',
                                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                               } }),
-                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '175px', marginTop: '-5px' } },
+                          window.SP_REACT.createElement("div", { style: { flexGrow: 1, textAlign: 'center', marginLeft: '140px', marginTop: '0px' } },
                               window.SP_REACT.createElement("img", { src: icons.launcherIconUrl, alt: "Launcher Icon", style: {
-                                      width: '10px',
-                                      height: '10px',
+                                      width: '15px',
+                                      height: '15px',
                                       borderRadius: '10%',
                                       boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                                   } })))) : undefined,
