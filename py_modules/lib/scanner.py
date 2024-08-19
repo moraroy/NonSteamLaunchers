@@ -196,7 +196,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
 
 def add_launchers():
     create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'), "Epic Games")
-    create_new_entry(env_vars.get('gogshortcutdirectory'), 'Gog Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'), "Gog Galaxy")
+    create_new_entry(env_vars.get('gogshortcutdirectory'), 'GOG Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'), "GOG Galaxy")
     create_new_entry(env_vars.get('uplayshortcutdirectory'), 'Ubisoft Connect', env_vars.get('uplaylaunchoptions'), env_vars.get('uplaystartingdir'), "Ubisoft Connect")
     create_new_entry(env_vars.get('battlenetshortcutdirectory'), 'Battle.net', env_vars.get('battlenetlaunchoptions'), env_vars.get('battlenetstartingdir'), "Battle.net")
     create_new_entry(env_vars.get('eaappshortcutdirectory'), 'EA App', env_vars.get('eaapplaunchoptions'), env_vars.get('eaappstartingdir'), "EA App")
@@ -230,7 +230,7 @@ def get_sgdb_art(game_id, launcher):
     launcher_icons = {
         "Epic Games": "5255885",
         "Amazon Games": "5255884",
-        "Gog Galaxy": "34605",
+        "GOG Galaxy": "34605",
         "Battle.net": "5248250",
         "EA App": "5306742",
         "itch.io": "5259585",
