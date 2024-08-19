@@ -227,24 +227,18 @@ def get_sgdb_art(game_id, launcher):
     grid64 = download_artwork(game_id, "grids", "920x430")
     
     # Fetch launcher icon based on the launcher type
-    if launcher == "Epic Games":
-        launcher_icon = download_artwork("5255885", "icons")
-    elif launcher == "Amazon Games":
-        launcher_icon = download_artwork("5255884", "icons")
-    elif launcher == "GOG Galaxy":
-        launcher_icon = download_artwork("34605", "icons")
-    elif launcher == "Battle.net":
-        launcher_icon = download_artwork("5248250", "icons") 
-    elif launcher == "EA App":
-        launcher_icon == download_artwork("5306742", "icons")
-    elif launcher == "itch.io":
-        launcher_icon = download_artwork("5259585", "icons")
-    elif launcher == "Legacy Games":
-        launcher_icon = download_artwork("5438208", "icons")
-    elif launcher == "Ubisoft Connect":
-        launcher_icon = download_artwork("5270094", "icons")
-    else:
-        launcher_icon = None
+    launcher_icons = {
+        "Epic Games": "5255885",
+        "Amazon Games": "5255884",
+        "GOG Galaxy": "34605",
+        "Battle.net": "5248250",
+        "EA App": "5306742",
+        "itch.io": "5259585",
+        "Legacy Games": "5438208",
+        "Ubisoft Connect": "5270094"
+    }
+    
+    launcher_icon = download_artwork(launcher_icons.get(launcher, ""), "icons")
     
     return icon, logo64, hero64, gridp64, grid64, launcher_icon
 
