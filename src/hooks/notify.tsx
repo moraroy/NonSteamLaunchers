@@ -33,13 +33,13 @@ export class notify {
                   boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                 }}
               />
-              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '150px', marginTop: '-5px' }}>
+              <div style={{ flexGrow: 1, textAlign: 'center', marginLeft: '175px', marginTop: '-5px' }}>
                 <img
                   src={icons.launcherIconUrl}
                   alt="Launcher Icon"
                   style={{
-                    width: '20px', // Smaller width
-                    height: '20px', // Smaller height
+                    width: '10px', // Smaller width
+                    height: '10px', // Smaller height
                     borderRadius: '10%', // Rounded edges
                     boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                   }}
