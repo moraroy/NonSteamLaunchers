@@ -18,7 +18,9 @@ import logging
 import re
 import asyncio
 import subprocess
+import aiofiles
 from aiohttp import web
+from aiotail import Tail
 from decky_plugin import DECKY_PLUGIN_DIR
 from py_modules.lib.scanner import scan, addCustomSite
 from settings import SettingsManager
@@ -100,6 +102,19 @@ class Plugin:
                         # Send the game data to the client
                         await ws.send_json(game)
             return ws
+        
+        async def handleLogUpdates(request):
+            ws = web.WebSocketResponse()
+            await ws.prepare(request)
+            log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
+
+            async for line in Tail(log_file_path):
+                if line:
+                    decky_plugin.logger.info(f"Log line: {line.strip()}")
+                    await ws.send_str(line)
+                await asyncio.sleep(0.1)  # Adjust the sleep time as needed for real-time updates
+
+            return ws
 
 
         # Create the server application
@@ -107,6 +122,7 @@ class Plugin:
         app.router.add_get('/autoscan', handleAutoScan)
         app.router.add_get('/scan', handleScan)
         app.router.add_get('/customSite', handleCustomSite)
+        app.router.add_get('/logUpdates', handleLogUpdates)
 
         # Run the server
         runner = web.AppRunner(app)
