@@ -506,7 +506,7 @@
           setShowLog(true);
           setTriggerLogUpdates(true);
           // Add a small delay to ensure WebSocket connection is established
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 0));
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
           let i = 0;
           let previousAutoScan = settings.autoscan;
@@ -812,7 +812,16 @@
                       margin: 0,
                       outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
                   } },
-                  window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } }, "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games.")))));
+                  window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } }, "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games."),
+                  window.SP_REACT.createElement("div", { style: { marginTop: '16px', textAlign: 'center' } },
+                      window.SP_REACT.createElement("p", null, "If you're feeling generous, all donations and sponsors are humbly appreciated and accepted. Thank you!"),
+                      window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'center', gap: '10px' } },
+                          window.SP_REACT.createElement("a", { href: "https://www.patreon.com", target: "_blank", rel: "noopener noreferrer" },
+                              window.SP_REACT.createElement("img", { src: "https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png", alt: "Patreon", style: { width: '40px', height: '40px' } })),
+                          window.SP_REACT.createElement("a", { href: "https://ko-fi.com", target: "_blank", rel: "noopener noreferrer" },
+                              window.SP_REACT.createElement("img", { src: "https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png", alt: "Ko-fi", style: { width: '40px', height: '40px' } })),
+                          window.SP_REACT.createElement("a", { href: "https://github.com", target: "_blank", rel: "noopener noreferrer" },
+                              window.SP_REACT.createElement("img", { src: "https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png", alt: "GitHub", style: { width: '40px', height: '40px' } }))))))));
   };
   var index = deckyFrontendLib.definePlugin((serverApi) => {
       autoscan();

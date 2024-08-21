@@ -152,6 +152,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
             The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games.
           </span>
+          <div style={{ marginTop: '16px', textAlign: 'center' }}>
+            <p>If you're feeling generous, all donations and sponsors are humbly appreciated and accepted. Thank you!</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+              <a href="https://www.patreon.com" target="_blank" rel="noopener noreferrer">
+                <img src="https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png" alt="Patreon" style={{ width: '40px', height: '40px' }} />
+              </a>
+              <a href="https://ko-fi.com" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-fi" style={{ width: '40px', height: '40px' }} />
+              </a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png" alt="GitHub" style={{ width: '40px', height: '40px' }} />
+              </a>
+            </div>
+          </div>
         </div>
       </Focusable>
     </div>
