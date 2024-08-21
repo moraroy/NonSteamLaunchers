@@ -1074,8 +1074,8 @@ function install_eaapp {
 
     # Additional download for EA App
     eaapp_download_dir="${logged_in_home}/.local/share/Steam/steamapps/compatdata/$appid/pfx/drive_c/users/steamuser/Downloads/"
-    eaapp_file_name="EAappInstaller.exe"  # Replace with the actual file name if different
-
+    eaapp_file_name="EAappInstaller.exe" 
+    
     # Create the directory if it doesn't exist
     mkdir -p "$eaapp_download_dir"
 
