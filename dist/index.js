@@ -824,7 +824,7 @@
                   } },
                   window.SP_REACT.createElement("div", { style: { marginTop: '12px', textAlign: 'center' } },
                       window.SP_REACT.createElement("p", null, "If you're feeling generous, all donations are humbly appreciated and accepted. Thank you!"),
-                      window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'center', gap: '10px' } },
+                      window.SP_REACT.createElement("div", { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' } },
                           window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => window.open('https://www.patreon.com/moraroy', '_blank') },
                               window.SP_REACT.createElement("img", { src: "https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png", alt: "Patreon", style: { width: '20px', height: '20px', marginRight: '10px' } }),
                               "Patreon"),

@@ -168,7 +168,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         >
           <div style={{ marginTop: '12px', textAlign: 'center' }}>
             <p>If you're feeling generous, all donations are humbly appreciated and accepted. Thank you!</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
               <ButtonItem layout="below" onClick={() => window.open('https://www.patreon.com/moraroy', '_blank')}>
                 <img src="https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png" alt="Patreon" style={{ width: '20px', height: '20px', marginRight: '10px' }} />
                 Patreon
@@ -188,7 +188,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       {/* New Code Ends Here */}
     </div>
   );
-}     
+}      
 
 
 export default definePlugin((serverApi: ServerAPI) => {
