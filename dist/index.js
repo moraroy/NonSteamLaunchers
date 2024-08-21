@@ -300,6 +300,16 @@
       const cancelOperation = () => {
           setProgress({ percent: 0, status: '', description: '' });
       };
+      const fadeStyle = {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          opacity: 1,
+          pointerEvents: 'none',
+          transition: 'opacity 1s ease-in-out'
+      };
       return ((progress.percent > 0 && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Installing Custom Sites"),
@@ -308,6 +318,7 @@
                   sites.map(site => site.siteName).join(', ')),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
+                  window.SP_REACT.createElement("img", { src: "https://cdn2.steamgriddb.com/hero_thumb/1dbc14c2bef0ada4bddacc86f3d9205e.jpg", alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } }),
                   window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { onClick: cancelOperation, style: { width: '25px' } }, "Back"))) :
           window.SP_REACT.createElement("div", null,
               window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { bAllowFullSize: true, onCancel: closeModal, onEscKeypress: closeModal, strMiddleButtonText: 'Add Another Site', onMiddleButton: addSiteFields, bMiddleDisabled: !canSave, bOKDisabled: !canSave, onOK: onSave, strOKButtonText: "Create Shortcuts", strTitle: "Enter Custom Websites" },
@@ -572,7 +583,7 @@
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null, launcherOptions.map(({ name, label }) => (window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { key: name, label: label, checked: options.find(option => option.name === name)?.enabled ? true : false, onChange: (value) => handleToggle(name, value) })))),
               window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '16px' } }, "Note: When installing a launcher, the latest Proton-GE will attempt to be installed. If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually."),
-              window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '16px' } }, "Note\u00B2: Some games won't run right away using NSL. Due to easy anti-cheat or quirks, you may simply need to manually tinker to get some games working. NSL is simply another way to play! Happy Gaming!\u2665"),
+              window.SP_REACT.createElement("p", { style: { fontSize: 'small', marginTop: '16px' } }, "Note\u00B2: Some games won't run right away using NSL. Due to easy anti-cheat or quirks, you may need to manually tinker to get some games working. NSL is simply another way to play! Happy Gaming!\u2665"),
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, null,
                   window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },

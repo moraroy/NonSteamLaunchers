@@ -86,6 +86,17 @@ export const CustomSiteModal: VFC<CustomSiteModalProps> = ({closeModal, serverAP
       setProgress({ percent: 0, status: '', description: '' });
   };
 
+  const fadeStyle = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      opacity: 1,
+      pointerEvents: 'none',
+      transition: 'opacity 1s ease-in-out'
+  };
+
   return ((progress.percent > 0 && progress.percent < 100) ?
       <ModalRoot>
           <DialogHeader>
@@ -94,6 +105,7 @@ export const CustomSiteModal: VFC<CustomSiteModalProps> = ({closeModal, serverAP
           <DialogBodyText>Creating shortcuts for sites: {sites.map(site => site.siteName).join(', ')}</DialogBodyText>
           <DialogBody>
               <SteamSpinner/>
+              <img src="https://cdn2.steamgriddb.com/hero_thumb/1dbc14c2bef0ada4bddacc86f3d9205e.jpg" alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
               <DialogButton onClick={cancelOperation} style={{ width: '25px' }}>Back</DialogButton>
           </DialogBody>
       </ModalRoot> :
@@ -125,3 +137,6 @@ export const CustomSiteModal: VFC<CustomSiteModalProps> = ({closeModal, serverAP
       </div>
   )
 };
+
+
+  
