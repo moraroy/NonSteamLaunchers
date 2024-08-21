@@ -29,7 +29,8 @@ zenity --info --text="DBus session address: $DBUS_SESSION_BUS_ADDRESS" --no-sess
 
 
 
-#Log
+
+# Log
 download_dir=$(eval echo ~$user)/Downloads/NonSteamLaunchersInstallation
 log_file=$(eval echo ~$user)/Downloads/NonSteamLaunchers-install.log
 
@@ -38,8 +39,9 @@ if [[ -f $log_file ]]; then
   rm $log_file
 fi
 
-# Redirect all output to the log file
-exec > >(tee -a $log_file) 2>&1
+# Redirect all output to the log file with line buffering
+exec > >(stdbuf -oL tee -a $log_file) 2>&1
+
 
 
 # Version number (major.minor)
@@ -765,7 +767,7 @@ process_uninstall_options() {
         uninstall_launcher "$uninstall_options" "Epic Games" "$epic_games_launcher_path1" "$epic_games_launcher_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/Epic Games" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher" "epic"
         uninstall_launcher "$uninstall_options" "Amazon Games" "$amazongames_path1" "$amazongames_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/Amazon Games" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher" "amazon"
         uninstall_launcher "$uninstall_options" "itch.io" "$itchio_path1" "$itchio_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/users/steamuser/AppData/Local/itch" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/itchioLauncher" "itchio"
-        uninstall_launcher "$uninstall_options" "Humble Bundle" "$humblegames_path1" "$humblegames_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Humble App" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher" "humble"
+        uninstall_launcher "$uninstall_options" "Humble Games Collection" "$humblegames_path1" "$humblegames_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Humble App" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher" "humble"
         uninstall_launcher "$uninstall_options" "IndieGala" "$indiegala_path1" "$indiegala_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/IGClient" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher" "indie"
         uninstall_launcher "$uninstall_options" "Rockstar Games Launcher" "$rockstar_path1" "$rockstar_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files/Rockstar Games" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher" "rockstar"
         uninstall_launcher "$uninstall_options" "Glyph Launcher" "$glyph_path1" "$glyph_path2" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/Glyph" "${logged_in_home}/.local/share/Steam/steamapps/compatdata/GlyphLauncher" "glyph"
@@ -1073,13 +1075,14 @@ function install_eaapp {
 
     # Additional download for EA App
     eaapp_download_dir="${logged_in_home}/.local/share/Steam/steamapps/compatdata/$appid/pfx/drive_c/users/steamuser/Downloads/"
-    eaapp_file_name="EAappInstaller.exe"  # Replace with the actual file name if different
-
+    eaapp_file_name="EAappInstaller.exe" 
+    
     # Create the directory if it doesn't exist
     mkdir -p "$eaapp_download_dir"
 
     # Download the file
     wget "$eaapp_url" -O "${eaapp_download_dir}${eaapp_file_name}"
+    pkill -f "EAappInstaller.exe"
 }
 
 
@@ -1378,7 +1381,7 @@ install_launcher "Nexon Launcher" "NexonLauncher" "$nexon_file" "$nexon_url" "$n
 
 
 
-wait
+
 echo "99"
 echo "# Checking if Chrome is installed...please wait..."
 
