@@ -111,7 +111,7 @@ class Plugin:
             while True:
                 line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
                 if not line:
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(1)
                     continue
                 line = line.decode('utf-8').strip()
                 decky_plugin.logger.info(f"Log line: {line}")
