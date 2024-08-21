@@ -30,7 +30,7 @@ zenity --info --text="DBus session address: $DBUS_SESSION_BUS_ADDRESS" --no-sess
 
 
 
-#Log
+# Log
 download_dir=$(eval echo ~$user)/Downloads/NonSteamLaunchersInstallation
 log_file=$(eval echo ~$user)/Downloads/NonSteamLaunchers-install.log
 
@@ -39,8 +39,9 @@ if [[ -f $log_file ]]; then
   rm $log_file
 fi
 
-# Redirect all output to the log file
-exec > >(tee -a $log_file) 2>&1
+# Redirect all output to the log file with line buffering
+exec > >(stdbuf -oL tee -a $log_file) 2>&1
+
 
 
 # Version number (major.minor)

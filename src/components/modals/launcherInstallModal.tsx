@@ -69,6 +69,10 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setOperation(operation);
         setShowLog(true);
         setTriggerLogUpdates(true);
+
+        // Add a small delay to ensure WebSocket connection is established
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         let i = 0;
         let previousAutoScan = settings.autoscan;
