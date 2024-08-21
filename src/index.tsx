@@ -149,12 +149,11 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           }}
         >
           <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
-            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games.
+            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...click here for more info!
           </span>
         </div>
       </Focusable>
   
-      {/* New Code Starts Here */}
       <PanelSection title="Support Us">
         <div
           style={{
@@ -166,8 +165,8 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             margin: 0,
           }}
         >
-          <div style={{ marginTop: '12px', textAlign: 'center' }}>
-            <p>If you're feeling generous, all donations are humbly appreciated and accepted. Thank you!</p>
+          <div style={{ marginTop: '10px', textAlign: 'center', fontSize: "12px" }}>
+            <p>If you're feeling generous, all donations are humbly appreciated and accepted. Thank you so much!</p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
               <ButtonItem layout="below" onClick={() => window.open('https://www.patreon.com/moraroy', '_blank')}>
                 <img src="https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png" alt="Patreon" style={{ width: '20px', height: '20px', marginRight: '10px' }} />
@@ -185,7 +184,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           </div>
         </div>
       </PanelSection>
-      {/* New Code Ends Here */}
     </div>
   );
 }      
