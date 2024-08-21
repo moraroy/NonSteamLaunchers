@@ -40,8 +40,6 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const log = useLogUpdates(triggerLogUpdates);
     const [currentLauncher, setCurrentLauncher] = useState<typeof launcherOptions[0] | null>(null);
     const logContainerRef = useRef<HTMLDivElement>(null);
-    const [isHolding, setIsHolding] = useState(false);
-    const [holdTimeout, setHoldTimeout] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
@@ -80,7 +78,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setTriggerLogUpdates(true);
 
         // Add a small delay to ensure WebSocket connection is established
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
         
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         let i = 0;
@@ -143,7 +141,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setTriggerLogUpdates(false);
         setCurrentLauncher(null);
     };
-
+    
     const fadeStyle = {
         position: 'absolute',
         top: 0,
@@ -154,99 +152,77 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         pointerEvents: 'none',
         transition: 'opacity 1s ease-in-out'
     };
-
-    const handleMouseDown = (operation: string) => {
-        setIsHolding(true);
-        const timeout = setTimeout(async () => {
-            setTriggerLogUpdates(true);
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for log updates
-            handleInstallClick(operation);
-            setIsHolding(false);
-        }, 2000); // 2 seconds hold duration
-        setHoldTimeout(timeout);
-    };
-    
-    const handleMouseUp = () => {
-        setIsHolding(false);
-        if (holdTimeout) {
-            clearTimeout(holdTimeout);
-            setHoldTimeout(null);
-        }
-    };
-    
     
     return ((progress.status != '' && progress.percent < 100) ?
-    <ModalRoot onCancel={cancelOperation}>
-        <DialogHeader>
-            {`${operation}ing Game Launchers`}
-        </DialogHeader>
-        <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
-        <DialogBody>
-            <SteamSpinner />
+<ModalRoot onCancel={cancelOperation}>
+    <DialogHeader>
+        {`${operation}ing Game Launchers`}
+    </DialogHeader>
+    <DialogBodyText>Selected options: {options.filter(option => option.enabled).map(option => option.label).join(', ')}</DialogBodyText>
+    <DialogBody>
+        <SteamSpinner />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div ref={logContainerRef} style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height:'100px' }}>
+                {showLog && log}
+            </div>
+            <ProgressBarWithInfo
+                layout="inline"
+                bottomSeparator="none"
+                sOperationText={progress.status}
+                description={progress.description}
+                nProgress={progress.percent}
+            />
+        </div>
+        {currentLauncher && (
+            <img src={currentLauncher.urlimage} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
+        )}
+        <DialogButton onClick={cancelOperation} style={{ width: '25px', margin: 0, padding: '10px' }}>
+            Back
+        </DialogButton>
+    </DialogBody>
+</ModalRoot> :
+<ModalRoot onCancel={closeModal}>
+    <DialogHeader>
+        Select Game Launchers
+    </DialogHeader>
+    <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
+    <DialogBody>
+        {launcherOptions.map(({ name, label }) => (
+            <ToggleField
+                key={name}
+                label={label}
+                checked={options.find(option => option.name === name)?.enabled ? true : false}
+                onChange={(value) => handleToggle(name, value)}
+            />
+        ))}
+    </DialogBody>
+    <p style={{ fontSize: 'small', marginTop: '16px' }}>
+        Note: When installing a launcher, the latest Proton-GE will attempt to be installed. If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
+        </p>
+        <p style={{ fontSize: 'small', marginTop: '16px' }}>
+        Note²: Some games won't run right away using NSL. Due to easy anti-cheat or quirks, you may need to manually tinker to get some games working. NSL is simply another way to play! Happy Gaming!♥
+        </p>
+    <Focusable>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div ref={logContainerRef} style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height: '100px' }}>
-                    {showLog && log}
-                </div>
-                <ProgressBarWithInfo
-                    layout="inline"
-                    bottomSeparator="none"
-                    sOperationText={progress.status}
-                    description={progress.description}
-                    nProgress={progress.percent}
-                />
+                <DialogButton
+                    style={{ width: "fit-content" }}
+                    onClick={() => handleInstallClick("Install")}
+                    disabled={options.every(option => option.enabled === false)}
+                >
+                    Install
+                </DialogButton>
+                <DialogButton
+                    style={{ width: "fit-content", marginLeft: "10px", marginRight: "10px" }}
+                    onClick={() => handleInstallClick("Uninstall")}
+                    disabled={options.every(option => option.enabled === false)}
+                >
+                    Uninstall
+                </DialogButton>
             </div>
-            {currentLauncher && (
-                <img src={currentLauncher.urlimage} alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
-            )}
-            <DialogButton onClick={cancelOperation} style={{ width: '25px', margin: 0, padding: '10px' }}>
-                Back
-            </DialogButton>
-        </DialogBody>
-    </ModalRoot> :
-    <ModalRoot onCancel={closeModal}>
-        <DialogHeader>
-            Select Game Launchers
-        </DialogHeader>
-        <DialogBodyText>Here you choose your launchers you want to install and let NSL do the rest. Once installed, they will be added your library!</DialogBodyText>
-        <DialogBody>
-            {launcherOptions.map(({ name, label }) => (
-                <ToggleField
-                    key={name}
-                    label={label}
-                    checked={options.find(option => option.name === name)?.enabled ? true : false}
-                    onChange={(value) => handleToggle(name, value)}
-                />
-            ))}
-        </DialogBody>
-        <p style={{ fontSize: 'small', marginTop: '16px' }}>
-            Note: When installing a launcher, the latest Proton-GE will attempt to be installed. If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
-        </p>
-        <p style={{ fontSize: 'small', marginTop: '16px' }}>
-            Note²: Some games won't run right away using NSL. Due to easy anti-cheat or quirks, you may need to manually tinker to get some games working. NSL is simply another way to play! Happy Gaming!♥
-        </p>
-        <Focusable>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <DialogButton
-                        style={{ width: "fit-content" }}
-                        onMouseDown={() => handleMouseDown("Install")}
-                        onMouseUp={handleMouseUp}
-                        disabled={options.every(option => option.enabled === false)}
-                    >
-                        Install
-                    </DialogButton>
-                    <DialogButton
-                        style={{ width: "fit-content", marginLeft: "10px", marginRight: "10px" }}
-                        onMouseDown={() => handleMouseDown("Uninstall")}
-                        onMouseUp={handleMouseUp}
-                        disabled={options.every(option => option.enabled === false)}
-                    >
-                        Uninstall
-                    </DialogButton>
-                </div>
-                <ToggleField label="Separate Launcher Folders" checked={separateAppIds} onChange={handleSeparateAppIdsToggle} />
-            </div>
-        </Focusable>
-    </ModalRoot>
+            <ToggleField label="Separate Launcher Folders" checked={separateAppIds} onChange={handleSeparateAppIdsToggle} />
+        </div>
+    </Focusable>
+</ModalRoot>
 )
 };
