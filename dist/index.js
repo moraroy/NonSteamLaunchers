@@ -515,6 +515,10 @@
                   setAutoScan(false);
                   const launcherParam = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
                   setCurrentLauncher(launcher);
+                  // Reset log updates for each launcher
+                  setTriggerLogUpdates(false);
+                  await new Promise(resolve => setTimeout(resolve, 500));
+                  setTriggerLogUpdates(true);
                   await installLauncher(launcherParam, launcher.label, i, operation);
               }
               i++;
