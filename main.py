@@ -18,9 +18,7 @@ import logging
 import re
 import asyncio
 import subprocess
-import aiofiles
 from aiohttp import web
-from aiotail import Tail
 from decky_plugin import DECKY_PLUGIN_DIR
 from py_modules.lib.scanner import scan, addCustomSite
 from settings import SettingsManager
@@ -108,11 +106,16 @@ class Plugin:
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
 
-            async for line in Tail(log_file_path):
-                if line:
-                    decky_plugin.logger.info(f"Log line: {line.strip()}")
-                    await ws.send_str(line)
-                await asyncio.sleep(0.1)  # Adjust the sleep time as needed for real-time updates
+            process = subprocess.Popen(['tail', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            while True:
+                line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
+                if not line:
+                    await asyncio.sleep(0.1)
+                    continue
+                line = line.decode('utf-8').strip()
+                decky_plugin.logger.info(f"Log line: {line}")
+                await ws.send_str(line)
 
             return ws
 
