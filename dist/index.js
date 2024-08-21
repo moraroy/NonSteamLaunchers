@@ -758,7 +758,7 @@
               scan();
               // Start the cooldown
               setIsCooldown(true);
-              setCooldownTime(20); // Set cooldown time in seconds
+              setCooldownTime(30); // Set cooldown time in seconds
           }
       };
       return (window.SP_REACT.createElement("div", { className: "decky-plugin" },
@@ -776,7 +776,7 @@
                           console.log(`Autoscan is ${settings.autoscan}`);
                           autoscan();
                       }
-                  } }),
+                  }, disabled: isCooldown }),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: isCooldown || settings.autoscan }, isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan')),
           window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
               window.SP_REACT.createElement("div", { style: {

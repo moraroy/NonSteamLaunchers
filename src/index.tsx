@@ -87,7 +87,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
       // Start the cooldown
       setIsCooldown(true);
-      setCooldownTime(20); // Set cooldown time in seconds
+      setCooldownTime(30); // Set cooldown time in seconds
     }
   };
 
@@ -125,6 +125,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               autoscan();
             }
           }}
+          disabled={isCooldown}
         />
         <ButtonItem layout="below" onClick={handleScanClick} disabled={isCooldown || settings.autoscan}>
           {isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan'}
@@ -156,6 +157,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     </div>
   );
 };
+
 
 export default definePlugin((serverApi: ServerAPI) => {
   autoscan();
