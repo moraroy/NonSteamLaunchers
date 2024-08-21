@@ -78,7 +78,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
         setTriggerLogUpdates(true);
 
         // Add a small delay to ensure WebSocket connection is established
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
         let i = 0;
@@ -88,6 +88,11 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 setAutoScan(false);
                 const launcherParam: string = (launcher.name.charAt(0).toUpperCase() + launcher.name.slice(1));
                 setCurrentLauncher(launcher);
+
+                // Reset log updates for each launcher
+                setTriggerLogUpdates(false);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                setTriggerLogUpdates(true);
 
                 await installLauncher(launcherParam, launcher.label, i, operation);
             }
