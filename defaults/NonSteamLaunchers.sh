@@ -1081,7 +1081,7 @@ function install_eaapp {
 
     # Download the file
     wget "$eaapp_url" -O "${eaapp_download_dir}${eaapp_file_name}"
-    pkill -f "EAappInstaller.exe
+    pkill -f "EAappInstaller.exe"
 }
 
 
@@ -1377,6 +1377,7 @@ install_launcher "HoYoPlay" "HoYoPlayLauncher" "$hoyoplay_file" "$hoyoplay_url" 
 # Install Nexon Launcher
 install_launcher "Nexon Launcher" "NexonLauncher" "$nexon_file" "$nexon_url" "$nexon_file" "99" "" "install_nexon" true
 #End of Launcher Installations
+
 
 
 
