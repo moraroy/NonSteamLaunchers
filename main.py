@@ -139,7 +139,6 @@ class Plugin:
 
             return ws
 
-
         # Create the server application
         app = web.Application()
         app.router.add_get('/autoscan', handleAutoScan)
