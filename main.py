@@ -120,7 +120,7 @@ class Plugin:
                         continue
                     line = line.decode('utf-8').strip()
                     buffer.append(line)
-                    if len(buffer) >= 10:  # Adjust the buffer size as needed
+                    if len(buffer) >= 5:  # Adjust the buffer size as needed
                         await ws.send_str('\n'.join(buffer))
                         buffer = []
             except Exception as e:
