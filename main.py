@@ -106,7 +106,7 @@ class Plugin:
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
 
-            process = subprocess.Popen(['stdbuf', '-oL', 'tail', '-F', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(['tail', '-F', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             while True:
                 line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
@@ -119,6 +119,7 @@ class Plugin:
                 decky_plugin.logger.info(f"Sent log line to WebSocket: {line}")
 
             return ws
+
 
 
 
