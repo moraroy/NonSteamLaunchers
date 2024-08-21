@@ -131,7 +131,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           {isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan'}
         </ButtonItem>
       </PanelSection>
-  
+
       <PanelSection title="Support Us">
         <Focusable
           focusWithinClassName="gpfocuswithin"
