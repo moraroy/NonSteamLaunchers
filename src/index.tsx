@@ -156,44 +156,36 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   
       {/* New Code Starts Here */}
       <PanelSection title="Support Us">
-        <Focusable
-          focusWithinClassName="gpfocuswithin"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onActivate={() => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); }}
+        <div
+          style={{
+            backgroundColor: "transparent",
+            display: "flex",
+            flexDirection: "column",
+            padding: "0.5em",
+            width: "95%",
+            margin: 0,
+          }}
         >
-          <div
-            style={{
-              backgroundColor: "transparent",
-              display: "flex",
-              flexDirection: "column",
-              padding: "0.5em",
-              width: "95%",
-              margin: 0,
-              outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
-            }}
-          >
-            <div style={{ marginTop: '12px', textAlign: 'center' }}>
-              <p>If you're feeling generous, all donations are humbly appreciated and accepted. Thank you!</p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                <a href="https://www.patreon.com/moraroy" target="_blank" rel="noopener noreferrer">
-                  <img src="https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png" alt="Patreon" style={{ width: '40px', height: '40px' }} />
-                </a>
-                <a href="https://ko-fi.com/moraroy#checkoutModal" target="_blank" rel="noopener noreferrer">
-                  <img src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-fi" style={{ width: '40px', height: '40px' }} />
-                </a>
-                <a href="https://github.com/sponsors/moraroy" target="_blank" rel="noopener noreferrer">
-                  <img src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png" alt="GitHub" style={{ width: '40px', height: '40px' }} />
-                </a>
-              </div>
+          <div style={{ marginTop: '12px', textAlign: 'center' }}>
+            <p>If you're feeling generous, all donations are humbly appreciated and accepted. Thank you!</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+              <a href="https://www.patreon.com/moraroy" target="_blank" rel="noopener noreferrer">
+                <img src="https://seeklogo.com/images/P/patreon-logo-C0B52F951B-seeklogo.com.png" alt="Patreon" style={{ width: '40px', height: '40px' }} />
+              </a>
+              <a href="https://ko-fi.com/moraroy#checkoutModal" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-fi" style={{ width: '40px', height: '40px' }} />
+              </a>
+              <a href="https://github.com/sponsors/moraroy" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png" alt="GitHub" style={{ width: '40px', height: '40px' }} />
+              </a>
             </div>
           </div>
-        </Focusable>
+        </div>
       </PanelSection>
       {/* New Code Ends Here */}
     </div>
   );
-}  
+}    
 
 
 export default definePlugin((serverApi: ServerAPI) => {
