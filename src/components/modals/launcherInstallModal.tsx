@@ -179,8 +179,8 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             ))}
         </DialogBody>
-        <p style={{ fontSize: 'small', marginTop: '20px' }}>
-            Note: If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
+        <p style={{ fontSize: 'small', marginTop: '18px' }}>
+            Note: If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually. Note²: Some games wont run right away using NSL. Due to easy anti-cheat or quirks, you may simply need to manually tinker to get some games working. NSL is simply another way to play! Happy Gaming!
         </p>
         <Focusable>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
