@@ -179,10 +179,10 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
                 />
             ))}
         </DialogBody>
-        <p style={{ fontSize: 'small', marginTop: '18px' }}>
+        <p style={{ fontSize: 'small', marginTop: '16px' }}>
             Note: When installing a launcher, the latest Proton-GE will attempt to be installed. If your launchers don't start, make sure force compatibility is checked, shortcut properties are right, and your steam files are updated. Remember to also edit your controller layout configurations if necessary! If all else fails, restart your steam deck manually.
             </p>
-            <p style={{ fontSize: 'small', marginTop: '18px' }}>
+            <p style={{ fontSize: 'small', marginTop: '16px' }}>
             Note²: Some games won't run right away using NSL. Due to easy anti-cheat or quirks, you may simply need to manually tinker to get some games working. NSL is simply another way to play! Happy Gaming!
             </p>
         <Focusable>
