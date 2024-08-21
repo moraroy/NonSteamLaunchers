@@ -760,6 +760,7 @@
       const [isFocused, setIsFocused] = React.useState(false);
       const [isCooldown, setIsCooldown] = React.useState(false);
       const [cooldownTime, setCooldownTime] = React.useState(0);
+      const [isAutoScanDisabled, setIsAutoScanDisabled] = React.useState(false);
       React.useEffect(() => {
           let timer;
           if (isCooldown) {
@@ -768,6 +769,7 @@
                       if (prevTime <= 1) {
                           clearInterval(timer);
                           setIsCooldown(false);
+                          setIsAutoScanDisabled(false);
                           return 0;
                       }
                       return prevTime - 1;
@@ -783,6 +785,7 @@
               // Start the cooldown
               setIsCooldown(true);
               setCooldownTime(30); // Set cooldown time in seconds
+              setIsAutoScanDisabled(true);
           }
       };
       return (window.SP_REACT.createElement("div", { className: "decky-plugin" },
@@ -800,7 +803,7 @@
                           console.log(`Autoscan is ${settings.autoscan}`);
                           autoscan();
                       }
-                  } }),
+                  }, disabled: isAutoScanDisabled }),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: isCooldown || settings.autoscan }, isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan')),
           window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
               window.SP_REACT.createElement("div", { style: {

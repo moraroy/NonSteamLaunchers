@@ -62,6 +62,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
+  const [isAutoScanDisabled, setIsAutoScanDisabled] = useState(false);
 
   useEffect(() => {
     let timer;
@@ -71,6 +72,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           if (prevTime <= 1) {
             clearInterval(timer);
             setIsCooldown(false);
+            setIsAutoScanDisabled(false);
             return 0;
           }
           return prevTime - 1;
@@ -88,6 +90,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       // Start the cooldown
       setIsCooldown(true);
       setCooldownTime(30); // Set cooldown time in seconds
+      setIsAutoScanDisabled(true);
     }
   };
 
@@ -125,6 +128,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               autoscan();
             }
           }}
+          disabled={isAutoScanDisabled}
         />
         <ButtonItem layout="below" onClick={handleScanClick} disabled={isCooldown || settings.autoscan}>
           {isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan'}
@@ -187,7 +191,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     </div>
   );
 }  
-
 
 export default definePlugin((serverApi: ServerAPI) => {
   autoscan();
