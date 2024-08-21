@@ -106,11 +106,19 @@ class Plugin:
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
 
-            process = subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            def start_tail_process():
+                return subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            process = start_tail_process()
             buffer = []
 
             try:
                 while True:
+                    if not os.path.exists(log_file_path):
+                        process.terminate()
+                        await asyncio.sleep(0.1)  # Small delay before restarting the process
+                        process = start_tail_process()
+
                     line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
                     if not line:
                         if buffer:
@@ -120,7 +128,7 @@ class Plugin:
                         continue
                     line = line.decode('utf-8').strip()
                     buffer.append(line)
-                    if len(buffer) >= 5:  # Adjust the buffer size as needed
+                    if len(buffer) >= 20:  # Adjust the buffer size as needed
                         await ws.send_str('\n'.join(buffer))
                         buffer = []
             except Exception as e:
