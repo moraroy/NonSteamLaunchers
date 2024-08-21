@@ -473,6 +473,8 @@
       const log = useLogUpdates(triggerLogUpdates);
       const [currentLauncher, setCurrentLauncher] = React.useState(null);
       const logContainerRef = React.useRef(null);
+      const [isHolding, setIsHolding] = React.useState(false);
+      const [holdTimeout, setHoldTimeout] = React.useState(null);
       React.useEffect(() => {
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
           if (selectedLaunchers.length > 0) {
@@ -577,6 +579,23 @@
           pointerEvents: 'none',
           transition: 'opacity 1s ease-in-out'
       };
+      const handleMouseDown = (operation) => {
+          setIsHolding(true);
+          const timeout = setTimeout(async () => {
+              setTriggerLogUpdates(true);
+              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for log updates
+              handleInstallClick(operation);
+              setIsHolding(false);
+          }, 2000); // 2 seconds hold duration
+          setHoldTimeout(timeout);
+      };
+      const handleMouseUp = () => {
+          setIsHolding(false);
+          if (holdTimeout) {
+              clearTimeout(holdTimeout);
+              setHoldTimeout(null);
+          }
+      };
       return ((progress.status != '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: cancelOperation },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
@@ -599,8 +618,8 @@
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, null,
                   window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                       window.SP_REACT.createElement("div", { style: { display: 'flex', alignItems: 'center' } },
-                          window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { style: { width: "fit-content" }, onClick: () => handleInstallClick("Install"), disabled: options.every(option => option.enabled === false) }, "Install"),
-                          window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { style: { width: "fit-content", marginLeft: "10px", marginRight: "10px" }, onClick: () => handleInstallClick("Uninstall"), disabled: options.every(option => option.enabled === false) }, "Uninstall")),
+                          window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { style: { width: "fit-content" }, onMouseDown: () => handleMouseDown("Install"), onMouseUp: handleMouseUp, disabled: options.every(option => option.enabled === false) }, "Install"),
+                          window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { style: { width: "fit-content", marginLeft: "10px", marginRight: "10px" }, onMouseDown: () => handleMouseDown("Uninstall"), onMouseUp: handleMouseUp, disabled: options.every(option => option.enabled === false) }, "Uninstall")),
                       window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Separate Launcher Folders", checked: separateAppIds, onChange: handleSeparateAppIdsToggle })))));
   };
 
