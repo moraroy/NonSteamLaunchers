@@ -105,7 +105,7 @@ export const CustomSiteModal: VFC<CustomSiteModalProps> = ({closeModal, serverAP
           <DialogBodyText>Creating shortcuts for sites: {sites.map(site => site.siteName).join(', ')}</DialogBodyText>
           <DialogBody>
               <SteamSpinner/>
-              <img src="https://cdn2.steamgriddb.com/hero_thumb/1dbc14c2bef0ada4bddacc86f3d9205e.jpg" alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
+              <img src="https://cdn2.steamgriddb.com/thumb/d0fb992a3dc7f0014263653d6e2063fe.jpg" alt="Overlay" style={{ ...fadeStyle, opacity: 0.5 }} />
               <DialogButton onClick={cancelOperation} style={{ width: '25px' }}>Back</DialogButton>
           </DialogBody>
       </ModalRoot> :

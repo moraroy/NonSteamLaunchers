@@ -318,7 +318,7 @@
                   sites.map(site => site.siteName).join(', ')),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
-                  window.SP_REACT.createElement("img", { src: "https://cdn2.steamgriddb.com/hero_thumb/1dbc14c2bef0ada4bddacc86f3d9205e.jpg", alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } }),
+                  window.SP_REACT.createElement("img", { src: "https://cdn2.steamgriddb.com/thumb/d0fb992a3dc7f0014263653d6e2063fe.jpg", alt: "Overlay", style: { ...fadeStyle, opacity: 0.5 } }),
                   window.SP_REACT.createElement(deckyFrontendLib.DialogButton, { onClick: cancelOperation, style: { width: '25px' } }, "Back"))) :
           window.SP_REACT.createElement("div", null,
               window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { bAllowFullSize: true, onCancel: closeModal, onEscKeypress: closeModal, strMiddleButtonText: 'Add Another Site', onMiddleButton: addSiteFields, bMiddleDisabled: !canSave, bOKDisabled: !canSave, onOK: onSave, strOKButtonText: "Create Shortcuts", strTitle: "Enter Custom Websites" },
