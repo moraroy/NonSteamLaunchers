@@ -36,7 +36,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [separateAppIds, setSeparateAppIds] = useState(false);
     const [operation, setOperation] = useState("");
     const [showLog, setShowLog] = useState(false);
-    const [triggerLogUpdates, setTriggerLogUpdates] = useState(true); // Keep log updates running continuously
+    const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
     const [currentLauncher, setCurrentLauncher] = useState<typeof launcherOptions[0] | null>(null);
     const logContainerRef = useRef<HTMLDivElement>(null);
@@ -75,6 +75,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const handleInstallClick = async (operation: string) => {
         setOperation(operation);
         setShowLog(true);
+        setTriggerLogUpdates(true);
 
         // Add a small delay to ensure WebSocket connection is established
         await new Promise(resolve => setTimeout(resolve, 100));

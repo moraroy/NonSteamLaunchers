@@ -469,7 +469,7 @@
       const [separateAppIds, setSeparateAppIds] = React.useState(false);
       const [operation, setOperation] = React.useState("");
       const [showLog, setShowLog] = React.useState(false);
-      const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(true); // Keep log updates running continuously
+      const [triggerLogUpdates, setTriggerLogUpdates] = React.useState(false);
       const log = useLogUpdates(triggerLogUpdates);
       const [currentLauncher, setCurrentLauncher] = React.useState(null);
       const logContainerRef = React.useRef(null);
@@ -504,6 +504,7 @@
       const handleInstallClick = async (operation) => {
           setOperation(operation);
           setShowLog(true);
+          setTriggerLogUpdates(true);
           // Add a small delay to ensure WebSocket connection is established
           await new Promise(resolve => setTimeout(resolve, 100));
           const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
