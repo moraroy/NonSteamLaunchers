@@ -106,21 +106,28 @@ class Plugin:
             await ws.prepare(request)
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
 
-            process = subprocess.Popen(['tail', '-n', '0', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             buffer = []
 
-            while True:
-                line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
-                if not line:
-                    if buffer:
+            try:
+                while True:
+                    line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
+                    if not line:
+                        if buffer:
+                            await ws.send_str('\n'.join(buffer))
+                            buffer = []
+                        await asyncio.sleep(0.1)  # Introduce a small delay
+                        continue
+                    line = line.decode('utf-8').strip()
+                    buffer.append(line)
+                    if len(buffer) >= 10:  # Adjust the buffer size as needed
                         await ws.send_str('\n'.join(buffer))
                         buffer = []
-                    await asyncio.sleep(0.1)  # Introduce a small delay
-                    continue
-                line = line.decode('utf-8').strip()
-                buffer.append(line)
-                await ws.send_str('\n'.join(buffer))
-                buffer = []
+            except Exception as e:
+                decky_plugin.logger.error(f"Error in handleLogUpdates: {e}")
+            finally:
+                process.terminate()
+                await ws.close()
 
             return ws
 
