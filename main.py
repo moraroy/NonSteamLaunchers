@@ -19,7 +19,7 @@ import re
 import asyncio
 import subprocess
 from aiohttp import web
-from decky_plugin import DECKY_PLUGIN_DIR
+from decky_plugin import DECKY_PLUGIN_DIR, DECKY_USER_HOME
 from py_modules.lib.scanner import scan, addCustomSite
 from settings import SettingsManager
 from subprocess import Popen, run 
@@ -104,7 +104,7 @@ class Plugin:
         async def handleLogUpdates(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
-            log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
+            log_file_path = os.path.join(DECKY_USER_HOME, 'Downloads', 'NonSteamLaunchers-install.log')
 
             def start_tail_process():
                 return subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
