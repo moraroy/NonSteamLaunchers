@@ -107,20 +107,22 @@ class Plugin:
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
 
             process = subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            log_buffer = []
 
             while True:
                 line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
                 if not line:
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(0.5)  # Adjusted sleep interval
                     continue
                 line = line.decode('utf-8').strip()
-                decky_plugin.logger.info(f"Log line: {line}")
-                await ws.send_str(line)
-                decky_plugin.logger.info(f"Sent log line to WebSocket: {line}")
+                log_buffer.append(line)
+
+                if len(log_buffer) >= 10:  # Send log lines in batches
+                    await ws.send_str('\n'.join(log_buffer))
+                    decky_plugin.logger.info(f"Sent log lines to WebSocket: {log_buffer}")
+                    log_buffer = []
 
             return ws
-
-
 
 
         # Create the server application

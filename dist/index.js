@@ -435,19 +435,11 @@
   const useLogUpdates = (trigger) => {
       const [log, setLog] = React.useState([]);
       const logWsRef = React.useRef(null);
-      const logBufferRef = React.useRef([]);
       React.useEffect(() => {
-          if (trigger) {
+          if (trigger && !logWsRef.current) {
               logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
               logWsRef.current.onmessage = (e) => {
-                  logBufferRef.current.push(e.data);
-                  // Debounce log updates
-                  setTimeout(() => {
-                      if (logBufferRef.current.length > 0) {
-                          setLog((prevLog) => [...prevLog, ...logBufferRef.current]);
-                          logBufferRef.current = [];
-                      }
-                  }, 100);
+                  setLog((prevLog) => [...prevLog, e.data]);
               };
               logWsRef.current.onerror = (e) => {
                   console.error(`WebSocket error: ${e}`);
@@ -456,9 +448,7 @@
                   console.log(`WebSocket closed: ${e.code} - ${e.reason}`);
                   // Attempt to reconnect after a delay
                   setTimeout(() => {
-                      if (trigger) {
-                          logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
-                      }
+                      logWsRef.current = new WebSocket('ws://localhost:8675/logUpdates');
                   }, 5000);
               };
           }
