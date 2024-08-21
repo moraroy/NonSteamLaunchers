@@ -1081,6 +1081,7 @@ function install_eaapp {
 
     # Download the file
     wget "$eaapp_url" -O "${eaapp_download_dir}${eaapp_file_name}"
+    pkill -f "EAappInstaller.exe
 }
 
 
@@ -1379,7 +1380,6 @@ install_launcher "Nexon Launcher" "NexonLauncher" "$nexon_file" "$nexon_url" "$n
 
 
 
-wait
 echo "99"
 echo "# Checking if Chrome is installed...please wait..."
 
