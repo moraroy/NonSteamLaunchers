@@ -107,14 +107,21 @@ class Plugin:
             log_file_path = '/home/deck/Downloads/NonSteamLaunchers-install.log'
 
             process = subprocess.Popen(['tail', '-n', '0', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            buffer = []
 
             while True:
                 line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
                 if not line:
+                    if buffer:
+                        await ws.send_str('\n'.join(buffer))
+                        buffer = []
                     await asyncio.sleep(0.1)  # Introduce a small delay
                     continue
                 line = line.decode('utf-8').strip()
-                await ws.send_str(line)
+                buffer.append(line)
+                if len(buffer) >= 10:  # Adjust the batch size as needed
+                    await ws.send_str('\n'.join(buffer))
+                    buffer = []
 
             return ws
 
