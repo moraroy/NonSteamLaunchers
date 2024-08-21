@@ -3,7 +3,7 @@ import { notify } from "./notify";
 // Shortcut Creation Code
 // Define the createShortcut function
 export async function createShortcut(game: any) {
-  const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon } = game;
+  const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
   
   // Separate the executable path and arguments
   const match = exe.match(/"([^"]+)"/);
@@ -21,8 +21,16 @@ export async function createShortcut(game: any) {
   const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
   if (appId) {
     const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
-    const iconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl;  // Use the base64-encoded icon or default icon
-    notify.toast("New Shortcut Created", `${appname} has been added to your library!`, iconUrl);
+    const gameIconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl;  // Use the base64-encoded icon or default icon
+    const launcherIconUrl = LauncherIcon ? `data:image/x-icon;base64,${LauncherIcon}` : null;  // Use the base64-encoded launcher icon or null
+
+    // Pass both icons to the notification
+    if (launcherIconUrl) {
+      notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl, launcherIconUrl });
+    } else {
+      notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl });
+    }
+    
     console.log(`AppID for ${appname} = ${appId}`);
     SteamClient.Apps.SetShortcutName(appId, appname);
     SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);

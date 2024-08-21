@@ -69,7 +69,7 @@ export const StartFreshModal: VFC<startFreshModalProps> = ({ closeModal, serverA
         </ModalRoot> :
         <ConfirmModal
             strTitle="Are You Sure?"
-            strDescription="Starting fresh will wipe all installed launchers and their games, you'll need to manually remove any shortcuts created."
+            strDescription="Starting fresh will wipe all installed launchers and their games along with your game saves and and NSL files. This is irreversible! You'll need to manually remove any shortcuts created."
             strOKButtonText="Yes, wipe!"
             strCancelButtonText="No, go back!"
             onOK={handleStartFreshClick}

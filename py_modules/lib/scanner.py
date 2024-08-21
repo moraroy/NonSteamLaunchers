@@ -78,6 +78,8 @@ def initialiseVariables(env_vars):
     psplusshortcutdirectory = env_vars.get('psplusshortcutdirectory')
     global vkplayhortcutdirectory
     vkplayhortcutdirectory = env_vars.get('vkplayhortcutdirectory')
+    global repaireaappshortcutdirectory 
+    repaireaappshortcutdirectory = env_vars.get('repaireaappshortcutdirectory')
     #Streaming
     global chromedirectory
     chromedirectory = env_vars.get('chromedirectory')
@@ -115,7 +117,7 @@ def addCustomSite(customSiteJSON):
         customSiteURL = site['siteURL'].strip()
         cleanSiteURL = customSiteURL.replace('http://', '').replace('https://', '').replace('www.', '')
         chromelaunch_options = f'run --branch=stable --arch=x86_64 --command=/app/bin/chrome --file-forwarding com.google.Chrome @@u @@ --window-size=1280,800 --force-device-scale-factor=1.00 --device-scale-factor=1.00 --kiosk https://{cleanSiteURL}/ --chrome-kiosk-type=fullscreen --no-first-run --enable-features=OverlayScrollbar'
-        create_new_entry(env_vars.get('chromedirectory'), customSiteName, chromelaunch_options, env_vars.get('chrome_startdir'))
+        create_new_entry(env_vars.get('chromedirectory'), customSiteName, chromelaunch_options, env_vars.get('chrome_startdir'), None)
     return decky_shortcuts
 
 
@@ -154,8 +156,7 @@ def add_compat_tool(launchoptions):
     else:
         return compat_tool_name
 
-#Create Shortcuts
-def create_new_entry(exe, appname, launchoptions, startingdir):    
+def create_new_entry(exe, appname, launchoptions, startingdir, launcher):    
     global decky_shortcuts
     # Check if the launcher is installed
     if not exe or not appname or not launchoptions or not startingdir:
@@ -163,12 +164,19 @@ def create_new_entry(exe, appname, launchoptions, startingdir):
         return
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
-    #Get artwork
-    game_id = get_game_id(appname)
-    if game_id is not None:
-        icon, logo64, hero64, gridp64, grid64  = get_sgdb_art(game_id)
+    
+    # Initialize artwork variables
+    icon, logo64, hero64, gridp64, grid64, launcher_icon = None, None, None, None, None, None
+    
+    # Skip artwork fetching for specific shortcuts
+    if appname not in ["NonSteamLaunchers", "Repair EA App"]:
+        # Get artwork
+        game_id = get_game_id(appname)
+        if game_id is not None:
+            icon, logo64, hero64, gridp64, grid64, launcher_icon = get_sgdb_art(game_id, launcher)
+    
     # Create a new entry for the Steam shortcut
-    compatTool= add_compat_tool(launchoptions) #add_compat_tool(launchoptions)
+    compatTool = add_compat_tool(launchoptions)
     decky_entry = {
         'appname': appname,
         'exe': exe,
@@ -180,28 +188,33 @@ def create_new_entry(exe, appname, launchoptions, startingdir):
         'Hero': hero64,
         'Logo': logo64,
         'Icon': icon,
+        'LauncherIcon': launcher_icon,  # Add launcher icon
+        'Launcher': launcher,  # Add launcher information
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
 
 def add_launchers():
-    create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'))
-    create_new_entry(env_vars.get('gogshortcutdirectory'), 'Gog Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'))
-    create_new_entry(env_vars.get('uplayshortcutdirectory'), 'Ubisoft Connect', env_vars.get('uplaylaunchoptions'), env_vars.get('uplaystartingdir'))
-    create_new_entry(env_vars.get('battlenetshortcutdirectory'), 'Battle.net', env_vars.get('battlenetlaunchoptions'), env_vars.get('battlenetstartingdir'))
-    create_new_entry(env_vars.get('eaappshortcutdirectory'), 'EA App', env_vars.get('eaapplaunchoptions'), env_vars.get('eaappstartingdir'))
-    create_new_entry(env_vars.get('amazonshortcutdirectory'), 'Amazon Games', env_vars.get('amazonlaunchoptions'), env_vars.get('amazonstartingdir'))
-    create_new_entry(env_vars.get('itchioshortcutdirectory'), 'itch.io', env_vars.get('itchiolaunchoptions'), env_vars.get('itchiostartingdir'))
-    create_new_entry(env_vars.get('legacyshortcutdirectory'), 'Legacy Games', env_vars.get('legacylaunchoptions'), env_vars.get('legacystartingdir'))
-    create_new_entry(env_vars.get('humbleshortcutdirectory'), 'Humble Bundle', env_vars.get('humblelaunchoptions'), env_vars.get('humblestartingdir'))
-    create_new_entry(env_vars.get('indieshortcutdirectory'), 'IndieGala Client', env_vars.get('indielaunchoptions'), env_vars.get('indiestartingdir'))
-    create_new_entry(env_vars.get('rockstarshortcutdirectory'), 'Rockstar Games Launcher', env_vars.get('rockstarlaunchoptions'), env_vars.get('rockstarstartingdir'))
-    create_new_entry(env_vars.get('glyphshortcutdirectory'), 'Glyph', env_vars.get('glyphlaunchoptions'), env_vars.get('glyphstartingdir'))
-    create_new_entry(env_vars.get('minecraftshortcutdirectory'), 'Minecraft: Java Edition', env_vars.get('minecraftlaunchoptions'), env_vars.get('minecraftstartingdir'))
-    create_new_entry(env_vars.get('psplusshortcutdirectory'), 'Playstation Plus', env_vars.get('pspluslaunchoptions'), env_vars.get('psplusstartingdir'))
-    create_new_entry(env_vars.get('vkplayhortcutdirectory'), 'VK Play', env_vars.get('vkplaylaunchoptions'), env_vars.get('vkplaystartingdir'))
+    create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'), None)
+    create_new_entry(env_vars.get('gogshortcutdirectory'), 'GOG Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'), None)
+    create_new_entry(env_vars.get('uplayshortcutdirectory'), 'Ubisoft Connect', env_vars.get('uplaylaunchoptions'), env_vars.get('uplaystartingdir'), None)
+    create_new_entry(env_vars.get('battlenetshortcutdirectory'), 'Battle.net', env_vars.get('battlenetlaunchoptions'), env_vars.get('battlenetstartingdir'), None)
+    create_new_entry(env_vars.get('eaappshortcutdirectory'), 'EA App', env_vars.get('eaapplaunchoptions'), env_vars.get('eaappstartingdir'), None)
+    create_new_entry(env_vars.get('amazonshortcutdirectory'), 'Amazon Games', env_vars.get('amazonlaunchoptions'), env_vars.get('amazonstartingdir'), None)
+    create_new_entry(env_vars.get('itchioshortcutdirectory'), 'itch.io', env_vars.get('itchiolaunchoptions'), env_vars.get('itchiostartingdir'), None)
+    create_new_entry(env_vars.get('legacyshortcutdirectory'), 'Legacy Games', env_vars.get('legacylaunchoptions'), env_vars.get('legacystartingdir'), None)
+    create_new_entry(env_vars.get('humbleshortcutdirectory'), 'Humble Bundle', env_vars.get('humblelaunchoptions'), env_vars.get('humblestartingdir'), None)
+    create_new_entry(env_vars.get('indieshortcutdirectory'), 'IndieGala Client', env_vars.get('indielaunchoptions'), env_vars.get('indiestartingdir'), None)
+    create_new_entry(env_vars.get('rockstarshortcutdirectory'), 'Rockstar Games Launcher', env_vars.get('rockstarlaunchoptions'), env_vars.get('rockstarstartingdir'), None)
+    create_new_entry(env_vars.get('glyphshortcutdirectory'), 'Glyph', env_vars.get('glyphlaunchoptions'), env_vars.get('glyphstartingdir'), "Glyph")
+    create_new_entry(env_vars.get('minecraftshortcutdirectory'), 'Minecraft: Java Edition', env_vars.get('minecraftlaunchoptions'), env_vars.get('minecraftstartingdir'), None)
+    create_new_entry(env_vars.get('psplusshortcutdirectory'), 'Playstation Plus', env_vars.get('pspluslaunchoptions'), env_vars.get('psplusstartingdir'), None)
+    create_new_entry(env_vars.get('vkplayhortcutdirectory'), 'VK Play', env_vars.get('vkplaylaunchoptions'), env_vars.get('vkplaystartingdir'), None)
+    create_new_entry(env_vars.get('repaireaappshortcutdirectory'), 'Repair EA App', env_vars.get('repaireaapplaunchoptions'), env_vars.get('repaireaappstartingdir'), None)
 
-def get_sgdb_art(game_id):
+
+
+def get_sgdb_art(game_id, launcher):
     decky_plugin.logger.info(f"Downloading icon artwork...")
     icon = download_artwork(game_id, "icons")
     decky_plugin.logger.info(f"Downloading logo artwork...")
@@ -212,7 +225,25 @@ def get_sgdb_art(game_id):
     gridp64 = download_artwork(game_id, "grids", "600x900")
     decky_plugin.logger.info("Downloading grids artwork of size 920x430...")
     grid64 = download_artwork(game_id, "grids", "920x430")
-    return icon, logo64, hero64, gridp64, grid64
+    
+    # Fetch launcher icon based on the launcher type
+    launcher_icons = {
+        "Epic Games": "5255885",
+        "Amazon Games": "5255884",
+        "GOG Galaxy": "34605",
+        "Battle.net": "5248250",
+        "EA App": "5306742",
+        "itch.io": "5259585",
+        "Legacy Games": "5438208",
+        "Ubisoft Connect": "5270094"
+    }
+    
+    launcher_icon = download_artwork(launcher_icons.get(launcher, ""), "icons")
+    
+    return icon, logo64, hero64, gridp64, grid64, launcher_icon
+
+
+
 
 def download_artwork(game_id, art_type, dimensions=None):
     # If the result is not in the cache, make the API call

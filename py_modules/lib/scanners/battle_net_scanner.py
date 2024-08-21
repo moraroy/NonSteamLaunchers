@@ -139,5 +139,5 @@ def battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry):
                     launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/\" %command% \"battlenet://{game_info['flavor']}\""
                     exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/Program Files (x86)/Battle.net/Battle.net.exe\" --exec=\"launch {game_info['flavor']}\""
                     start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/Program Files (x86)/Battle.net/\""
-                    create_new_entry(exe_path, game, launch_options, start_dir)
+                    create_new_entry(exe_path, game, launch_options, start_dir, "Battle.net")
 # End of Battle.net Scanner

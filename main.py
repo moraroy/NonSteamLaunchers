@@ -19,7 +19,7 @@ import re
 import asyncio
 import subprocess
 from aiohttp import web
-from decky_plugin import DECKY_PLUGIN_DIR
+from decky_plugin import DECKY_PLUGIN_DIR, DECKY_USER_HOME
 from py_modules.lib.scanner import scan, addCustomSite
 from settings import SettingsManager
 from subprocess import Popen, run 
@@ -100,13 +100,51 @@ class Plugin:
                         # Send the game data to the client
                         await ws.send_json(game)
             return ws
+        
+        async def handleLogUpdates(request):
+            ws = web.WebSocketResponse()
+            await ws.prepare(request)
+            log_file_path = os.path.join(DECKY_USER_HOME, 'Downloads', 'NonSteamLaunchers-install.log')
 
+            def start_tail_process():
+                return subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            process = start_tail_process()
+            buffer = []
+
+            try:
+                while True:
+                    if not os.path.exists(log_file_path):
+                        process.terminate()
+                        await asyncio.sleep(0.1)  # Small delay before restarting the process
+                        process = start_tail_process()
+
+                    line = await asyncio.get_event_loop().run_in_executor(None, process.stdout.readline)
+                    if not line:
+                        if buffer:
+                            await ws.send_str('\n'.join(buffer))
+                            buffer = []
+                        await asyncio.sleep(0.1)  # Introduce a small delay
+                        continue
+                    line = line.decode('utf-8').strip()
+                    buffer.append(line)
+                    if len(buffer) >= 5:  # Adjust the buffer size as needed
+                        await ws.send_str('\n'.join(buffer))
+                        buffer = []
+            except Exception as e:
+                decky_plugin.logger.error(f"Error in handleLogUpdates: {e}")
+            finally:
+                process.terminate()
+                await ws.close()
+
+            return ws
 
         # Create the server application
         app = web.Application()
         app.router.add_get('/autoscan', handleAutoScan)
         app.router.add_get('/scan', handleScan)
         app.router.add_get('/customSite', handleCustomSite)
+        #app.router.add_get('/logUpdates', handleLogUpdates)
 
         # Run the server
         runner = web.AppRunner(app)

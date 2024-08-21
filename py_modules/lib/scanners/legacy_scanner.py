@@ -1,7 +1,5 @@
 import os, re, decky_plugin
 
-
-
 def legacy_games_scanner(logged_in_home, legacy_launcher, create_new_entry):
     legacy_dir = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{legacy_launcher}/pfx/drive_c/Program Files/Legacy Games/"
     user_reg_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{legacy_launcher}/pfx/user.reg"
@@ -41,10 +39,10 @@ def legacy_games_scanner(logged_in_home, legacy_launcher, create_new_entry):
                     print(f"GameExe found in user.reg: {game_exe_reg.group(1)}")
                     start_dir = f"{legacy_dir}{game_dir}"
                     launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{legacy_launcher}\" %command%"
-                    create_new_entry(f'"{exe_path}"', game_name, launch_options, f'"{start_dir}"')
+                    create_new_entry(f'"{exe_path}"', game_name, launch_options, f'"{start_dir}"', "Legacy Games")
                 else:
                     print(f"No matching .exe file found for game: {game_dir}")
             else:
                 print(f"No .exe file found for game: {game_dir}")
 
-#End of the Legacy Games Scanner
+# End of the Legacy Games Scanner
