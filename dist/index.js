@@ -800,8 +800,19 @@
                           console.log(`Autoscan is ${settings.autoscan}`);
                           autoscan();
                       }
-                  }, disabled: isCooldown }),
+                  } }),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: isCooldown || settings.autoscan }, isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan')),
+          window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
+              window.SP_REACT.createElement("div", { style: {
+                      backgroundColor: "transparent",
+                      display: "flex",
+                      flexDirection: "column",
+                      padding: "0.5em",
+                      width: "95%",
+                      margin: 0,
+                      outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
+                  } },
+                  window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } }, "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games."))),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Support Us" },
               window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
                   window.SP_REACT.createElement("div", { style: {
@@ -813,7 +824,6 @@
                           margin: 0,
                           outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
                       } },
-                      window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } }, "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games."),
                       window.SP_REACT.createElement("div", { style: { marginTop: '12px', textAlign: 'center' } },
                           window.SP_REACT.createElement("p", null, "If you're feeling generous, all donations are humbly appreciated and accepted. Thank you!"),
                           window.SP_REACT.createElement("div", { style: { display: 'flex', justifyContent: 'center', gap: '10px' } },
