@@ -568,7 +568,7 @@
           transition: 'opacity 1s ease-in-out'
       };
       return ((progress.status != '' && progress.percent < 100) ?
-          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
+          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { onCancel: cancelOperation },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, `${operation}ing Game Launchers`),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null,
                   "Selected options: ",

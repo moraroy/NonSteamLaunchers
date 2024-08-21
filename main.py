@@ -114,10 +114,12 @@ class Plugin:
                     await asyncio.sleep(0.1)
                     continue
                 line = line.decode('utf-8').strip()
+                decky_plugin.logger.info(f"Log line: {line}")
                 await ws.send_str(line)
                 decky_plugin.logger.info(f"Sent log line to WebSocket: {line}")
 
             return ws
+
 
 
         # Create the server application
