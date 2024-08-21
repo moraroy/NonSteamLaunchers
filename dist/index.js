@@ -813,7 +813,7 @@
                       outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
                   } },
                   window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } }, "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...click here for more info!"))),
-          window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Support Us" },
+          window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Support and Donations vvv" },
               window.SP_REACT.createElement("div", { style: {
                       backgroundColor: "transparent",
                       display: "flex",
@@ -822,7 +822,7 @@
                       width: "95%",
                       margin: 0,
                   } },
-                  window.SP_REACT.createElement("div", { style: { marginTop: '10px', textAlign: 'center', fontSize: "12px" } },
+                  window.SP_REACT.createElement("div", { style: { marginTop: '5px', textAlign: 'center', fontSize: "12px" } },
                       window.SP_REACT.createElement("p", null, "If you're feeling generous, all donations are humbly appreciated and accepted. Thank you so much!"),
                       window.SP_REACT.createElement("div", { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' } },
                           window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => window.open('https://www.patreon.com/moraroy', '_blank') },

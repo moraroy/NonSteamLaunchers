@@ -154,7 +154,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         </div>
       </Focusable>
   
-      <PanelSection title="Support Us">
+      <PanelSection title="Support and Donations vvv">
         <div
           style={{
             backgroundColor: "transparent",
@@ -165,7 +165,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             margin: 0,
           }}
         >
-          <div style={{ marginTop: '10px', textAlign: 'center', fontSize: "12px" }}>
+          <div style={{ marginTop: '5px', textAlign: 'center', fontSize: "12px" }}>
             <p>If you're feeling generous, all donations are humbly appreciated and accepted. Thank you so much!</p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
               <ButtonItem layout="below" onClick={() => window.open('https://www.patreon.com/moraroy', '_blank')}>
@@ -186,7 +186,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
       </PanelSection>
     </div>
   );
-}      
+}  
 
 
 export default definePlugin((serverApi: ServerAPI) => {
