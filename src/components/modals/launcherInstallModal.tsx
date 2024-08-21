@@ -10,7 +10,7 @@ import {
     SteamSpinner,
     ProgressBarWithInfo
 } from "decky-frontend-lib";
-import { useState, VFC, useEffect } from "react";
+import { useState, VFC, useEffect, useRef } from "react";
 import { notify } from "../../hooks/notify";
 import { useSettings } from "../../hooks/useSettings";
 import { scan, autoscan } from "../../hooks/scan";
@@ -39,6 +39,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     const [triggerLogUpdates, setTriggerLogUpdates] = useState(false);
     const log = useLogUpdates(triggerLogUpdates);
     const [currentLauncher, setCurrentLauncher] = useState<typeof launcherOptions[0] | null>(null);
+    const logContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const selectedLaunchers = options.filter(option => option.enabled && !option.streaming);
@@ -46,6 +47,12 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
             setCurrentLauncher(selectedLaunchers[0]);
         }
     }, [options]);
+
+    useEffect(() => {
+        if (logContainerRef.current) {
+            logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+        }
+    }, [log]);
 
     const handleToggle = (changeName: string, changeValue: boolean) => {
         const newOptions = options.map(option => {
@@ -149,7 +156,7 @@ export const LauncherInstallModal: VFC<LauncherInstallModalProps> = ({ closeModa
     <DialogBody>
         <SteamSpinner />
         <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height:'100px' }}>
+            <div ref={logContainerRef} style={{ flex: 1, marginRight: '10px', fontSize: 'small', whiteSpace: 'pre-wrap', overflowY: 'auto', maxHeight: '50px', height:'100px' }}>
                 {showLog && log}
             </div>
             <ProgressBarWithInfo
