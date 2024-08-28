@@ -600,7 +600,7 @@ vkplay_url=https://static.gc.vkplay.ru/VKPlayLoader.exe
 # Set the path to save the VK Play Launcher to
 vkplay_file=${logged_in_home}/Downloads/NonSteamLaunchersInstallation/VKPlayLoader.exe
 
-# Set the URL to download the VK Play Launcher file from
+# Set the URL to download the HoYo Play Launcher file from
 hoyoplay_url="https://download-porter.hoyoverse.com/download-porter/2024/06/07/hyp_global_setup_1.0.5.exe?trace_key=HoYoPlay_install_ua_109daee2060b"
 
 # Set the path to save the Hoyo Play Launcher to
@@ -1098,6 +1098,14 @@ function install_gog {
 # Battle.net specific installation steps
 function install_battlenet {
     terminate_processes "Battle.net.exe" #"BlizzardError.exe"
+    # Second installation
+    echo "Starting second installation of Battle.net"
+    "$STEAM_RUNTIME" "$proton_dir/proton" run "$battle_file" Battle.net-Setup.exe --lang=enUS --installpath="C:\Program Files (x86)\Battle.net" &
+    second_install_pid=$!
+    # Wait for both installations to complete
+    wait $first_install_pid
+    wait $second_install_pid
+    terminate_processes "Battle.net.exe" #"BlizzardError.exe"
 }
 
 # Amazon Games specific installation steps
@@ -1272,6 +1280,45 @@ function install_vkplay {
 # Nexon specific installation steps
 function install_nexon {
     terminate_processes "nexon_runtime.e"
+}
+
+# HoYo specific installation steps
+function install_hoyo {
+    hoyo_dir="${logged_in_home}/.local/share/Steam/steamapps/compatdata/${appid}/pfx/drive_c/Program Files/HoYoPlay"
+    installer_file="${logged_in_home}/Downloads/NonSteamLaunchersInstallation/HoYoPlay_install_ua_f368eee6d08d.exe"
+    target_dir="${hoyo_dir}/1.0.5.88"
+
+    echo "Creating directory for HoYoPlay..."
+    mkdir -p "${hoyo_dir}" || { echo "Failed to create directory"; return 1; }
+
+    echo "Copying installer to the target directory..."
+    cp "${installer_file}" "${hoyo_dir}" || { echo "Failed to copy installer"; return 1; }
+
+    echo "Changing directory to the target directory..."
+    cd "${hoyo_dir}" || { echo "Failed to change directory"; return 1; }
+
+    echo "Running 7z extraction..."
+    output=$(7z x "HoYoPlay_install_ua_f368eee6d08d.exe" -o"${hoyo_dir}" -aoa)
+    if [ $? -ne 0 ]; then
+        echo "Extraction failed"
+        echo "7z output: $output"
+        return 1
+    fi
+
+    echo "Extraction completed successfully"
+
+    echo "Copying launcher.exe to the HoYoPlay directory..."
+    cp "${target_dir}/launcher.exe" "${hoyo_dir}/launcher.exe" || { echo "Failed to copy launcher.exe"; return 1; }
+
+    echo "Running HYP.exe..."
+    "$STEAM_RUNTIME" "$proton_dir/proton" run "${target_dir}/HYP.exe" || { echo "Failed to run HYP.exe"; return 1; } &
+    sleep 5  # Wait for 5 seconds before terminating HYP.exe
+    terminate_processes "HYP.exe" "HYPHelper"
+
+    echo "Removing installer file..."
+    rm -f "${hoyo_dir}/HoYoPlay_install_ua_f368eee6d08d.exe" || { echo "Failed to remove installer file"; return 1; }
+
+    echo "HoYoPlay installation steps completed successfully"
 }
 
 
