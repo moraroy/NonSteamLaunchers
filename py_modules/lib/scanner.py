@@ -78,6 +78,8 @@ def initialiseVariables(env_vars):
     psplusshortcutdirectory = env_vars.get('psplusshortcutdirectory')
     global vkplayhortcutdirectory
     vkplayhortcutdirectory = env_vars.get('vkplayhortcutdirectory')
+    global hoyoplayshortcutdirectory
+    hoyoplayshortcutdirectory = env_vars.get('hoyoplayshortcutfirectory')
     global repaireaappshortcutdirectory 
     repaireaappshortcutdirectory = env_vars.get('repaireaappshortcutdirectory')
     #Streaming
@@ -210,6 +212,7 @@ def add_launchers():
     create_new_entry(env_vars.get('minecraftshortcutdirectory'), 'Minecraft: Java Edition', env_vars.get('minecraftlaunchoptions'), env_vars.get('minecraftstartingdir'), None)
     create_new_entry(env_vars.get('psplusshortcutdirectory'), 'Playstation Plus', env_vars.get('pspluslaunchoptions'), env_vars.get('psplusstartingdir'), None)
     create_new_entry(env_vars.get('vkplayhortcutdirectory'), 'VK Play', env_vars.get('vkplaylaunchoptions'), env_vars.get('vkplaystartingdir'), None)
+    create_new_entry(env_vars.get('hoyoplayshortcutdirectory'), 'HoYoPlay', env_vars.get('hoyoplaylaunchoptions'), env_vars.get('hoyoplaystartingdir'), None)
     create_new_entry(env_vars.get('repaireaappshortcutdirectory'), 'Repair EA App', env_vars.get('repaireaapplaunchoptions'), env_vars.get('repaireaappstartingdir'), None)
 
 
