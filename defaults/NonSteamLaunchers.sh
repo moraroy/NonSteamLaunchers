@@ -1619,7 +1619,6 @@ if [[ $options == *"RemotePlayWhatever"* ]]; then
 
     steamos-add-to-steam "$DIRECTORY/RemotePlayWhatever.desktop"
     sleep 5
-    wait
     echo "added RemotePlayWhatever to steamos"
 fi
 
