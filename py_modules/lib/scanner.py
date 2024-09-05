@@ -12,6 +12,7 @@ from scanners.battle_net_scanner import battle_net_scanner
 from scanners.amazon_scanner import amazon_scanner
 from scanners.itchio_scanner import itchio_games_scanner
 from scanners.legacy_scanner import legacy_games_scanner
+from scanners.rpw_scanner import rpw_scanner
 from get_env_vars import refresh_env_vars
 
 env_vars_path = f"{os.environ['HOME']}/.config/systemd/user/env_vars"
@@ -78,6 +79,8 @@ def initialiseVariables(env_vars):
     psplusshortcutdirectory = env_vars.get('psplusshortcutdirectory')
     global vkplayhortcutdirectory
     vkplayhortcutdirectory = env_vars.get('vkplayhortcutdirectory')
+    global hoyoplayshortcutdirectory
+    hoyoplayshortcutdirectory = env_vars.get('hoyoplayshortcutfirectory')
     global repaireaappshortcutdirectory 
     repaireaappshortcutdirectory = env_vars.get('repaireaappshortcutdirectory')
     #Streaming
@@ -104,6 +107,7 @@ def scan():
         amazon_scanner(logged_in_home, amazon_launcher, create_new_entry)
         itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry)
         legacy_games_scanner(logged_in_home, legacy_launcher, create_new_entry)
+        rpw_scanner(logged_in_home, create_new_entry)
     return decky_shortcuts
 
 def addCustomSite(customSiteJSON):
@@ -151,30 +155,33 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
 
 # Add or update the proton compatibility settings
 def add_compat_tool(launchoptions):
-    if 'chrome' in launchoptions:
+    if 'chrome' in launchoptions or '--appid 0' in launchoptions:
         return False
     else:
         return compat_tool_name
 
-def create_new_entry(exe, appname, launchoptions, startingdir, launcher):    
+
+def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     global decky_shortcuts
     # Check if the launcher is installed
-    if not exe or not appname or not launchoptions or not startingdir:
-        decky_plugin.logger.info(f"{appname} is not installed. Skipping.")
+    if not exe or not appname or not startingdir:
+        decky_plugin.logger.info(f"Skipping creation for {appname}. Missing fields: exe={exe}, appname={appname}, startingdir={startingdir}")
         return
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
-    
+
     # Initialize artwork variables
     icon, logo64, hero64, gridp64, grid64, launcher_icon = None, None, None, None, None, None
-    
+
     # Skip artwork fetching for specific shortcuts
-    if appname not in ["NonSteamLaunchers", "Repair EA App"]:
+    if appname not in ["NonSteamLaunchers", "Repair EA App", "RemotePlayWhatever"]:
         # Get artwork
         game_id = get_game_id(appname)
-        if game_id is not None:
+        if game_id is not None and game_id != "default_game_id":
             icon, logo64, hero64, gridp64, grid64, launcher_icon = get_sgdb_art(game_id, launcher)
-    
+        else:
+            decky_plugin.logger.info(f"No valid game ID found for {appname}. Skipping artwork download.")
+
     # Create a new entry for the Steam shortcut
     compatTool = add_compat_tool(launchoptions)
     decky_entry = {
@@ -194,6 +201,8 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
 
+
+
 def add_launchers():
     create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'), None)
     create_new_entry(env_vars.get('gogshortcutdirectory'), 'GOG Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'), None)
@@ -210,6 +219,7 @@ def add_launchers():
     create_new_entry(env_vars.get('minecraftshortcutdirectory'), 'Minecraft: Java Edition', env_vars.get('minecraftlaunchoptions'), env_vars.get('minecraftstartingdir'), None)
     create_new_entry(env_vars.get('psplusshortcutdirectory'), 'Playstation Plus', env_vars.get('pspluslaunchoptions'), env_vars.get('psplusstartingdir'), None)
     create_new_entry(env_vars.get('vkplayhortcutdirectory'), 'VK Play', env_vars.get('vkplaylaunchoptions'), env_vars.get('vkplaystartingdir'), None)
+    create_new_entry(env_vars.get('hoyoplayshortcutdirectory'), 'HoYoPlay', env_vars.get('hoyoplaylaunchoptions'), env_vars.get('hoyoplaystartingdir'), None)
     create_new_entry(env_vars.get('repaireaappshortcutdirectory'), 'Repair EA App', env_vars.get('repaireaapplaunchoptions'), env_vars.get('repaireaappstartingdir'), None)
 
 

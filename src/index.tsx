@@ -32,6 +32,8 @@ const initialOptions = [
   { name: 'indieGala', label: 'IndieGala Client', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/8348173ba70a643e9d0077c1605ce0ad.jpg' },
   { name: 'rockstarGamesLauncher', label: 'Rockstar Games Launcher', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg' },
   { name: 'psPlus', label: 'Playstation Plus', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg' },
+  { name: 'hoyoPlay', label: 'HoYoPlay', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/3a4cffbfa1ae7220344b83ea754c46c4.jpg' },
+  { name: 'remotePlayWhatever', label: 'RemotePlayWhatever', URL: '', streaming: false, enabled: false, urlimage: 'https://opengraph.githubassets.com/68a584618d805217b103796afb7b13309abf7f9199e7299c9d31d4402184e963/m4dEngi/RemotePlayWhatever' },
   { name: 'xboxGamePass', label: 'Xbox Game Pass', URL: 'https://www.xbox.com/play', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/167b7d08b38facb1c06185861a5845dd.jpg' },
   { name: 'fortnite', label: 'Fortnite (xCloud)', URL: 'https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg' },
   { name: 'geforceNow', label: 'GeForce Now', URL: 'https://play.geforcenow.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/5e7e6e76699ea804c65b0c37974c660c.jpg' },
