@@ -1056,7 +1056,7 @@ function install_gog {
     echo "# Downloading & Installing Gog Galaxy...Please wait..."
 
     # Cancel & Exit the GOG Galaxy Setup Wizard
-    end=$((SECONDS+60))  # Timeout after 60 seconds
+    end=$((SECONDS+180))  # Timeout after 60 seconds
     while true; do
         if pgrep -f "GalaxySetup.tmp" > /dev/null; then
             pkill -f "GalaxySetup.tmp"
@@ -1097,14 +1097,6 @@ function install_gog {
 
 # Battle.net specific installation steps
 function install_battlenet {
-    terminate_processes "Battle.net.exe" #"BlizzardError.exe"
-    # Second installation
-    echo "Starting second installation of Battle.net"
-    "$STEAM_RUNTIME" "$proton_dir/proton" run "$battle_file" Battle.net-Setup.exe --lang=enUS --installpath="C:\Program Files (x86)\Battle.net" &
-    second_install_pid=$!
-    # Wait for both installations to complete
-    wait $first_install_pid
-    wait $second_install_pid
     terminate_processes "Battle.net.exe" #"BlizzardError.exe"
 }
 
@@ -1606,20 +1598,6 @@ if [[ $options == *"RemotePlayWhatever"* ]]; then
     chmod +x "$DIRECTORY/RemotePlayWhatever"
 
     echo "RemotePlayWhatever downloaded, renamed to Remote Play Whatever, made executable, created in $DIRECTORY"
-
-    # Create a new .desktop file
-    echo "[Desktop Entry]
-    Type=Application
-    Exec=$DIRECTORY/RemotePlayWhatever \"--appid 0\"
-    Name=RemotePlayWhatever
-    Icon=$DIRECTORY/RemotePlayWhatever" > "$DIRECTORY/RemotePlayWhatever.desktop"
-
-    # Make the .desktop file executable
-    chmod +x "$DIRECTORY/RemotePlayWhatever.desktop"
-
-    steamos-add-to-steam "$DIRECTORY/RemotePlayWhatever.desktop"
-    sleep 5
-    echo "added RemotePlayWhatever to steamos"
 fi
 
 
