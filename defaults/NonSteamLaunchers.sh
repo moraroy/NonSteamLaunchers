@@ -1598,6 +1598,16 @@ if [[ $options == *"RemotePlayWhatever"* ]]; then
     chmod +x "$DIRECTORY/RemotePlayWhatever"
 
     echo "RemotePlayWhatever downloaded, renamed to Remote Play Whatever, made executable, created in $DIRECTORY"
+
+    # Create a new .desktop file
+    echo "[Desktop Entry]
+    Type=Application
+    Exec=$DIRECTORY/RemotePlayWhatever \"--appid 0\"
+    Name=RemotePlayWhatever
+    Icon=$DIRECTORY/RemotePlayWhatever" > "$DIRECTORY/RemotePlayWhatever.desktop"
+
+    # Make the .desktop file executable
+    chmod +x "$DIRECTORY/RemotePlayWhatever.desktop"
 fi
 
 
