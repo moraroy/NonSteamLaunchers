@@ -239,6 +239,20 @@ class Plugin:
         else:
             decky_plugin.logger.info("No changes made, skipping daemon reload")
 
+
+        
+        decky_plugin.logger.info("Running Migration Game Save Backup...")
+        # Run the Ludusavi backup command
+        process = subprocess.Popen(
+            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT
+        )
+
+        # Wait for the process to complete
+        process.wait()
+        decky_plugin.logger.info("Backup Migration Game Save Scan completed")
+
         
     async def _unload(self):
         decky_plugin.logger.info("Plugin Unloaded!")
