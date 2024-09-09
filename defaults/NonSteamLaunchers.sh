@@ -45,7 +45,7 @@ exec > >(stdbuf -oL tee -a $log_file) 2>&1
 
 
 # Version number (major.minor)
-version=v3.9.2
+version=v3.9.4
 #NSL DECKY VERSION (NO RCE)
 
 
