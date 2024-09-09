@@ -61,6 +61,7 @@ class Plugin:
                     # Run the Ludusavi backup command
                     process = await asyncio.create_subprocess_exec(
                         "flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force",
+                        "--config", f"{DECKY_USER_HOME}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/",
                         stdout=asyncio.subprocess.DEVNULL,
                         stderr=asyncio.subprocess.STDOUT
                     )
@@ -82,6 +83,7 @@ class Plugin:
             return ws
 
 
+
         async def handleScan(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
@@ -101,7 +103,7 @@ class Plugin:
                 decky_plugin.logger.info("Running Manual Scan Game Save backup...")
                 # Run the Ludusavi backup command
                 process = subprocess.Popen(
-                    ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force"],
+                    ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force", "--config", f"{DECKY_USER_HOME}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/"],
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT
                 )
@@ -244,7 +246,7 @@ class Plugin:
         decky_plugin.logger.info("Running Migration Game Save Backup...")
         # Run the Ludusavi backup command
         process = subprocess.Popen(
-            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force"],
+            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force", "--config", f"{DECKY_USER_HOME}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT
         )
