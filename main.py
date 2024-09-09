@@ -37,9 +37,7 @@ class Plugin:
     async def _main(self):
         decky_plugin.logger.info("This is _main being called")
         self.settings = SettingsManager(name="config", settings_directory=decky_plugin.DECKY_PLUGIN_SETTINGS_DIR)
-        # Get the path to the Decky user's home directory
         decky_user_home = decky_plugin.DECKY_USER_HOME
-        # Set default settings for fallback
         defaultSettings = {"autoscan": False, "customSites": ""}
 
         async def handleAutoScan(request):
@@ -47,41 +45,80 @@ class Plugin:
             ws = web.WebSocketResponse()
             await ws.prepare(request)
             decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', defaultSettings)['autoscan']}")
-            while (self.settings.getSetting('settings', defaultSettings)['autoscan'] is True):
-                decky_shortcuts = scan()
-                if self.settings.getSetting('settings', defaultSettings)['autoscan'] is False:
-                    decky_plugin.logger.info(f"Autoscan setting is false, stopping")
-                    return ws
-                if not decky_shortcuts:
-                    decky_plugin.logger.info(f"No shortcuts to send")
-                    await asyncio.sleep(5)  # Wait for 5 seconds before the next iteration
-                    continue
-                for game in decky_shortcuts.values():
-                    if game.get('appname') is None or game.get('exe') is None:
-                        continue
-                    decky_plugin.logger.info(f"Sending game data to client")
-                    # Send the game data to the client
-                    await ws.send_json(game)
-                await asyncio.sleep(5)
-            decky_plugin.logger.info(f"Autoscan setting is false, stopping")
+            try:
+                while self.settings.getSetting('settings', defaultSettings)['autoscan']:
+                    decky_shortcuts = scan()
+                    if not decky_shortcuts:
+                        decky_plugin.logger.info(f"No shortcuts to send")
+                    else:
+                        for game in decky_shortcuts.values():
+                            if game.get('appname') is None or game.get('exe') is None:
+                                continue
+                            decky_plugin.logger.info(f"Sending game data to client")
+                            await ws.send_json(game)
+
+                    decky_plugin.logger.info("Running Auto Scan Game Save backup...")
+                    # Run the Ludusavi backup command
+                    process = await asyncio.create_subprocess_exec(
+                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force",
+                        stdout=asyncio.subprocess.DEVNULL,
+                        stderr=asyncio.subprocess.STDOUT
+                    )
+
+                    # Wait for the process to complete
+                    await process.wait()
+                    decky_plugin.logger.info("Backup Auto Scan Game Save completed")
+
+                    await asyncio.sleep(5)
+
+                decky_plugin.logger.info("Exiting AutoScan loop")
+
+            except Exception as e:
+                decky_plugin.logger.error(f"Error during AutoScan: {e}")
+
+            finally:
+                await ws.close()
+
             return ws
-        
+
+
         async def handleScan(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
             decky_plugin.logger.info(f"Called Manual Scan")
-            decky_shortcuts = scan()
-            if not decky_shortcuts:
-                decky_plugin.logger.info(f"No shortcuts")
-            else:
-                for game in decky_shortcuts.values():
-                    if game.get('appname') is None or game.get('exe') is None:
-                        continue
-                    decky_plugin.logger.info(f"Sending game data to client")
-                    # Send the game data to the client
-                    await ws.send_json(game)
+            try:
+                decky_shortcuts = scan()
+                if not decky_shortcuts:
+                    decky_plugin.logger.info(f"No shortcuts to send")
+                else:
+                    for game in decky_shortcuts.values():
+                        if game.get('appname') is None or game.get('exe') is None:
+                            continue
+                        decky_plugin.logger.info(f"Sending game data to client")
+                        # Send the game data to the client
+                        await ws.send_json(game)
+
+                decky_plugin.logger.info("Running Manual Scan Game Save backup...")
+                # Run the Ludusavi backup command
+                process = subprocess.Popen(
+                    ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.STDOUT
+                )
+
+                # Wait for the process to complete
+                process.wait()
+                decky_plugin.logger.info("Backup Manual Scan Game Save completed")
+
+            except Exception as e:
+                decky_plugin.logger.error(f"Error during Manual Scan: {e}")
+
+            finally:
+                await ws.close()
+
             return ws
-        
+
+
         async def handleCustomSite(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
@@ -100,11 +137,11 @@ class Plugin:
                         # Send the game data to the client
                         await ws.send_json(game)
             return ws
-        
+
         async def handleLogUpdates(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
-            log_file_path = os.path.join(DECKY_USER_HOME, 'Downloads', 'NonSteamLaunchers-install.log')
+            log_file_path = os.path.join(decky_user_home, 'Downloads', 'NonSteamLaunchers-install.log')
 
             def start_tail_process():
                 return subprocess.Popen(['tail', '-n', '+1', '-f', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
