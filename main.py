@@ -60,8 +60,7 @@ class Plugin:
                     decky_plugin.logger.info("Running Auto Scan Game Save backup...")
                     # Run the Ludusavi backup command
                     process = await asyncio.create_subprocess_exec(
-                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force",
-                        "--config", f"{DECKY_USER_HOME}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/",
+                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
                         stdout=asyncio.subprocess.DEVNULL,
                         stderr=asyncio.subprocess.STDOUT
                     )
@@ -84,6 +83,7 @@ class Plugin:
 
 
 
+
         async def handleScan(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
@@ -102,14 +102,14 @@ class Plugin:
 
                 decky_plugin.logger.info("Running Manual Scan Game Save backup...")
                 # Run the Ludusavi backup command
-                process = subprocess.Popen(
-                    ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force", "--config", f"{DECKY_USER_HOME}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.STDOUT
+                process = await asyncio.create_subprocess_exec(
+                    "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                    stdout=asyncio.subprocess.DEVNULL,
+                    stderr=asyncio.subprocess.STDOUT
                 )
 
                 # Wait for the process to complete
-                process.wait()
+                await process.wait()
                 decky_plugin.logger.info("Backup Manual Scan Game Save completed")
 
             except Exception as e:
@@ -242,18 +242,17 @@ class Plugin:
             decky_plugin.logger.info("No changes made, skipping daemon reload")
 
 
-        
-        decky_plugin.logger.info("Running Migration Game Save Backup...")
+        decky_plugin.logger.info("Running Migration Game Save backup...")
         # Run the Ludusavi backup command
         process = subprocess.Popen(
-            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "backup", "--force", "--config", f"{DECKY_USER_HOME}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/"],
+            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT
         )
-
         # Wait for the process to complete
         process.wait()
         decky_plugin.logger.info("Backup Migration Game Save Scan completed")
+
 
         
     async def _unload(self):
