@@ -45,7 +45,7 @@ exec > >(stdbuf -oL tee -a $log_file) 2>&1
 
 
 # Version number (major.minor)
-version=v3.9.2
+version=v3.9.4
 #NSL DECKY VERSION (NO RCE)
 
 
@@ -1022,6 +1022,16 @@ export STEAM_COMPAT_DATA_PATH="${logged_in_home}/.local/share/Steam/steamapps/co
 
 
 
+if [[ $options == *"NSLGameSaves"* ]]; then
+    echo "Running restore..."
+    nohup flatpak run com.github.mtkennerly.ludusavi --config "${logged_in_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/" restore --force > /dev/null 2>&1 &
+    wait $!
+    echo "Restore completed"
+    zenity --info --text="Restore was successful" --timeout=5
+    exit 0
+fi
+
+
 ###Launcher Installations
 #Terminate Processese
 function terminate_processes {
@@ -1484,6 +1494,171 @@ if [[ $options == *"Netflix"* ]] || [[ $options == *"Fortnite"* ]] || [[ $option
         flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
     fi
 fi
+
+echo "99.1"
+echo "# Checking if Ludusavi is installed...please wait..."
+
+# AutoInstall Ludusavi
+# Check if Ludusavi is already installed
+if flatpak list | grep com.github.mtkennerly.ludusavi &> /dev/null; then
+    echo "Ludusavi is already installed"
+else
+    # Check if the Flathub repository exists
+    if flatpak remote-list | grep flathub &> /dev/null; then
+        echo "Flathub repository exists"
+    else
+        # Add the Flathub repository
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    fi
+
+    # Install Ludusavi
+    flatpak install --user flathub com.github.mtkennerly.ludusavi -y
+fi
+
+echo "Ludusavi installation script completed"
+
+# Ensure Ludusavi is installed before proceeding
+if ! flatpak list | grep com.github.mtkennerly.ludusavi &> /dev/null; then
+    echo "Ludusavi installation failed. Exiting script."
+    exit 1
+fi
+
+
+
+# Setting up Backup Saves through Ludusavi
+
+# Define the directory and file path
+config_dir="${logged_in_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi"
+nsl_config_dir="$config_dir/NSLconfig"
+backup_dir="$config_dir/config_backups"
+timestamp=$(date +%m-%d-%Y_%H:%M:%S)
+backup_config_file="$backup_dir/config.yaml.bak_$timestamp"
+
+# Create the backup directory if it doesn't exist
+mkdir -p "$backup_dir"
+
+# Backup existing config.yaml if it exists
+if [ -f "$config_dir/config.yaml" ]; then
+    cp "$config_dir/config.yaml" "$backup_config_file"
+    echo "Existing config.yaml backed up to $backup_config_file"
+fi
+
+# Create the NSLconfig directory if it doesn't exist
+mkdir -p "$nsl_config_dir"
+
+# Write the configuration to the NSLconfig file
+cat <<EOL > "$nsl_config_dir/config.yaml"
+---
+runtime:
+  threads: ~
+release:
+  check: true
+manifest:
+  enable: true
+language: en-US
+theme: light
+roots:
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/EpicGamesLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/GogGalaxyLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/UplayLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/Battle.netLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/TheEAappLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/AmazonGamesLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/itchioLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/LegacyGamesLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/HumbleGamesLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/IndieGalaLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/RockstarGamesLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/GlyphLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/PlaystationPlusLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/VKPlayLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/HoYoPlayLauncher/pfx/drive_c/
+  - store: otherWindows
+    path: ${logged_in_home}/.local/share/Steam/steamapps/compatdata/NexonLauncher/pfx/drive_c/
+redirects: []
+backup:
+  path: ${logged_in_home}/NSLGameSaves
+  ignoredGames: []
+  filter:
+    excludeStoreScreenshots: false
+    cloud:
+      exclude: false
+      epic: false
+      gog: false
+      origin: false
+      steam: false
+      uplay: false
+    ignoredPaths: []
+    ignoredRegistry: []
+  toggledPaths: {}
+  toggledRegistry: {}
+  sort:
+    key: status
+    reversed: false
+  retention:
+    full: 1
+    differential: 0
+  format:
+    chosen: simple
+    zip:
+      compression: deflate
+    compression:
+      deflate:
+        level: 6
+      bzip2:
+        level: 6
+      zstd:
+        level: 10
+restore:
+  path: ${logged_in_home}/NSLGameSaves
+  ignoredGames: []
+  toggledPaths: {}
+  toggledRegistry: {}
+  sort:
+    key: status
+    reversed: false
+scan:
+  showDeselectedGames: true
+  showUnchangedGames: true
+  showUnscannedGames: true
+cloud:
+  remote: ~
+  path: NSLGameSaves
+  synchronize: true
+apps:
+  rclone:
+    path: ""
+    arguments: "--fast-list --ignore-checksum"
+customGames: []
+EOL
+
+# Run Once
+echo "Running backup..."
+nohup flatpak run com.github.mtkennerly.ludusavi --config "$nsl_config_dir" backup --force > /dev/null 2>&1 &
+wait $!
+echo "Backup completed"
+# End of Ludusavi configuration
+
+
+
+
 
 
     echo "100"
