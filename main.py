@@ -38,7 +38,7 @@ class Plugin:
         decky_plugin.logger.info("This is _main being called")
         self.settings = SettingsManager(name="config", settings_directory=decky_plugin.DECKY_PLUGIN_SETTINGS_DIR)
         decky_user_home = decky_plugin.DECKY_USER_HOME
-        defaultSettings = {"autoscan": False, "customSites": ""}
+        defaultSettings = {"autoscan": True, "customSites": ""}
 
         async def run_backup(decky_user_home):
             decky_plugin.logger.info("Running Game Save backup...")
