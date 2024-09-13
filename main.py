@@ -87,6 +87,7 @@ class Plugin:
 
             return ws
 
+
         async def handleScan(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
