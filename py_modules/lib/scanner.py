@@ -177,6 +177,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     if appname not in ["NonSteamLaunchers", "Repair EA App", "RemotePlayWhatever"]:
         # Get artwork
         game_id = get_game_id(appname)
+        decky_plugin.logger.info(f"Game ID for {appname}: {game_id}")
         if game_id is not None and game_id != "default_game_id":
             icon, logo64, hero64, gridp64, grid64, launcher_icon = get_sgdb_art(game_id, launcher)
         else:
@@ -200,7 +201,6 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
-
 
 
 def add_launchers():
