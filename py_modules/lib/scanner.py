@@ -203,6 +203,9 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
 
 
+
+
+
 def add_launchers():
     create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'), None)
     create_new_entry(env_vars.get('gogshortcutdirectory'), 'GOG Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'), None)
@@ -254,8 +257,11 @@ def get_sgdb_art(game_id, launcher):
 
 
 
-
 def download_artwork(game_id, art_type, dimensions=None):
+    if not game_id:
+        decky_plugin.logger.info(f"Skipping download for {art_type} artwork. Game ID is empty.")
+        return None
+
     # If the result is not in the cache, make the API call
     decky_plugin.logger.info(f"Game ID: {game_id}")
     url = f"{proxy_url}/{art_type}/game/{game_id}"
