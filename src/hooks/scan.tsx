@@ -16,8 +16,13 @@ async function setupWebSocket(url: string, onMessage: (data: any) => void) {
         console.log(`Received data from NSL server: ${e.data}`);
         if (e.data[0] === '{' && e.data[e.data.length - 1] === '}') {
             try {
-                const game = JSON.parse(e.data);
-                await onMessage(game);  // Process each game entry one at a time
+                const message = JSON.parse(e.data);
+                if (message.status === "Manual scan completed") {
+                    console.log('Manual scan completed');
+                    ws.close();  // Close the WebSocket connection
+                } else {
+                    await onMessage(message);  // Process each game entry one at a time
+                }
             } catch (error) {
                 console.error(`Error parsing data as JSON: ${error}`);
             }
@@ -43,14 +48,13 @@ async function setupWebSocket(url: string, onMessage: (data: any) => void) {
 export async function scan() {
     console.log('Starting NSL Scan');
     return new Promise<void>((resolve) => {
-      const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut);
-      ws.onclose = () => {
-        console.log('NSL Scan completed');
-        resolve();
-      };
+        const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut);
+        ws.onclose = () => {
+            console.log('NSL Scan completed');
+            resolve();
+        };
     });
-  }
-  
+}
 
 export async function autoscan() {
     console.log('Starting NSL Autoscan');

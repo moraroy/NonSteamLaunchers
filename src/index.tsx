@@ -106,7 +106,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             }
           }}
         />
-        <ButtonItem layout="below" onClick={handleScanClick} disabled={isLoading}>
+        <ButtonItem layout="below" onClick={handleScanClick} disabled={isLoading || settings.autoscan}>
           {isLoading ? 'Scanning...' : 'Manual Scan'}
         </ButtonItem>
       </PanelSection>

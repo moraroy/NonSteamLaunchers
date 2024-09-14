@@ -111,6 +111,9 @@ class Plugin:
                     await process.wait()
                     decky_plugin.logger.info("Backup Manual Scan Game Save completed")
 
+                    # Send a message indicating the manual scan has completed
+                    await ws.send_json({"status": "Manual scan completed"})
+
             except Exception as e:
                 decky_plugin.logger.error(f"Error during Manual Scan: {e}")
 

@@ -378,8 +378,14 @@
           console.log(`Received data from NSL server: ${e.data}`);
           if (e.data[0] === '{' && e.data[e.data.length - 1] === '}') {
               try {
-                  const game = JSON.parse(e.data);
-                  await onMessage(game); // Process each game entry one at a time
+                  const message = JSON.parse(e.data);
+                  if (message.status === "Manual scan completed") {
+                      console.log('Manual scan completed');
+                      ws.close(); // Close the WebSocket connection
+                  }
+                  else {
+                      await onMessage(message); // Process each game entry one at a time
+                  }
               }
               catch (error) {
                   console.error(`Error parsing data as JSON: ${error}`);
@@ -764,7 +770,7 @@
                           autoscan();
                       }
                   } }),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: isLoading }, isLoading ? 'Scanning...' : 'Manual Scan')),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: isLoading || settings.autoscan }, isLoading ? 'Scanning...' : 'Manual Scan')),
           window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
               window.SP_REACT.createElement("div", { style: {
                       backgroundColor: "transparent",
