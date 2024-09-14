@@ -12,12 +12,12 @@ async function setupWebSocket(url: string, onMessage: (data: any) => void) {
         }
     };
 
-    ws.onmessage = (e) => {
+    ws.onmessage = async (e) => {
         console.log(`Received data from NSL server: ${e.data}`);
         if (e.data[0] === '{' && e.data[e.data.length - 1] === '}') {
             try {
                 const game = JSON.parse(e.data);
-                onMessage(game);
+                await onMessage(game);  // Process each game entry one at a time
             } catch (error) {
                 console.error(`Error parsing data as JSON: ${error}`);
             }
