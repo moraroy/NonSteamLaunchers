@@ -747,7 +747,7 @@
       const greetings = ["Is it just me? Or does the Rog Ally kinda s... actually, nevermind.", "Welcome to NSL!", "Hello, happy gaming!", "Good to see you again!", "Wow! You look amazing today...is that a new haircut?", "Hey! Thinkin' of changing the name of NSL to 'Nasty Lawn Chairs'. What do you think?", "'A'... that other handheld is a little 'Sus' if you ask me. I don't trust him.", "What the heck is a Lenovo anyway? It needs to 'Go' and get outta here.", "Why couldn't Ubisoft access the servers?... Cuz it couldnt 'Connect'.", "Some said it couldnt be done, making a plugin like this... haters gonna hate, haters gonna marinate.", "I hope you have a blessed day today!", "Just wanted to say, I love you to the sysmoon and back.", "Whats further? Half Life 3 or Gog Galaxy?", "I went on a date with a linux jedi once... it didnt work out cuz they kept kept trying to force compatability.", "NSL has updated succesfully. It now has more launchers than Elon Musk.", "You installed another launcher? ...pff, when are you going to learn bro?", "So how are we wasting our time today?"];
       const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
       // End of Random Greetings
-      React.useState(false);
+      const [isFocused, setIsFocused] = React.useState(false);
       const [isLoading, setIsLoading] = React.useState(false);
       const [isManualScanComplete, setIsManualScanComplete] = React.useState(false);
       const handleScanClick = async () => {
@@ -787,7 +787,8 @@
               } },
               window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } },
                   "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...",
-                  window.SP_REACT.createElement("a", { href: "https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck", target: "_blank", style: { color: 'blue', textDecoration: 'underline' } }, "click here"),
+                  window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
+                      window.SP_REACT.createElement("a", { href: "https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck", target: "_blank", style: { color: 'blue', textDecoration: 'underline' } }, "click here")),
                   "for more info!")),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Support and Donations vvv" },
               window.SP_REACT.createElement("div", { style: {
