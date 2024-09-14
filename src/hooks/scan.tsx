@@ -43,13 +43,14 @@ async function setupWebSocket(url: string, onMessage: (data: any) => void) {
 export async function scan() {
     console.log('Starting NSL Scan');
     return new Promise<void>((resolve) => {
-        const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut);
-        ws.onclose = () => {
-            console.log('NSL Scan completed');
-            resolve();
-        };
+      const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut);
+      ws.onclose = () => {
+        console.log('NSL Scan completed');
+        resolve();
+      };
     });
-}
+  }
+  
 
 export async function autoscan() {
     console.log('Starting NSL Autoscan');

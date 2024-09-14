@@ -9,7 +9,7 @@ import {
   showModal,
   Focusable
 } from "decky-frontend-lib";
-import { useState, useEffect, VFC } from "react";
+import { useState, VFC } from "react";
 import { RxRocket } from "react-icons/rx";
 import { notify } from "./hooks/notify";
 import { CustomSiteModal } from "./components/modals/customSiteModal";
@@ -65,41 +65,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // State for cooldown
-  const [isCooldown, setIsCooldown] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
-
-  // useEffect to handle the cooldown timer
-  useEffect(() => {
-    let timer;
-    if (isCooldown) {
-      timer = setInterval(() => {
-        setCooldownTime((prevTime) => {
-          if (prevTime <= 1) {
-            clearInterval(timer);
-            setIsCooldown(false);
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isCooldown]);
-
-  // Function to handle manual scan click
   const handleScanClick = async () => {
-    if (!isCooldown) {
-      setIsLoading(true); // Set loading state to true
-      await scan(); // Perform the scan action
-      setIsLoading(false); // Set loading state to false
-
-      // Start the cooldown
-      setIsCooldown(true);
-      setCooldownTime(30); // Set cooldown time in seconds
-    }
+    setIsLoading(true); // Set loading state to true
+    await scan(); // Perform the scan action
+    setIsLoading(false); // Set loading state to false
   };
-
+  
   return (
     <div className="decky-plugin">
       <PanelSectionRow style={{ fontSize: "10px", fontStyle: "italic", fontWeight: "bold", marginBottom: "10px", textAlign: "center" }}>
@@ -135,10 +106,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             }
           }}
         />
-        <ButtonItem layout="below" onClick={handleScanClick} disabled={settings.autoscan || isCooldown}>
-          {isLoading ? 'Waiting for scan to complete...' : 'Manual Scan'}
+        <ButtonItem layout="below" onClick={handleScanClick} disabled={isLoading}>
+          {isLoading ? 'Scanning...' : 'Manual Scan'}
         </ButtonItem>
-        {isCooldown && <PanelSectionRow>Cooldown: {cooldownTime}s</PanelSectionRow>}
       </PanelSection>
   
       <Focusable
@@ -210,4 +180,3 @@ export default definePlugin((serverApi: ServerAPI) => {
     icon: <RxRocket />,
   };
 });
-
