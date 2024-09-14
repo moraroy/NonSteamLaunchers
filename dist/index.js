@@ -363,7 +363,7 @@
       return { settings, setAutoScan, setCustomSites };
   };
 
-  async function setupWebSocket(url, onMessage) {
+  async function setupWebSocket(url, onMessage, onComplete) {
       const ws = new WebSocket(url);
       ws.onopen = () => {
           console.log('NSL WebSocket connection opened');
@@ -381,7 +381,7 @@
                   const message = JSON.parse(e.data);
                   if (message.status === "Manual scan completed") {
                       console.log('Manual scan completed');
-                      ws.close(); // Close the WebSocket connection
+                      onComplete(); // Trigger the completion callback
                   }
                   else {
                       await onMessage(message); // Process each game entry one at a time
@@ -400,24 +400,24 @@
           console.log(`NSL WebSocket connection closed, code: ${e.code}, reason: ${e.reason}`);
           if (e.code !== 1000) {
               console.log(`Unexpected close of WS NSL connection, reopening`);
-              setupWebSocket(url, onMessage);
+              setupWebSocket(url, onMessage, onComplete);
           }
       };
       return ws;
   }
-  async function scan() {
+  async function scan(onComplete) {
       console.log('Starting NSL Scan');
       return new Promise((resolve) => {
-          const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut);
-          ws.onclose = () => {
+          setupWebSocket('ws://localhost:8675/scan', createShortcut, () => {
               console.log('NSL Scan completed');
+              onComplete(); // Trigger the completion callback
               resolve();
-          };
+          });
       });
   }
   async function autoscan() {
       console.log('Starting NSL Autoscan');
-      await setupWebSocket('ws://localhost:8675/autoscan', createShortcut);
+      await setupWebSocket('ws://localhost:8675/autoscan', createShortcut, () => { });
   }
 
   const useLogUpdates = (trigger) => {
@@ -749,11 +749,17 @@
       // End of Random Greetings
       const [isFocused, setIsFocused] = React.useState(false);
       const [isLoading, setIsLoading] = React.useState(false);
+      const [isManualScanComplete, setIsManualScanComplete] = React.useState(false);
       const handleScanClick = async () => {
           setIsLoading(true); // Set loading state to true
-          await scan(); // Perform the scan action
+          await scan(() => setIsManualScanComplete(true)); // Perform the scan action and set completion state
           setIsLoading(false); // Set loading state to false
       };
+      React.useEffect(() => {
+          if (isManualScanComplete) {
+              setIsManualScanComplete(false); // Reset the completion state
+          }
+      }, [isManualScanComplete]);
       return (window.SP_REACT.createElement("div", { className: "decky-plugin" },
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "10px", fontStyle: "italic", fontWeight: "bold", marginBottom: "10px", textAlign: "center" } }, randomGreeting),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Install" },

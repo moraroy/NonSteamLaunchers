@@ -9,7 +9,7 @@ import {
   showModal,
   Focusable
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { useState, useEffect, VFC } from "react";
 import { RxRocket } from "react-icons/rx";
 import { notify } from "./hooks/notify";
 import { CustomSiteModal } from "./components/modals/customSiteModal";
@@ -64,13 +64,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isManualScanComplete, setIsManualScanComplete] = useState(false);
 
   const handleScanClick = async () => {
     setIsLoading(true); // Set loading state to true
-    await scan(); // Perform the scan action
+    await scan(() => setIsManualScanComplete(true)); // Perform the scan action and set completion state
     setIsLoading(false); // Set loading state to false
   };
-  
+
+  useEffect(() => {
+    if (isManualScanComplete) {
+      setIsManualScanComplete(false); // Reset the completion state
+    }
+  }, [isManualScanComplete]);
+
   return (
     <div className="decky-plugin">
       <PanelSectionRow style={{ fontSize: "10px", fontStyle: "italic", fontWeight: "bold", marginBottom: "10px", textAlign: "center" }}>

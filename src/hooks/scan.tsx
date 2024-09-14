@@ -1,6 +1,6 @@
 import { createShortcut } from "./createShortcut";
 
-async function setupWebSocket(url: string, onMessage: (data: any) => void) {
+async function setupWebSocket(url: string, onMessage: (data: any) => void, onComplete: () => void) {
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
@@ -19,7 +19,7 @@ async function setupWebSocket(url: string, onMessage: (data: any) => void) {
                 const message = JSON.parse(e.data);
                 if (message.status === "Manual scan completed") {
                     console.log('Manual scan completed');
-                    ws.close();  // Close the WebSocket connection
+                    onComplete();  // Trigger the completion callback
                 } else {
                     await onMessage(message);  // Process each game entry one at a time
                 }
@@ -38,25 +38,25 @@ async function setupWebSocket(url: string, onMessage: (data: any) => void) {
         console.log(`NSL WebSocket connection closed, code: ${e.code}, reason: ${e.reason}`);
         if (e.code !== 1000) {
             console.log(`Unexpected close of WS NSL connection, reopening`);
-            setupWebSocket(url, onMessage);
+            setupWebSocket(url, onMessage, onComplete);
         }
     };
 
     return ws;
 }
 
-export async function scan() {
+export async function scan(onComplete: () => void) {
     console.log('Starting NSL Scan');
     return new Promise<void>((resolve) => {
-        const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut);
-        ws.onclose = () => {
+        const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut, () => {
             console.log('NSL Scan completed');
+            onComplete();  // Trigger the completion callback
             resolve();
-        };
+        });
     });
 }
 
 export async function autoscan() {
     console.log('Starting NSL Autoscan');
-    await setupWebSocket('ws://localhost:8675/autoscan', createShortcut);
+    await setupWebSocket('ws://localhost:8675/autoscan', createShortcut, () => {});
 }
