@@ -33,10 +33,9 @@ def camel_to_title(s):
     # Convert the first character of each word to uppercase and join the words with spaces
     return ' '.join(word.capitalize() for word in words)
 
-class Plugin:
-    def __init__(self):
-        self.scan_lock = asyncio.Lock()
+scan_lock = asyncio.Lock()
 
+class Plugin:
     async def _main(self):
         decky_plugin.logger.info("This is _main being called")
         self.settings = SettingsManager(name="config", settings_directory=decky_plugin.DECKY_PLUGIN_SETTINGS_DIR)
@@ -49,7 +48,7 @@ class Plugin:
             await ws.prepare(request)
             decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', defaultSettings)['autoscan']}")
             try:
-                async with self.scan_lock:
+                async with scan_lock:
                     while self.settings.getSetting('settings', defaultSettings)['autoscan']:
                         decky_shortcuts = scan()
                         if not decky_shortcuts:
@@ -91,7 +90,7 @@ class Plugin:
             await ws.prepare(request)
             decky_plugin.logger.info(f"Called Manual Scan")
             try:
-                async with self.scan_lock:
+                async with scan_lock:
                     decky_shortcuts = scan()
                     if not decky_shortcuts:
                         decky_plugin.logger.info(f"No shortcuts to send")
@@ -202,6 +201,7 @@ class Plugin:
         site = web.TCPSite(runner, 'localhost', 8675)
         await site.start()
         decky_plugin.logger.info("Server started at http://localhost:8675")
+
 
 
     async def _migration(self):
