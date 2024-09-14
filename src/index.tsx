@@ -136,10 +136,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           }}
         >
           <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
-            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...click here for more info!
+            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games... 
+            <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ color: 'blue', textDecoration: 'underline' }}>
+              click here
+            </a> 
+            for more info!
           </span>
         </div>
       </Focusable>
+
   
       <PanelSection title="Support and Donations vvv">
         <div

@@ -787,7 +787,10 @@
                       margin: 0,
                       outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
                   } },
-                  window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } }, "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...click here for more info!"))),
+                  window.SP_REACT.createElement("span", { style: { fontSize: "12px", marginBottom: "10px", textAlign: "center" } },
+                      "The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...",
+                      window.SP_REACT.createElement("a", { href: "https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck", target: "_blank", style: { color: 'blue', textDecoration: 'underline' } }, "click here"),
+                      "for more info!"))),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Support and Donations vvv" },
               window.SP_REACT.createElement("div", { style: {
                       backgroundColor: "transparent",
