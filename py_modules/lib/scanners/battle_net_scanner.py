@@ -5,7 +5,7 @@ import os, re, decky_plugin
 flavor_mapping = {
     "Blizzard Arcade Collection": "RTRO",
     "Diablo": "D1",
-    "Diablo II: Resurrected": "OSI",
+    "Diablo II Resurrected": "OSI",
     "Diablo III": "D3",
     "Diablo IV": "Fen",
     "Diablo Immortal (PC)": "ANBS",
