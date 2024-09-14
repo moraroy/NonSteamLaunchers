@@ -62,38 +62,13 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   // End of Random Greetings
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isCooldown, setIsCooldown] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    let timer;
-    if (isCooldown) {
-      timer = setInterval(() => {
-        setCooldownTime((prevTime) => {
-          if (prevTime <= 1) {
-            clearInterval(timer);
-            setIsCooldown(false);
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isCooldown]);
-
   const handleScanClick = async () => {
-    if (!isCooldown) {
-        setIsLoading(true); // Set loading state to true
-        // Perform the scan action here
-        await scan();
-        setIsLoading(false); // Set loading state to false
-
-        // Start the cooldown
-        setIsCooldown(true);
-        setCooldownTime(30); // Set cooldown time in seconds
-    }
+    setIsLoading(true); // Set loading state to true
+    // Perform the scan action here
+    await scan();
+    setIsLoading(false); // Set loading state to false
   };
 
   return (
@@ -130,13 +105,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               autoscan();
             }
           }}
-          disabled={isCooldown}
         />
-        <ButtonItem layout="below" onClick={handleScanClick} disabled={isCooldown || settings.autoscan}>
+        <ButtonItem layout="below" onClick={handleScanClick} disabled={settings.autoscan}>
             {isLoading ? (
                 'Waiting for scan to complete...'
-            ) : isCooldown ? (
-                `Cooldown: ${cooldownTime}s`
             ) : (
                 'Manual Scan'
             )}
