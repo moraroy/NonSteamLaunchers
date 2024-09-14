@@ -130,14 +130,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         }}
       >
         <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
-          The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games... 
+          The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games.
           <Focusable
             focusWithinClassName="gpfocuswithin"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onActivate={() => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); }}
           >
-            <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ color: 'blue', textDecoration: 'underline', outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none' }}>
+            <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ textDecoration: 'underline', outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none' }}>
               click here
             </a>
           </Focusable>
