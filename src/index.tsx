@@ -33,7 +33,6 @@ const initialOptions = [
   { name: 'rockstarGamesLauncher', label: 'Rockstar Games Launcher', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/60b4ddba6215df686ff6ab71d0c078e9.jpg' },
   { name: 'psPlus', label: 'Playstation Plus', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/6c037a13a7e2d089a0f88f86b6405daf.jpg' },
   { name: 'hoyoPlay', label: 'HoYoPlay', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/3a4cffbfa1ae7220344b83ea754c46c4.jpg' },
-  { name: 'remotePlayWhatever', label: 'RemotePlayWhatever', URL: '', streaming: false, enabled: false, urlimage: 'https://opengraph.githubassets.com/68a584618d805217b103796afb7b13309abf7f9199e7299c9d31d4402184e963/m4dEngi/RemotePlayWhatever' },
   { name: 'xboxGamePass', label: 'Xbox Game Pass', URL: 'https://www.xbox.com/play', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/167b7d08b38facb1c06185861a5845dd.jpg' },
   { name: 'fortnite', label: 'Fortnite (xCloud)', URL: 'https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg' },
   { name: 'geforceNow', label: 'GeForce Now', URL: 'https://play.geforcenow.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/5e7e6e76699ea804c65b0c37974c660c.jpg' },
@@ -45,6 +44,7 @@ const initialOptions = [
   { name: 'youtube', label: 'Youtube', URL: 'https://www.youtube.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/786929ce1b2e187510aca9b04a0f7254.jpg' },
   { name: 'twitch', label: 'Twitch', URL: 'https://www.twitch.tv/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg' }
 ];
+
 
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
@@ -62,36 +62,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   // End of Random Greetings
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isCooldown, setIsCooldown] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isManualScanComplete, setIsManualScanComplete] = useState(false);
+
+  const handleScanClick = async () => {
+    setIsLoading(true); // Set loading state to true
+    await scan(() => setIsManualScanComplete(true)); // Perform the scan action and set completion state
+    setIsLoading(false); // Set loading state to false
+  };
 
   useEffect(() => {
-    let timer;
-    if (isCooldown) {
-      timer = setInterval(() => {
-        setCooldownTime((prevTime) => {
-          if (prevTime <= 1) {
-            clearInterval(timer);
-            setIsCooldown(false);
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
+    if (isManualScanComplete) {
+      setIsManualScanComplete(false); // Reset the completion state
     }
-    return () => clearInterval(timer);
-  }, [isCooldown]);
-
-  const handleScanClick = () => {
-    if (!isCooldown) {
-      // Perform the scan action here
-      scan();
-
-      // Start the cooldown
-      setIsCooldown(true);
-      setCooldownTime(30); // Set cooldown time in seconds
-    }
-  };
+  }, [isManualScanComplete]);
 
   return (
     <div className="decky-plugin">
@@ -113,49 +97,59 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         </ButtonItem>
       </PanelSection>
       
-      <PanelSection title= "Game Scanner">
+      <PanelSection title="Game Scanner">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          NSL can automatically detect and add shortcuts for the games you install in your non steam launchers in real time. Below you can enable automatic scanning or trigger a manual scan. As it scans, your game saves will be backed up here... /home/deck/NSLGameSaves
+          NSL can automatically detect and add shortcuts for the games you install in your non-steam launchers in real time. Below, you can enable automatic scanning or trigger a manual scan. During the scan, your game saves will be backed up here: /home/deck/NSLGameSaves.
         </PanelSectionRow>
         <ToggleField
           label="Auto Scan Games"
-          checked= {settings.autoscan}
+          checked={settings.autoscan}
           onChange={(value) => {
-            setAutoScan(value)
+            setAutoScan(value);
             if (value === true) {
-              console.log(`Autoscan is ${settings.autoscan}`)
+              console.log(`Autoscan is ${settings.autoscan}`);
               autoscan();
             }
           }}
-          disabled={isCooldown}
         />
-        <ButtonItem layout="below" onClick={handleScanClick} disabled={isCooldown || settings.autoscan}>
-          {isCooldown ? `Cooldown: ${cooldownTime}s` : 'Manual Scan'}
+        <ButtonItem layout="below" onClick={handleScanClick} disabled={isLoading || settings.autoscan}>
+          {isLoading ? 'Scanning...' : 'Manual Scan'}
         </ButtonItem>
       </PanelSection>
+
+
   
-      <Focusable
-        focusWithinClassName="gpfocuswithin"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        onActivate={() => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); }}
+ 
+      <div
+        style={{
+          backgroundColor: "transparent",
+          display: "flex",
+          flexDirection: "column",
+          padding: "0.5em",
+          width: "95%",
+          margin: 0,
+        }}
       >
-        <div
-          style={{
-            backgroundColor: "transparent",
-            display: "flex",
-            flexDirection: "column",
-            padding: "0.5em",
-            width: "95%",
-            margin: 0,
-            outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
-          }}
-        >
-          <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
-            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games...click here for more info!
-          </span>
-        </div>
-      </Focusable>
+        <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
+          The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games.
+          <Focusable
+            focusWithinClassName="gpfocuswithin"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onActivate={() => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); }}
+          >
+            <a style={{ textDecoration: 'underline', color: 'inherit', outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none' }}>
+              click here for more info!
+            </a>
+          </Focusable>
+        </span>
+      </div>
+
+
+
+
+
+
   
       <PanelSection title="Support and Donations vvv">
         <div

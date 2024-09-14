@@ -1,77 +1,62 @@
 import { createShortcut } from "./createShortcut";
 
-let scanws: WebSocket;
+async function setupWebSocket(url: string, onMessage: (data: any) => void, onComplete: () => void) {
+    const ws = new WebSocket(url);
 
-export async function scan() {
-    scanws = new WebSocket('ws://localhost:8675/scan');
-  
-    scanws.onopen = () => {
-      console.log('NSL WebSocket connection opened');
-      if (scanws.readyState === WebSocket.OPEN) {
-        scanws.send('something');
-      } else {
-        console.log('Cannot send message, NSL WebSocket connection is not open');
-      }
-    };
-  
-    scanws.onmessage = (e) => {
-      console.log(`Received data from NSL server: ${e.data}`);
-      if (e.data[0] === '{' && e.data[e.data.length - 1] === '}') {
-        try {
-          const game = JSON.parse(e.data);
-          createShortcut(game);
-        } catch (error) {
-          console.error(`Error parsing data as JSON: ${error}`);
+    ws.onopen = () => {
+        console.log('NSL WebSocket connection opened');
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send('something');
+        } else {
+            console.log('Cannot send message, NSL WebSocket connection is not open');
         }
-      }
     };
-  
-    scanws.onerror = (e) => {
-      const errorEvent = e as ErrorEvent;
-      console.error(`NSL WebSocket error: ${errorEvent.message}`);
+
+    ws.onmessage = async (e) => {
+        console.log(`Received data from NSL server: ${e.data}`);
+        if (e.data[0] === '{' && e.data[e.data.length - 1] === '}') {
+            try {
+                const message = JSON.parse(e.data);
+                if (message.status === "Manual scan completed") {
+                    console.log('Manual scan completed');
+                    onComplete();  // Trigger the completion callback
+                } else {
+                    await onMessage(message);  // Process each game entry one at a time
+                }
+            } catch (error) {
+                console.error(`Error parsing data as JSON: ${error}`);
+            }
+        }
     };
-  
-    scanws.onclose = (e) => {
-      console.log(`NSL WebSocket connection closed, code: ${e.code}, reason: ${e.reason}`);
+
+    ws.onerror = (e) => {
+        const errorEvent = e as ErrorEvent;
+        console.error(`NSL WebSocket error: ${errorEvent.message}`);
     };
-  }
-  
+
+    ws.onclose = (e) => {
+        console.log(`NSL WebSocket connection closed, code: ${e.code}, reason: ${e.reason}`);
+        if (e.code !== 1000) {
+            console.log(`Unexpected close of WS NSL connection, reopening`);
+            setupWebSocket(url, onMessage, onComplete);
+        }
+    };
+
+    return ws;
+}
+
+export async function scan(onComplete: () => void) {
+    console.log('Starting NSL Scan');
+    return new Promise<void>((resolve) => {
+        const ws = setupWebSocket('ws://localhost:8675/scan', createShortcut, () => {
+            console.log('NSL Scan completed');
+            onComplete();  // Trigger the completion callback
+            resolve();
+        });
+    });
+}
+
 export async function autoscan() {
     console.log('Starting NSL Autoscan');
-  
-    scanws = new WebSocket('ws://localhost:8675/autoscan');
-  
-    scanws.onopen = () => {
-      console.log('NSL WebSocket connection opened');
-      if (scanws.readyState === WebSocket.OPEN) {
-        scanws.send('something');
-      } else {
-        console.log('Cannot send message, NSL WebSocket connection is not open');
-      }
-    };
-  
-    scanws.onmessage = (e) => {
-      console.log(`Received data from NSL server: ${e.data}`);
-      if (e.data[0] === '{' && e.data[e.data.length - 1] === '}') {
-        try {
-          const game = JSON.parse(e.data);
-          createShortcut(game);
-        } catch (error) {
-          console.error(`Error parsing data as JSON: ${error}`);
-        }
-      }
-    };
-  
-    scanws.onerror = (e) => {
-      const errorEvent = e as ErrorEvent;
-      console.error(`NSL WebSocket error: ${errorEvent.message}`);
-    };
-  
-    scanws.onclose = (e) => {
-      console.log(`NSL WebSocket connection closed, code: ${e.code}, reason: ${e.reason}`);
-      if (e.code != 1000) {
-        console.log(`Unexpected close of autoscan WS NSL connection, reopening`)
-        autoscan();
-      }
-    };
-  }
+    await setupWebSocket('ws://localhost:8675/autoscan', createShortcut, () => {});
+}
