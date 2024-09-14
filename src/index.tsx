@@ -135,15 +135,14 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             focusWithinClassName="gpfocuswithin"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            onActivate={() => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); }}
           >
-            <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ textDecoration: 'underline', outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none' }}>
-              click here
+            <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ textDecoration: 'underline', color: 'inherit', outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none' }}>
+              click here for more info!
             </a>
           </Focusable>
-          for more info!
         </span>
       </div>
+
 
 
 
