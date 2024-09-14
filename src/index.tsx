@@ -118,32 +118,26 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         </ButtonItem>
       </PanelSection>
   
-      <Focusable
-        focusWithinClassName="gpfocuswithin"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        onActivate={() => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); }}
+ 
+      <div
+        style={{
+          backgroundColor: "transparent",
+          display: "flex",
+          flexDirection: "column",
+          padding: "0.5em",
+          width: "95%",
+          margin: 0,
+        }}
       >
-        <div
-          style={{
-            backgroundColor: "transparent",
-            display: "flex",
-            flexDirection: "column",
-            padding: "0.5em",
-            width: "95%",
-            margin: 0,
-            outline: isFocused ? '2px solid rgba(255, 255, 255, 0.5)' : 'none',
-          }}
-        >
-          <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
-            The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games... 
-            <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ color: 'blue', textDecoration: 'underline' }}>
-              click here
-            </a> 
-            for more info!
-          </span>
-        </div>
-      </Focusable>
+        <span style={{ fontSize: "12px", marginBottom: "10px", textAlign: "center" }}>
+          The NSLGameScanner currently supports Epic Games Launcher, Ubisoft Connect, Gog Galaxy, The EA App, Battle.net, Amazon Games, Itch.io and Legacy Games... 
+          <a href="https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck" target="_blank" style={{ color: 'blue', textDecoration: 'underline' }}>
+            click here
+          </a> 
+          for more info!
+        </span>
+      </div>
+
 
   
       <PanelSection title="Support and Donations vvv">
