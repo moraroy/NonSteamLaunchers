@@ -206,6 +206,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
 
 
 
+
 def add_launchers():
     create_new_entry(env_vars.get('epicshortcutdirectory'), 'Epic Games', env_vars.get('epiclaunchoptions'), env_vars.get('epicstartingdir'), None)
     create_new_entry(env_vars.get('gogshortcutdirectory'), 'GOG Galaxy', env_vars.get('goglaunchoptions'), env_vars.get('gogstartingdir'), None)
