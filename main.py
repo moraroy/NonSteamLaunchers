@@ -87,7 +87,7 @@ class Plugin:
                             await process.wait()
                             decky_plugin.logger.info("Backup Auto Scan Game Save completed")
 
-                    await asyncio.sleep(30)  # Increase the sleep interval to reduce scan frequency
+                    await asyncio.sleep(5)  # Increase the sleep interval to reduce scan frequency
 
                 decky_plugin.logger.info("Exiting AutoScan loop")
 
