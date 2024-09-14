@@ -40,6 +40,16 @@ class Plugin:
         decky_user_home = decky_plugin.DECKY_USER_HOME
         defaultSettings = {"autoscan": True, "customSites": ""}
 
+        async def run_backup(decky_user_home):
+            decky_plugin.logger.info("Running Game Save backup...")
+            process = await asyncio.create_subprocess_exec(
+                "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.STDOUT
+            )
+            await process.wait()
+            decky_plugin.logger.info("Backup completed")
+
         async def handleAutoScan(request):
             await asyncio.sleep(5)
             ws = web.WebSocketResponse()
@@ -51,25 +61,33 @@ class Plugin:
                     if not decky_shortcuts:
                         decky_plugin.logger.info(f"No shortcuts to send")
                     else:
+                        new_shortcuts = False
                         for game in decky_shortcuts.values():
                             if game.get('appname') is None or game.get('exe') is None:
                                 continue
+                            if ws.closed:
+                                decky_plugin.logger.info("WebSocket connection closed")
+                                break
                             decky_plugin.logger.info(f"Sending game data to client")
                             await ws.send_json(game)
+                            new_shortcuts = True
 
-                    decky_plugin.logger.info("Running Auto Scan Game Save backup...")
-                    # Run the Ludusavi backup command
-                    process = await asyncio.create_subprocess_exec(
-                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                        stdout=asyncio.subprocess.DEVNULL,
-                        stderr=asyncio.subprocess.STDOUT
-                    )
+                        if not new_shortcuts:
+                            decky_plugin.logger.info("No new shortcuts found. Skipping backup.")
+                        else:
+                            decky_plugin.logger.info("Running Auto Scan Game Save backup...")
+                            # Run the Ludusavi backup command
+                            process = await asyncio.create_subprocess_exec(
+                                "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                                stdout=asyncio.subprocess.DEVNULL,
+                                stderr=asyncio.subprocess.STDOUT
+                            )
 
-                    # Wait for the process to complete
-                    await process.wait()
-                    decky_plugin.logger.info("Backup Auto Scan Game Save completed")
+                            # Wait for the process to complete
+                            await process.wait()
+                            decky_plugin.logger.info("Backup Auto Scan Game Save completed")
 
-                    await asyncio.sleep(5)
+                    await asyncio.sleep(30)  # Increase the sleep interval to reduce scan frequency
 
                 decky_plugin.logger.info("Exiting AutoScan loop")
 
