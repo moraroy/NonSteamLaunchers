@@ -47,6 +47,7 @@ const initialOptions = [
 ];
 
 
+
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   console.log('Content rendered');
    
@@ -64,11 +65,39 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // State for cooldown
+  const [isCooldown, setIsCooldown] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
+
+  // useEffect to handle the cooldown timer
+  useEffect(() => {
+    let timer;
+    if (isCooldown) {
+      timer = setInterval(() => {
+        setCooldownTime((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(timer);
+            setIsCooldown(false);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isCooldown]);
+
+  // Function to handle manual scan click
   const handleScanClick = async () => {
-    setIsLoading(true); // Set loading state to true
-    // Perform the scan action here
-    await scan();
-    setIsLoading(false); // Set loading state to false
+    if (!isCooldown) {
+      setIsLoading(true); // Set loading state to true
+      await scan(); // Perform the scan action
+      setIsLoading(false); // Set loading state to false
+
+      // Start the cooldown
+      setIsCooldown(true);
+      setCooldownTime(30); // Set cooldown time in seconds
+    }
   };
 
   return (
@@ -106,13 +135,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
             }
           }}
         />
-        <ButtonItem layout="below" onClick={handleScanClick} disabled={settings.autoscan}>
-            {isLoading ? (
-                'Waiting for scan to complete...'
-            ) : (
-                'Manual Scan'
-            )}
+        <ButtonItem layout="below" onClick={handleScanClick} disabled={settings.autoscan || isCooldown}>
+          {isLoading ? 'Waiting for scan to complete...' : 'Manual Scan'}
         </ButtonItem>
+        {isCooldown && <PanelSectionRow>Cooldown: {cooldownTime}s</PanelSectionRow>}
       </PanelSection>
   
       <Focusable
@@ -184,3 +210,4 @@ export default definePlugin((serverApi: ServerAPI) => {
     icon: <RxRocket />,
   };
 });
+

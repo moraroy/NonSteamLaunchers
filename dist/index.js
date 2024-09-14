@@ -743,11 +743,36 @@
       // End of Random Greetings
       const [isFocused, setIsFocused] = React.useState(false);
       const [isLoading, setIsLoading] = React.useState(false);
+      // State for cooldown
+      const [isCooldown, setIsCooldown] = React.useState(false);
+      const [cooldownTime, setCooldownTime] = React.useState(0);
+      // useEffect to handle the cooldown timer
+      React.useEffect(() => {
+          let timer;
+          if (isCooldown) {
+              timer = setInterval(() => {
+                  setCooldownTime((prevTime) => {
+                      if (prevTime <= 1) {
+                          clearInterval(timer);
+                          setIsCooldown(false);
+                          return 0;
+                      }
+                      return prevTime - 1;
+                  });
+              }, 1000);
+          }
+          return () => clearInterval(timer);
+      }, [isCooldown]);
+      // Function to handle manual scan click
       const handleScanClick = async () => {
-          setIsLoading(true); // Set loading state to true
-          // Perform the scan action here
-          await scan();
-          setIsLoading(false); // Set loading state to false
+          if (!isCooldown) {
+              setIsLoading(true); // Set loading state to true
+              await scan(); // Perform the scan action
+              setIsLoading(false); // Set loading state to false
+              // Start the cooldown
+              setIsCooldown(true);
+              setCooldownTime(30); // Set cooldown time in seconds
+          }
       };
       return (window.SP_REACT.createElement("div", { className: "decky-plugin" },
           window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "10px", fontStyle: "italic", fontWeight: "bold", marginBottom: "10px", textAlign: "center" } }, randomGreeting),
@@ -765,7 +790,11 @@
                           autoscan();
                       }
                   } }),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: settings.autoscan }, isLoading ? ('Waiting for scan to complete...') : ('Manual Scan'))),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: settings.autoscan || isCooldown }, isLoading ? 'Waiting for scan to complete...' : 'Manual Scan'),
+              isCooldown && window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, null,
+                  "Cooldown: ",
+                  cooldownTime,
+                  "s")),
           window.SP_REACT.createElement(deckyFrontendLib.Focusable, { focusWithinClassName: "gpfocuswithin", onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false), onActivate: () => { window.open('https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck', '_blank'); } },
               window.SP_REACT.createElement("div", { style: {
                       backgroundColor: "transparent",
