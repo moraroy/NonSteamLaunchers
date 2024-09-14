@@ -98,17 +98,20 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         </ButtonItem>
       </PanelSection>
       
-      <PanelSection title= "Game Scanner">
+      <PanelSection title="Game Scanner">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          NSL can automatically detect and add shortcuts for the games you install in your non steam launchers in real time. Below you can enable automatic scanning or trigger a manual scan. As it scans, your game saves will be backed up here... /home/deck/NSLGameSaves
+          NSL can automatically detect and add shortcuts for the games you install in your non steam launchers in real time. Below you can enable automatic scanning or trigger a manual scan.
+        </PanelSectionRow>
+        <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
+          As it scans, your game saves will be backed up here... /home/deck/NSLGameSaves
         </PanelSectionRow>
         <ToggleField
           label="Auto Scan Games"
-          checked= {settings.autoscan}
+          checked={settings.autoscan}
           onChange={(value) => {
-            setAutoScan(value)
+            setAutoScan(value);
             if (value === true) {
-              console.log(`Autoscan is ${settings.autoscan}`)
+              console.log(`Autoscan is ${settings.autoscan}`);
               autoscan();
             }
           }}
@@ -117,6 +120,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
           {isLoading ? 'Scanning...' : 'Manual Scan'}
         </ButtonItem>
       </PanelSection>
+
   
  
       <div
