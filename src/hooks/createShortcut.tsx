@@ -2,23 +2,24 @@ import { notify } from "./notify";
 
 // Shortcut Creation Code
 // Define the createShortcut function
-export async function createShortcut(game: any) {
+export async function createShortcut(game) {
   const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
-  
+
   // Separate the executable path and arguments
   const match = exe.match(/"([^"]+)"/);
   if (!match) {
     throw new Error(`Invalid exe format: ${exe}`);
   }
 
+  const formattedExe = match[1];
   const formattedStartDir = StartDir.replace(/"/g, '');
   const launchOptions = LaunchOptions.split(" ").slice(1).join(" ");
 
   console.log(`Creating shortcut ${appname}`);
-  console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${exe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
+  console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${formattedExe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
 
   // Use the addShortcut method directly
-  const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
+  const appId = await SteamClient.Apps.AddShortcut(appname, formattedExe, formattedStartDir, launchOptions);
   if (appId) {
     const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
     const gameIconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl;  // Use the base64-encoded icon or default icon
@@ -30,14 +31,14 @@ export async function createShortcut(game: any) {
     } else {
       notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl });
     }
-    
+
     console.log(`AppID for ${appname} = ${appId}`);
     SteamClient.Apps.SetShortcutName(appId, appname);
-    SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);
-    SteamClient.Apps.SetShortcutExe(appId, exe);
-    SteamClient.Apps.SetShortcutStartDir(appId, StartDir);
+    SteamClient.Apps.SetAppLaunchOptions(appId, launchOptions);
+    SteamClient.Apps.SetShortcutExe(appId, formattedExe);
+    SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
     let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
-    let CompatToolExists: boolean = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
+    let CompatToolExists = AvailableCompatTools.some(e => e.strToolName === CompatTool);
     if (CompatTool && CompatToolExists) {
       SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
     } else if (CompatTool) {
