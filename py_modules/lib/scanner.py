@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, json, decky_plugin
+import os, json, decky_plugin, platform
 from base64 import b64encode
 import externals.requests as requests
 import externals.vdf as vdf
@@ -126,8 +126,11 @@ def addCustomSite(customSiteJSON):
 
 
 def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
-    # Load the existing shortcuts
-    vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
+    # Determine the path based on the operating system
+    if platform.system() == "Windows":
+        vdf_path = f"C:\\Program Files (x86)\\Steam\\userdata\\{steamid3}\\config\\shortcuts.vdf"
+    else:
+        vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
     
     # Check if the shortcuts file exists
     if os.path.exists(vdf_path):

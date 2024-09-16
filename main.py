@@ -18,6 +18,7 @@ import logging
 import re
 import asyncio
 import subprocess
+import shutil
 from aiohttp import web
 from decky_plugin import DECKY_PLUGIN_DIR, DECKY_USER_HOME
 from py_modules.lib.scanner import scan, addCustomSite
@@ -34,6 +35,8 @@ def camel_to_title(s):
     return ' '.join(word.capitalize() for word in words)
 
 scan_lock = asyncio.Lock()
+
+import shutil
 
 class Plugin:
     async def _main(self):
@@ -63,15 +66,18 @@ class Plugin:
                                 decky_plugin.logger.info(f"Sending game data to client")
                                 await ws.send_json(game)
 
-                        decky_plugin.logger.info("Running Auto Scan Game Save backup...")
-                        process = await asyncio.create_subprocess_exec(
-                            "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                            stdout=asyncio.subprocess.DEVNULL,
-                            stderr=asyncio.subprocess.STDOUT
-                        )
+                        if shutil.which("flatpak"):
+                            decky_plugin.logger.info("Running Auto Scan Game Save backup...")
+                            process = await asyncio.create_subprocess_exec(
+                                "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                                stdout=asyncio.subprocess.DEVNULL,
+                                stderr=asyncio.subprocess.STDOUT
+                            )
 
-                        await process.wait()
-                        decky_plugin.logger.info("Backup Auto Scan Game Save completed")
+                            await process.wait()
+                            decky_plugin.logger.info("Backup Auto Scan Game Save completed")
+                        else:
+                            decky_plugin.logger.warning("Flatpak not found, skipping backup process")
 
                         await asyncio.sleep(15)  # Increase the sleep interval to reduce scan frequency
 
@@ -101,15 +107,18 @@ class Plugin:
                             decky_plugin.logger.info(f"Sending game data to client")
                             await ws.send_json(game)
 
-                    decky_plugin.logger.info("Running Manual Scan Game Save backup...")
-                    process = await asyncio.create_subprocess_exec(
-                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                        stdout=asyncio.subprocess.DEVNULL,
-                        stderr=asyncio.subprocess.STDOUT
-                    )
+                    if shutil.which("flatpak"):
+                        decky_plugin.logger.info("Running Manual Scan Game Save backup...")
+                        process = await asyncio.create_subprocess_exec(
+                            "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                            stdout=asyncio.subprocess.DEVNULL,
+                            stderr=asyncio.subprocess.STDOUT
+                        )
 
-                    await process.wait()
-                    decky_plugin.logger.info("Backup Manual Scan Game Save completed")
+                        await process.wait()
+                        decky_plugin.logger.info("Backup Manual Scan Game Save completed")
+                    else:
+                        decky_plugin.logger.warning("Flatpak not found, skipping backup process")
 
                     # Send a message indicating the manual scan has completed
                     await ws.send_json({"status": "Manual scan completed"})
@@ -121,6 +130,7 @@ class Plugin:
                 await ws.close()
 
             return ws
+
 
         async def handleCustomSite(request):
             ws = web.WebSocketResponse()
@@ -256,16 +266,18 @@ class Plugin:
             decky_plugin.logger.info("No changes made, skipping daemon reload")
 
 
-        decky_plugin.logger.info("Running Migration Game Save backup...")
-        # Run the Ludusavi backup command
-        process = subprocess.Popen(
-            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT
-        )
-        # Wait for the process to complete
-        process.wait()
-        decky_plugin.logger.info("Backup Migration Game Save Scan completed")
+        if shutil.which("flatpak"):
+            decky_plugin.logger.info("Running Auto Scan Game Save backup...")
+            process = await asyncio.create_subprocess_exec(
+                "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.STDOUT
+            )
+
+            await process.wait()
+            decky_plugin.logger.info("Backup Auto Scan Game Save completed")
+        else:
+            decky_plugin.logger.warning("Flatpak not found, skipping backup process")
 
 
         
