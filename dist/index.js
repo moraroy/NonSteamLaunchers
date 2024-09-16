@@ -126,13 +126,12 @@
   // Define the createShortcut function
   async function createShortcut(game) {
       const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
-      // Separate the executable path and arguments
-      const match = exe.match(/"([^"]+)"/);
-      if (!match) {
+      // Check if the executable path is valid
+      if (!exe || !exe.endsWith('.exe')) {
           throw new Error(`Invalid exe format: ${exe}`);
       }
-      const formattedExe = match[1];
-      const formattedStartDir = StartDir.replace(/"/g, '');
+      const formattedExe = exe.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
+      const formattedStartDir = StartDir.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
       const launchOptions = LaunchOptions.split(" ").slice(1).join(" ");
       console.log(`Creating shortcut ${appname}`);
       console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${formattedExe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
