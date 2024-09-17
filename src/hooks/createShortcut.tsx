@@ -39,7 +39,7 @@ export async function createShortcut(game: any) {
     }
 
     let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
-    let CompatToolExists: boolean = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
+    let CompatToolExists = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
     if (CompatTool && CompatToolExists) {
       SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
     } else if (CompatTool) {

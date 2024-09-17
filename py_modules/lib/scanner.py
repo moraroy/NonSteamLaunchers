@@ -186,8 +186,12 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
         return
 
     # Format the executable path and start directory
-    formatted_exe = f'"{exe}"'
-    formatted_start_dir = f'"{startingdir}"'
+    if platform.system() == "Windows":
+        formatted_exe = f'"{exe}"'
+        formatted_start_dir = f'"{startingdir}"'
+    else:
+        formatted_exe = exe
+        formatted_start_dir = startingdir
 
     # Format the launch options
     formatted_launch_options = launchoptions
