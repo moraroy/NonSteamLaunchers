@@ -9,7 +9,7 @@ def epic_games_scanner(logged_in_home, epic_games_launcher, create_new_entry):
         dat_file_path = r"C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat"
         exe_template = r"C:\Program Files (x86)\Epic Games\Launcher\Portal\Binaries\Win32\EpicGamesLauncher.exe"
         start_dir_template = r"C:\Program Files (x86)\Epic Games\Launcher\Portal\Binaries\Win32"
-        launch_options_template = "'com.epicgames.launcher://apps/{app_name}?action=launch&silent=true'"
+        launch_options_template = "-'com.epicgames.launcher://apps/{app_name}?action=launch&silent=true'"
     else:
         item_dir = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{epic_games_launcher}/pfx/drive_c/ProgramData/Epic/EpicGamesLauncher/Data/Manifests/"
         dat_file_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{epic_games_launcher}/pfx/drive_c/ProgramData/Epic/UnrealEngineLauncher/LauncherInstalled.dat"
