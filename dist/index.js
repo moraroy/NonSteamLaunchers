@@ -1,28 +1,9 @@
-(function (deckyFrontendLib, React, os) {
+(function (deckyFrontendLib, React) {
   'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-  function _interopNamespace(e) {
-    if (e && e.__esModule) return e;
-    var n = Object.create(null);
-    if (e) {
-      Object.keys(e).forEach(function (k) {
-        if (k !== 'default') {
-          var d = Object.getOwnPropertyDescriptor(e, k);
-          Object.defineProperty(n, k, d.get ? d : {
-            enumerable: true,
-            get: function () { return e[k]; }
-          });
-        }
-      });
-    }
-    n["default"] = e;
-    return Object.freeze(n);
-  }
-
   var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
-  var os__namespace = /*#__PURE__*/_interopNamespace(os);
 
   var DefaultContext = {
     color: undefined,
@@ -149,13 +130,15 @@
       if (!exe || !exe.endsWith('.exe')) {
           throw new Error(`Invalid exe format: ${exe}`);
       }
+      // Determine if the path is for Windows or Linux
+      const isWindows = exe.includes('\\');
       // Format the executable path and start directory
-      const formattedExe = exe.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
-      const formattedStartDir = StartDir.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
+      const formattedExe = isWindows ? exe : `"${exe}"`;
+      const formattedStartDir = isWindows ? StartDir : `"${StartDir}"`;
       // Format the launch options
       let launchOptions = LaunchOptions;
-      if (os__namespace.platform() === "win32") {
-          launchOptions = LaunchOptions.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
+      if (isWindows) {
+          launchOptions = LaunchOptions;
       }
       else {
           launchOptions = LaunchOptions.split(" ").slice(1).join(" "); // Remove the first part of the launch options for Linux
@@ -850,4 +833,4 @@
 
   return index;
 
-})(DFL, SP_REACT, os);
+})(DFL, SP_REACT);

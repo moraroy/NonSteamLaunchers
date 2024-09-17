@@ -1,5 +1,4 @@
 import { notify } from "./notify";
-import * as os from 'os';
 
 // Shortcut Creation Code
 // Define the createShortcut function
@@ -11,14 +10,17 @@ export async function createShortcut(game: any) {
     throw new Error(`Invalid exe format: ${exe}`);
   }
 
+  // Determine if the path is for Windows or Linux
+  const isWindows = exe.includes('\\');
+
   // Format the executable path and start directory
-  const formattedExe = exe.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
-  const formattedStartDir = StartDir.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
+  const formattedExe = isWindows ? exe : `"${exe}"`;
+  const formattedStartDir = isWindows ? StartDir : `"${StartDir}"`;
 
   // Format the launch options
   let launchOptions = LaunchOptions;
-  if (os.platform() === "win32") {
-    launchOptions = LaunchOptions.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
+  if (isWindows) {
+    launchOptions = LaunchOptions;
   } else {
     launchOptions = LaunchOptions.split(" ").slice(1).join(" "); // Remove the first part of the launch options for Linux
   }
