@@ -150,8 +150,8 @@
           SteamClient.Apps.SetAppLaunchOptions(appId, launchOptions);
           SteamClient.Apps.SetShortcutExe(appId, formattedExe);
           SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
-          // Explicitly set the icon for the shortcut
-          if (Icon) {
+          // Explicitly set the icon for the game shortcut
+          if (Icon && !Launcher) {
               SteamClient.Apps.SetShortcutIcon(appId, `data:image/x-icon;base64,${Icon}`);
           }
           let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
