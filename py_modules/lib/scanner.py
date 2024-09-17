@@ -124,7 +124,6 @@ def addCustomSite(customSiteJSON):
         create_new_entry(env_vars.get('chromedirectory'), customSiteName, chromelaunch_options, env_vars.get('chrome_startdir'), None)
     return decky_shortcuts
 
-
 def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
     # Determine the path based on the operating system
     if platform.system() == "Windows":
@@ -136,10 +135,8 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
 
     # Check if the shortcuts file exists
     if os.path.exists(vdf_path):
-        decky_plugin.logger.info(f"VDF file found at: {vdf_path}")
         # If the file is not executable, write the shortcuts dictionary and make it executable
         if not os.access(vdf_path, os.X_OK):
-            decky_plugin.logger.info("The file is not executable. Writing an empty shortcuts dictionary and making it executable.")
             with open(vdf_path, 'wb') as file:
                 vdf.binary_dumps({'shortcuts': {}}, file)
             os.chmod(vdf_path, 0o755)
@@ -148,14 +145,16 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
             try:
                 with open(vdf_path, 'rb') as file:
                     shortcuts = vdf.binary_loads(file.read())
-                decky_plugin.logger.info(f"Loaded shortcuts: {shortcuts}")
 
-                if any((s.get('appname') == display_name or s.get('AppName') == display_name) and (s.get('exe') == exe_path or s.get('Exe') == exe_path) and s.get('StartDir') == start_dir and s.get('LaunchOptions') == launch_options for s in shortcuts['shortcuts'].values()):
-                    decky_plugin.logger.info(f"Existing shortcut found based on matching fields for game {display_name}. Skipping creation.")
-                    return True
-                else:
-                    decky_plugin.logger.info(f"No matching shortcut found for game {display_name}.")
-                    shortcuts = ''
+                for s in shortcuts['shortcuts'].values():
+                    stripped_exe_path = exe_path.strip('\"') if exe_path else exe_path
+                    stripped_start_dir = start_dir.strip('\"') if start_dir else start_dir
+                    if (s.get('appname') == display_name or s.get('AppName') == display_name) and \
+                       (s.get('exe') and s.get('exe').strip('\"') == stripped_exe_path or s.get('Exe') and s.get('Exe').strip('\"') == stripped_exe_path) and \
+                       s.get('StartDir') and s.get('StartDir').strip('\"') == stripped_start_dir and \
+                       (s.get('LaunchOptions') == launch_options or (not s.get('LaunchOptions') and not launch_options)):
+                        decky_plugin.logger.info(f"Existing shortcut found for game {display_name}. Skipping creation.")
+                        return True
             except Exception as e:
                 decky_plugin.logger.info(f"Error reading shortcuts file: {e}")
     else:
@@ -173,20 +172,22 @@ def add_compat_tool(launchoptions):
 
 def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     global decky_shortcuts
-    # Check if the launcher is installed
+    # Check if the necessary fields are provided
     if not exe or not appname or not startingdir:
         decky_plugin.logger.info(f"Skipping creation for {appname}. Missing fields: exe={exe}, appname={appname}, startingdir={startingdir}")
         return
+
+    decky_plugin.logger.info(f"Creating new entry for {appname}")
+    decky_plugin.logger.info(f"exe: {exe}")
+    decky_plugin.logger.info(f"startingdir: {startingdir}")
+    decky_plugin.logger.info(f"launchoptions: {launchoptions}")
+
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
 
     # Format the executable path and start directory
-    if platform.system() == "Windows":
-        formatted_exe = f'"{exe}"'
-        formatted_start_dir = f'"{startingdir}"'
-    else:
-        formatted_exe = f'"{exe}"'
-        formatted_start_dir = f'"{startingdir}"'
+    formatted_exe = f'"{exe}"'
+    formatted_start_dir = f'"{startingdir}"'
 
     # Format the launch options
     formatted_launch_options = launchoptions
@@ -216,12 +217,14 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
         'Grid': gridp64,
         'Hero': hero64,
         'Logo': logo64,
-        'Icon': icon,
+        'Icon': icon,  # Use the game icon if available
         'LauncherIcon': launcher_icon,  # Add launcher icon
         'Launcher': launcher,  # Add launcher information
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
+
+
 
 
 def add_launchers():
@@ -271,7 +274,12 @@ def get_sgdb_art(game_id, launcher):
     
     launcher_icon = download_artwork(launcher_icons.get(launcher, ""), "icons")
     
+    # Use the game icon if available, otherwise use the launcher icon
+    if not icon:
+        icon = launcher_icon
+    
     return icon, logo64, hero64, gridp64, grid64, launcher_icon
+
 
 
 
