@@ -5,25 +5,10 @@ import { notify } from "./notify";
 export async function createShortcut(game: any) {
   const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
 
-  // Check if the executable path is valid
-  if (!exe || !exe.endsWith('.exe')) {
-    throw new Error(`Invalid exe format: ${exe}`);
-  }
-
-  // Determine if the path is for Windows or Linux
-  const isWindows = exe.includes('\\');
-
-  // Format the executable path and start directory
-  const formattedExe = isWindows ? exe : `"${exe}"`;
-  const formattedStartDir = isWindows ? StartDir : `"${StartDir}"`;
-
-  // Format the launch options
-  let launchOptions = LaunchOptions;
-  if (isWindows) {
-    launchOptions = LaunchOptions;
-  } else {
-    launchOptions = LaunchOptions.split(" ").slice(1).join(" "); // Remove the first part of the launch options for Linux
-  }
+  // No need to format exe and StartDir here as it's already done in Python
+  const formattedExe = exe;
+  const formattedStartDir = StartDir;
+  const launchOptions = LaunchOptions;
 
   console.log(`Creating shortcut ${appname}`);
   console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${formattedExe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
@@ -48,7 +33,7 @@ export async function createShortcut(game: any) {
     SteamClient.Apps.SetShortcutExe(appId, formattedExe);
     SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
     let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
-    let CompatToolExists = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
+    let CompatToolExists: boolean = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
     if (CompatTool && CompatToolExists) {
       SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
     } else if (CompatTool) {

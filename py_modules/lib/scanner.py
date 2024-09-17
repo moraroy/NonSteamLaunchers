@@ -173,6 +173,17 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
 
+    # Format the executable path and start directory
+    if platform.system() == "Windows":
+        formatted_exe = f'"{exe}"'
+        formatted_start_dir = f'"{startingdir}"'
+    else:
+        formatted_exe = f'"{exe}"'
+        formatted_start_dir = f'"{startingdir}"'
+
+    # Format the launch options
+    formatted_launch_options = launchoptions
+
     # Initialize artwork variables
     icon, logo64, hero64, gridp64, grid64, launcher_icon = None, None, None, None, None, None
 
@@ -187,12 +198,12 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
             decky_plugin.logger.info(f"No valid game ID found for {appname}. Skipping artwork download.")
 
     # Create a new entry for the Steam shortcut
-    compatTool = add_compat_tool(launchoptions)
+    compatTool = add_compat_tool(formatted_launch_options)
     decky_entry = {
         'appname': appname,
-        'exe': exe,
-        'StartDir': startingdir,
-        'LaunchOptions': launchoptions,
+        'exe': formatted_exe,
+        'StartDir': formatted_start_dir,
+        'LaunchOptions': formatted_launch_options,
         'CompatTool': compatTool,
         'WideGrid': grid64,
         'Grid': gridp64,
@@ -204,6 +215,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
+
 
 
 

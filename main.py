@@ -36,8 +36,6 @@ def camel_to_title(s):
 
 scan_lock = asyncio.Lock()
 
-import shutil
-
 class Plugin:
     async def _main(self):
         decky_plugin.logger.info("This is _main being called")

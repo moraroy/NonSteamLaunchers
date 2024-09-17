@@ -126,23 +126,10 @@
   // Define the createShortcut function
   async function createShortcut(game) {
       const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
-      // Check if the executable path is valid
-      if (!exe || !exe.endsWith('.exe')) {
-          throw new Error(`Invalid exe format: ${exe}`);
-      }
-      // Determine if the path is for Windows or Linux
-      const isWindows = exe.includes('\\');
-      // Format the executable path and start directory
-      const formattedExe = isWindows ? exe : `"${exe}"`;
-      const formattedStartDir = isWindows ? StartDir : `"${StartDir}"`;
-      // Format the launch options
-      let launchOptions = LaunchOptions;
-      if (isWindows) {
-          launchOptions = LaunchOptions;
-      }
-      else {
-          launchOptions = LaunchOptions.split(" ").slice(1).join(" "); // Remove the first part of the launch options for Linux
-      }
+      // No need to format exe and StartDir here as it's already done in Python
+      const formattedExe = exe;
+      const formattedStartDir = StartDir;
+      const launchOptions = LaunchOptions;
       console.log(`Creating shortcut ${appname}`);
       console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${formattedExe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
       // Use the addShortcut method directly
