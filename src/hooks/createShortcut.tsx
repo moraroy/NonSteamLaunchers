@@ -1,8 +1,9 @@
 import { notify } from "./notify";
+import * as os from 'os';
 
 // Shortcut Creation Code
 // Define the createShortcut function
-export async function createShortcut(game) {
+export async function createShortcut(game: any) {
   const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
 
   // Check if the executable path is valid
@@ -16,7 +17,7 @@ export async function createShortcut(game) {
 
   // Format the launch options
   let launchOptions = LaunchOptions;
-  if (platform.system() === "Windows") {
+  if (os.platform() === "win32") {
     launchOptions = LaunchOptions.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
   } else {
     launchOptions = LaunchOptions.split(" ").slice(1).join(" "); // Remove the first part of the launch options for Linux
@@ -45,7 +46,7 @@ export async function createShortcut(game) {
     SteamClient.Apps.SetShortcutExe(appId, formattedExe);
     SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
     let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
-    let CompatToolExists = AvailableCompatTools.some(e => e.strToolName === CompatTool);
+    let CompatToolExists = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
     if (CompatTool && CompatToolExists) {
       SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
     } else if (CompatTool) {

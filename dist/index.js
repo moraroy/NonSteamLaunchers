@@ -1,9 +1,28 @@
-(function (deckyFrontendLib, React) {
+(function (deckyFrontendLib, React, os) {
   'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+  function _interopNamespace(e) {
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+      Object.keys(e).forEach(function (k) {
+        if (k !== 'default') {
+          var d = Object.getOwnPropertyDescriptor(e, k);
+          Object.defineProperty(n, k, d.get ? d : {
+            enumerable: true,
+            get: function () { return e[k]; }
+          });
+        }
+      });
+    }
+    n["default"] = e;
+    return Object.freeze(n);
+  }
+
   var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+  var os__namespace = /*#__PURE__*/_interopNamespace(os);
 
   var DefaultContext = {
     color: undefined,
@@ -135,7 +154,7 @@
       const formattedStartDir = StartDir.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
       // Format the launch options
       let launchOptions = LaunchOptions;
-      if (platform.system() === "Windows") {
+      if (os__namespace.platform() === "win32") {
           launchOptions = LaunchOptions.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
       }
       else {
@@ -162,7 +181,7 @@
           SteamClient.Apps.SetShortcutExe(appId, formattedExe);
           SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
           let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
-          let CompatToolExists = AvailableCompatTools.some(e => e.strToolName === CompatTool);
+          let CompatToolExists = AvailableCompatTools.some((e) => e.strToolName === CompatTool);
           if (CompatTool && CompatToolExists) {
               SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
           }
@@ -831,4 +850,4 @@
 
   return index;
 
-})(DFL, SP_REACT);
+})(DFL, SP_REACT, os);
