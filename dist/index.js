@@ -130,9 +130,17 @@
       if (!exe || !exe.endsWith('.exe')) {
           throw new Error(`Invalid exe format: ${exe}`);
       }
+      // Format the executable path and start directory
       const formattedExe = exe.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
       const formattedStartDir = StartDir.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
-      const launchOptions = LaunchOptions.split(" ").slice(1).join(" ");
+      // Format the launch options
+      let launchOptions = LaunchOptions;
+      if (platform.system() === "Windows") {
+          launchOptions = LaunchOptions.replace(/\\/g, '\\\\'); // Escape backslashes for Windows paths
+      }
+      else {
+          launchOptions = LaunchOptions.split(" ").slice(1).join(" "); // Remove the first part of the launch options for Linux
+      }
       console.log(`Creating shortcut ${appname}`);
       console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${formattedExe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
       // Use the addShortcut method directly
