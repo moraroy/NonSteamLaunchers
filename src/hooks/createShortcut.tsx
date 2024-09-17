@@ -49,7 +49,7 @@ export async function createShortcut(game: any) {
     SteamClient.Apps.SetCustomArtworkForApp(appId, Logo, 'png', 2);
     SteamClient.Apps.SetCustomArtworkForApp(appId, Grid, 'png', 0);
     SteamClient.Apps.SetCustomArtworkForApp(appId, WideGrid, 'png', 3);
-    //SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
+    SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
     return true;
   } else {
     console.log(`Failed to create shortcut for ${appname}`);

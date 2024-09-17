@@ -2,7 +2,6 @@ import os
 import re
 import decky_plugin
 import platform
-import winreg
 
 # Gog Galaxy Scanner
 def getGogGameInfo(filePath):
@@ -57,6 +56,7 @@ def getGogGameInfo(filePath):
     return game_dict
 
 def getGogGameInfoWindows():
+    import winreg  # Import winreg only if this function is called
     game_dict = {}
     try:
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\GOG.com\Games")
