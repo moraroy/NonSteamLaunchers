@@ -33,13 +33,13 @@ export async function createShortcut(game: any) {
     SteamClient.Apps.SetShortcutExe(appId, formattedExe);
     SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
 
-    // Explicitly set the icon for the game shortcut
-    if (Icon && !Launcher) {
+    // Explicitly set the icon for the shortcut
+    if (Icon) {
       SteamClient.Apps.SetShortcutIcon(appId, `data:image/x-icon;base64,${Icon}`);
     }
 
     let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
-    let CompatToolExists = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
+    let CompatToolExists: boolean = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
     if (CompatTool && CompatToolExists) {
       SteamClient.Apps.SpecifyCompatTool(appId, CompatTool);
     } else if (CompatTool) {
@@ -49,7 +49,7 @@ export async function createShortcut(game: any) {
     SteamClient.Apps.SetCustomArtworkForApp(appId, Logo, 'png', 2);
     SteamClient.Apps.SetCustomArtworkForApp(appId, Grid, 'png', 0);
     SteamClient.Apps.SetCustomArtworkForApp(appId, WideGrid, 'png', 3);
-    SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
+    //SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
     return true;
   } else {
     console.log(`Failed to create shortcut for ${appname}`);

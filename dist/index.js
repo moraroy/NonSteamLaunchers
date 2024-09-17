@@ -150,8 +150,8 @@
           SteamClient.Apps.SetAppLaunchOptions(appId, launchOptions);
           SteamClient.Apps.SetShortcutExe(appId, formattedExe);
           SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
-          // Explicitly set the icon for the game shortcut
-          if (Icon && !Launcher) {
+          // Explicitly set the icon for the shortcut
+          if (Icon) {
               SteamClient.Apps.SetShortcutIcon(appId, `data:image/x-icon;base64,${Icon}`);
           }
           let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
@@ -166,7 +166,7 @@
           SteamClient.Apps.SetCustomArtworkForApp(appId, Logo, 'png', 2);
           SteamClient.Apps.SetCustomArtworkForApp(appId, Grid, 'png', 0);
           SteamClient.Apps.SetCustomArtworkForApp(appId, WideGrid, 'png', 3);
-          SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
+          //SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
           return true;
       }
       else {
