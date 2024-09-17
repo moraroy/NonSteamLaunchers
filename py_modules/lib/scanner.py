@@ -132,11 +132,14 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
     else:
         vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
     
+    decky_plugin.logger.info(f"Checking if shortcut exists in VDF path: {vdf_path}")
+
     # Check if the shortcuts file exists
     if os.path.exists(vdf_path):
+        decky_plugin.logger.info(f"VDF file found at: {vdf_path}")
         # If the file is not executable, write the shortcuts dictionary and make it executable
         if not os.access(vdf_path, os.X_OK):
-            print("The file is not executable. Writing an empty shortcuts dictionary and making it executable.")
+            decky_plugin.logger.info("The file is not executable. Writing an empty shortcuts dictionary and making it executable.")
             with open(vdf_path, 'wb') as file:
                 vdf.binary_dumps({'shortcuts': {}}, file)
             os.chmod(vdf_path, 0o755)
@@ -145,15 +148,19 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
             try:
                 with open(vdf_path, 'rb') as file:
                     shortcuts = vdf.binary_loads(file.read())
+                decky_plugin.logger.info(f"Loaded shortcuts: {shortcuts}")
 
                 if any((s.get('appname') == display_name or s.get('AppName') == display_name) and (s.get('exe') == exe_path or s.get('Exe') == exe_path) and s.get('StartDir') == start_dir and s.get('LaunchOptions') == launch_options for s in shortcuts['shortcuts'].values()):
                     decky_plugin.logger.info(f"Existing shortcut found based on matching fields for game {display_name}. Skipping creation.")
                     return True
                 else:
+                    decky_plugin.logger.info(f"No matching shortcut found for game {display_name}.")
                     shortcuts = ''
             except Exception as e:
-                print(f"Error reading shortcuts file: {e}")
-
+                decky_plugin.logger.info(f"Error reading shortcuts file: {e}")
+    else:
+        decky_plugin.logger.info(f"VDF file not found at: {vdf_path}")
+    return False
 
 
 # Add or update the proton compatibility settings
@@ -198,7 +205,7 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
             decky_plugin.logger.info(f"No valid game ID found for {appname}. Skipping artwork download.")
 
     # Create a new entry for the Steam shortcut
-    compatTool = add_compat_tool(formatted_launch_options)
+    compatTool = None if platform.system() == "Windows" else add_compat_tool(formatted_launch_options)
     decky_entry = {
         'appname': appname,
         'exe': formatted_exe,
@@ -215,11 +222,6 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     }
     decky_shortcuts[appname] = decky_entry
     decky_plugin.logger.info(f"Added new entry for {appname} to shortcuts.")
-
-
-
-
-
 
 
 def add_launchers():
