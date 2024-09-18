@@ -9,9 +9,12 @@ if platform.system() == "Windows":
 
 # Ubisoft Connect Scanner
 def getUplayGameInfo(folderPath, filePath):
+    decky_plugin.logger.info(f"Scanning folder: {folderPath}")
+    decky_plugin.logger.info(f"Using registry file: {filePath}")
     # Get the game IDs from the folder
     listOfFiles = os.listdir(folderPath)
     uplay_ids = [re.findall(r'\d+', str(entry))[0] for entry in listOfFiles if re.findall(r'\d+', str(entry))]
+    decky_plugin.logger.info(f"Found Uplay IDs: {uplay_ids}")
 
     # Parse the registry file
     game_dict = {}
@@ -37,6 +40,7 @@ def getUplayGameInfo(folderPath, filePath):
                 uplay_id = None  # Reset uplay_id
                 game_name = None  # Reset game_name
 
+    decky_plugin.logger.info(f"Found games: {game_dict}")
     return game_dict
 
 def getUplayGameInfoWindows():
@@ -59,35 +63,43 @@ def getUplayGameInfoWindows():
                     break
     except OSError:
         decky_plugin.logger.info("No Ubisoft Connect entries found in the Windows registry. Skipping Ubisoft Games Scanner.")
+    decky_plugin.logger.info(f"Found games: {game_dict}")
     return game_dict
 
 def ubisoft_scanner(logged_in_home, ubisoft_connect_launcher, create_new_entry):
+    game_dict = {}  # Initialize game_dict to avoid uninitialized variable error
+
     if platform.system() == "Windows":
-        data_folder_path = os.path.join(logged_in_home, "AppData", "Local", "Ubisoft Game Launcher", "data")
+        data_folder_path = "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\data"
         registry_file_path = None  # Not needed for Windows
+        decky_plugin.logger.info(f"Data folder path: {data_folder_path}")
+        if not os.path.exists(data_folder_path):
+            decky_plugin.logger.info("Data folder path does not exist.")
+            decky_plugin.logger.info("Ubisoft Connect game data not found. Skipping Ubisoft Games Scanner.")
+        else:
+            game_dict = getUplayGameInfoWindows()
     else:
         data_folder_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/data/"
         registry_file_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/system.reg"
-
-    if not os.path.exists(data_folder_path) or (registry_file_path and not os.path.exists(registry_file_path)):
-        print("One or more paths do not exist.")
-        print("Ubisoft Connect game data not found. Skipping Ubisoft Games Scanner.")
-    else:
-        if platform.system() == "Windows":
-            game_dict = getUplayGameInfoWindows()
+        decky_plugin.logger.info(f"Data folder path: {data_folder_path}")
+        decky_plugin.logger.info(f"Registry file path: {registry_file_path}")
+        if not os.path.exists(data_folder_path) or (registry_file_path and not os.path.exists(registry_file_path)):
+            decky_plugin.logger.info("One or more paths do not exist.")
+            decky_plugin.logger.info("Ubisoft Connect game data not found. Skipping Ubisoft Games Scanner.")
         else:
             game_dict = getUplayGameInfo(data_folder_path, registry_file_path)
 
-        for game, uplay_id in game_dict.items():
-            if uplay_id:
-                if platform.system() == "Windows":
-                    launch_options = f"uplay://launch/{uplay_id}/0"
-                    exe_path = os.path.join(logged_in_home, "AppData", "Local", "Ubisoft Game Launcher", "upc.exe")
-                    start_dir = os.path.join(logged_in_home, "AppData", "Local", "Ubisoft Game Launcher")
-                else:
-                    launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/\" %command% \"uplay://launch/{uplay_id}/0\""
-                    exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/upc.exe\""
-                    start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/\""
-                create_new_entry(exe_path, game, launch_options, start_dir, "Ubisoft Connect")
+    for game, uplay_id in game_dict.items():
+        if uplay_id:
+            if platform.system() == "Windows":
+                launch_options = f"uplay://launch/{uplay_id}/0"
+                exe_path = "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\upc.exe"
+                start_dir = "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher"
+            else:
+                launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/\" %command% \"uplay://launch/{uplay_id}/0\""
+                exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/upc.exe\""
+                start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ubisoft_connect_launcher}/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/\""
+            create_new_entry(exe_path, game, launch_options, start_dir, "Ubisoft Connect")
+            decky_plugin.logger.info(f"Created new entry for game: {game}")
 
 # End of Ubisoft Game Scanner

@@ -37,7 +37,7 @@ def amazon_scanner(logged_in_home, amazon_launcher, create_new_entry):
             if platform.system() == "Windows":
                 exe_path = convert_unix_to_windows_path(f"{logged_in_home}/AppData/Local/Amazon Games/App/Amazon Games.exe")
                 start_dir = convert_unix_to_windows_path(f"{logged_in_home}/AppData/Local/Amazon Games/App")
-                launch_options = f"-'amazon-games://play/{game['id']}'"
+                launch_options = f"-amazon-games://play/{game['id']}"
             else:
                 exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{amazon_launcher}/pfx/drive_c/users/steamuser/AppData/Local/Amazon Games/App/Amazon Games.exe\""
                 start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{amazon_launcher}/pfx/drive_c/users/steamuser/AppData/Local/Amazon Games/App/\""
