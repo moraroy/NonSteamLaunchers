@@ -1,5 +1,8 @@
+import os
+import platform
+import externals.xml.etree.ElementTree as ET
+
 # EA App Game Scanner
-import os, externals.xml.etree.ElementTree as ET
 
 def get_ea_app_game_info(installed_games, game_directory_path):
     game_dict = {}
@@ -28,7 +31,10 @@ def get_ea_app_game_info(installed_games, game_directory_path):
     return game_dict
 
 def ea_scanner(logged_in_home, ea_app_launcher, create_new_entry):
-    game_directory_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/EA Games/"
+    if platform.system() == "Windows":
+        game_directory_path = os.path.join(logged_in_home, "AppData", "Local", "Electronic Arts", "EA Desktop", "EA Desktop", "EALaunchHelper.exe")
+    else:
+        game_directory_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/EA Games/"
 
     if not os.path.isdir(game_directory_path):
         print("EA App game data not found. Skipping EA App Scanner.")
@@ -37,8 +43,15 @@ def ea_scanner(logged_in_home, ea_app_launcher, create_new_entry):
         game_dict = get_ea_app_game_info(installed_games, game_directory_path)
 
         for game, ea_ids in game_dict.items():
-            launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/\" %command% \"origin2://game/launch?offerIds={ea_ids}\""
-            exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe\""
-            start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/\""
+            if platform.system() == "Windows":
+                launch_options = f"origin2://game/launch?offerIds={ea_ids}"
+                exe_path = os.path.join(logged_in_home, "AppData", "Local", "Electronic Arts", "EA Desktop", "EA Desktop", "EALaunchHelper.exe")
+                start_dir = os.path.join(logged_in_home, "AppData", "Local", "Electronic Arts", "EA Desktop", "EA Desktop")
+            else:
+                launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/\" %command% \"origin2://game/launch?offerIds={ea_ids}\""
+                exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe\""
+                start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/\""
+            
             create_new_entry(exe_path, game, launch_options, start_dir, "EA App")
-#End of EA App Scanner
+
+# End of EA App Scanner

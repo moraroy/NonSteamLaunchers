@@ -1,6 +1,13 @@
-import os, re, decky_plugin
+import os
+import re
+import decky_plugin
+import platform
 
-#Battle.net Scanner
+# Conditionally import winreg for Windows
+if platform.system() == "Windows":
+    import winreg
+
+# Battle.net Scanner
 # Define your mapping
 flavor_mapping = {
     "Blizzard Arcade Collection": "RTRO",
@@ -107,37 +114,60 @@ def getBnetGameInfo(filePath):
 
     return game_dict
 
-def battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry):
-    # Define your paths
-    registry_file_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/system.reg"
+def getBnetGameInfoWindows():
+    game_dict = {}
+    try:
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Blizzard Entertainment\Battle.net\Capabilities\Applications") as key:
+            i = 0
+            while True:
+                try:
+                    subkey_name = winreg.EnumKey(key, i)
+                    with winreg.OpenKey(key, subkey_name) as subkey:
+                        game_name = winreg.QueryValueEx(subkey, "ApplicationName")[0]
+                        exe_path = winreg.QueryValueEx(subkey, "ApplicationIcon")[0]
+                        if "Blizzard Entertainment" in winreg.QueryValueEx(subkey, "Publisher")[0]:
+                            game_dict[game_name] = {'exe': exe_path}
+                    i += 1
+                except OSError:
+                    break
+    except OSError:
+        decky_plugin.logger.info("No Battle.net entries found in the Windows registry. Skipping Battle.net Games Scanner.")
+        return None
 
+    return game_dict
+
+def battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry):
     game_dict = {}
 
-    # Check if the paths exist
-    if not os.path.exists(registry_file_path):
-        decky_plugin.logger.info("One or more paths do not exist.")
-        decky_plugin.logger.info("Battle.net game data not found. Skipping Battle.net Games Scanner.")
+    if platform.system() == "Windows":
+        game_dict = getBnetGameInfoWindows()
     else:
-        game_dict = getBnetGameInfo(registry_file_path)
-        if game_dict is None:
-            # Skip the rest of the Battle.net scanner
-            pass
+        registry_file_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/system.reg"
+        if os.path.exists(registry_file_path):
+            game_dict = getBnetGameInfo(registry_file_path)
         else:
-            # Extract the flavor for each game and create the launch options
-            for game, game_info in game_dict.items():
-                game_info['flavor'] = get_flavor_from_file(game_info['exe'])
-                decky_plugin.logger.info(f"Flavor inferred: {game_info['flavor']}")
+            decky_plugin.logger.info("One or more paths do not exist.")
+            decky_plugin.logger.info("Battle.net game data not found. Skipping Battle.net Games Scanner.")
 
-                # Check if the game name is "Overwatch" and update it to "Overwatch 2"
-                if game == "Overwatch":
-                    game = "Overwatch 2"
+    if game_dict:
+        for game, game_info in game_dict.items():
+            game_info['flavor'] = get_flavor_from_file(game_info['exe'])
+            decky_plugin.logger.info(f"Flavor inferred: {game_info['flavor']}")
 
-                if game_info['flavor'] == "unknown":
-                    pass
+            if game == "Overwatch":
+                game = "Overwatch 2"
 
-                elif game_info['flavor']:
-                    launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/\" %command% \"battlenet://{game_info['flavor']}\""
-                    exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/Program Files (x86)/Battle.net/Battle.net.exe\" --exec=\"launch {game_info['flavor']}\""
-                    start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/Program Files (x86)/Battle.net/\""
-                    create_new_entry(exe_path, game, launch_options, start_dir, "Battle.net")
+            if game_info['flavor'] == "unknown":
+                continue
+
+            if platform.system() == "Windows":
+                exe_path = game_info['exe']
+                start_dir = os.path.dirname(exe_path)
+                launch_options = f"--exec=\"launch {game_info['flavor']}\""
+            else:
+                exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/Program Files (x86)/Battle.net/Battle.net.exe\" --exec=\"launch {game_info['flavor']}\""
+                start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/Program Files (x86)/Battle.net/\""
+                launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}\" %command% \"battlenet://{game_info['flavor']}\""
+
+            create_new_entry(exe_path, game, launch_options, start_dir, "Battle.net")
 # End of Battle.net Scanner

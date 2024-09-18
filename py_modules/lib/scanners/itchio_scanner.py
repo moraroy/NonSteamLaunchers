@@ -1,10 +1,19 @@
-import gzip, os, re, json, decky_plugin
+import gzip
+import os
+import re
+import json
+import decky_plugin
+import platform
 
 def itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry):
-    itch_db_location = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/pfx/drive_c/users/steamuser/AppData/Roaming/itch/db/butler.db-wal"
+    if platform.system() == "Windows":
+        itch_db_location = os.path.join(logged_in_home, "AppData", "Roaming", "itch", "db", "butler.db-wal")
+    else:
+        itch_db_location = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/pfx/drive_c/users/steamuser/AppData/Roaming/itch/db/butler.db-wal"
+
     decky_plugin.logger.info(f"Checking if {itch_db_location} exists...")
     if not os.path.exists(itch_db_location):
-        decky_plugin.logger.info(f"Path not found: {itch_db_location}. Aborting Ichio scan...")
+        decky_plugin.logger.info(f"Path not found: {itch_db_location}. Aborting Itch.io scan...")
         return
 
     decky_plugin.logger.info("Opening and reading the database file...")
@@ -23,7 +32,10 @@ def itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry):
         linux_path, executable, game_title = game
         exe_path = f"\"{os.path.join(linux_path, executable)}\""
         start_dir = f"\"{linux_path}\""
-        launchoptions = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/\" %command%"
+        if platform.system() == "Windows":
+            launchoptions = f"\"{exe_path}\""
+        else:
+            launchoptions = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/\" %command%"
         create_new_entry(exe_path, game_title, launchoptions, start_dir, "itch.io")
 
 def parse_butler_db(content):
@@ -63,4 +75,4 @@ def dbpath_to_game(logged_in_home, itchio_launcher, paths):
                 receipt = json.loads(receipt_str)
                 return (linux_path, executable, receipt['game']['title'])
 
-#End of Itchio Scanner
+# End of Itchio Scanner
