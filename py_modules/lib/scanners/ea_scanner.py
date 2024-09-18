@@ -8,7 +8,16 @@ import decky_plugin
 def get_ea_app_game_info(installed_games, game_directory_path):
     game_dict = {}
     for game in installed_games:
-        xml_file = ET.parse(f"{game_directory_path}\\{game}\\__Installer\\installerdata.xml")
+        if platform.system() == "Windows":
+            xml_file_path = f"{game_directory_path}\\{game}\\__Installer\\installerdata.xml"
+        else:
+            xml_file_path = f"{game_directory_path}/{game}/__Installer/installerdata.xml"
+
+        if not os.path.exists(xml_file_path):
+            decky_plugin.logger.info(f"XML file not found: {xml_file_path}")
+            continue
+
+        xml_file = ET.parse(xml_file_path)
         xml_root = xml_file.getroot()
         ea_ids = None
         game_name = None
@@ -37,7 +46,7 @@ def ea_scanner(logged_in_home, ea_app_launcher, create_new_entry):
         ea_launcher_path = "C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop\\EALaunchHelper.exe"
     else:
         game_directory_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/EA Games/"
-        ea_launcher_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe\""
+        ea_launcher_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe"
 
     decky_plugin.logger.info(f"Game directory path: {game_directory_path}")
     decky_plugin.logger.info(f"EA Launcher path: {ea_launcher_path}")
@@ -53,14 +62,16 @@ def ea_scanner(logged_in_home, ea_app_launcher, create_new_entry):
         for game, ea_ids in game_dict.items():
             if platform.system() == "Windows":
                 launch_options = f"origin2://game/launch?offerIds={ea_ids}"
-                exe_path = ea_launcher_path
-                start_dir = "C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop"
+                exe_path = f'"{ea_launcher_path}"'
+                start_dir = f'"C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop"'
             else:
-                launch_options = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/\" %command% \"origin2://game/launch?offerIds={ea_ids}\""
-                exe_path = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe\""
-                start_dir = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/\""
-            
+                launch_options = f'STEAM_COMPAT_DATA_PATH="{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/" %command% "origin2://game/launch?offerIds={ea_ids}"'
+                exe_path = f'"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe"'
+                start_dir = f'"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/"'
+
             create_new_entry(exe_path, game, launch_options, start_dir, "EA App")
             decky_plugin.logger.info(f"Created new entry for game: {game}")
 
+
 # End of EA App Scanner
+
