@@ -285,10 +285,11 @@ def get_sgdb_art(game_id, launcher):
     return icon, logo64, hero64, gridp64, grid64, launcher_icon
 
 
-
-
-
 def download_artwork(game_id, art_type, dimensions=None):
+    if not game_id:
+        decky_plugin.logger.info(f"Skipping download for {art_type} artwork. Game ID is empty.")
+        return None
+
     # If the result is not in the cache, make the API call
     decky_plugin.logger.info(f"Game ID: {game_id}")
     url = f"{proxy_url}/{art_type}/game/{game_id}"
