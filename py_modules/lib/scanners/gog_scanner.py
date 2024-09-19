@@ -84,6 +84,10 @@ def gog_scanner(logged_in_home, gog_galaxy_launcher, create_new_entry):
         launch_options_template = "/command=runGame /gameId={game_id} /path=\"{exe_path}\""
     else:
         registry_file_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{gog_galaxy_launcher}/pfx/system.reg"
+        if not os.path.exists(registry_file_path):
+            decky_plugin.logger.info(f"Registry file not found: {registry_file_path}. Skipping GOG Galaxy Games Scanner.")
+            return  # Skip the scanner if the registry file doesn't exist on Linux
+
         game_dict = getGogGameInfo(registry_file_path)
         exe_template = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{gog_galaxy_launcher}/pfx/drive_c/Program Files (x86)/GOG Galaxy/GalaxyClient.exe\""
         start_dir_template = f"\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{gog_galaxy_launcher}/pfx/drive_c/Program Files (x86)/GOG Galaxy/\""
