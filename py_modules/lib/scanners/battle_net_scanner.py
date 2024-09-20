@@ -34,6 +34,7 @@ flavor_mapping = {
 }
 
 def parse_battlenet_config(file_path):
+    decky_plugin.logger.info(f"Parsing Battle.net config file at: {file_path}")
     with open(file_path, 'r') as file:
         config_data = json.load(file)
 
@@ -59,17 +60,23 @@ def parse_battlenet_config(file_path):
     return game_dict
 
 def fix_windows_path(path):
+    decky_plugin.logger.info(f"Fixing Windows path: {path}")
     if path.startswith('/c/'):
-        return 'C:\\' + path[3:].replace('/', '\\')
+        fixed_path = 'C:\\' + path[3:].replace('/', '\\')
+        decky_plugin.logger.info(f"Fixed Windows path: {fixed_path}")
+        return fixed_path
     return path
 
 def battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry):
+    decky_plugin.logger.info(f"Starting Battle.net scanner with logged_in_home: {logged_in_home} and bnet_launcher: {bnet_launcher}")
     game_dict = {}
 
     if platform.system() == "Windows":
         config_file_path = fix_windows_path(logged_in_home) + '\\AppData\\Roaming\\Battle.net\\Battle.net.config'
     else:
         config_file_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{bnet_launcher}/pfx/drive_c/users/steamuser/AppData/Roaming/Battle.net/Battle.net.config"
+
+    decky_plugin.logger.info(f"Config file path: {config_file_path}")
 
     if os.path.exists(config_file_path):
         game_dict = parse_battlenet_config(config_file_path)
@@ -93,6 +100,7 @@ def battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry):
                 start_dir = '{}/.local/share/Steam/steamapps/compatdata/{}/pfx/drive_c/Program Files (x86)/Battle.net/'.format(logged_in_home, bnet_launcher)
                 launch_options = 'STEAM_COMPAT_DATA_PATH="{}/.local/share/Steam/steamapps/compatdata/{}" %command% "--exec=\\"launch {}\\" battlenet://{}"'.format(logged_in_home, bnet_launcher, game_info['ServerUid'], game_info['ServerUid'])
 
+            decky_plugin.logger.info(f"Creating new entry: exe_path={exe_path}, start_dir={start_dir}, launch_options={launch_options}")
             create_new_entry(exe_path, game, launch_options, start_dir, "Battle.net")
             decky_plugin.logger.info(f"Created new entry for game: {game}")
 
