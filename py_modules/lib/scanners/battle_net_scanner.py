@@ -48,7 +48,7 @@ def parse_battlenet_config(file_path):
             continue
         if game_data["Resumable"] == "false":
             if game_key == "prometheus":
-                game_key = "Pro"
+                game_key = "PRO"
             game_name = flavor_mapping.get(game_key.upper(), "unknown")
             if game_name != "unknown":
                 game_dict[game_name] = {
