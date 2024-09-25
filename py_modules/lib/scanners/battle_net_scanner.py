@@ -84,24 +84,38 @@ def battle_net_scanner(logged_in_home, bnet_launcher, create_new_entry):
 
     if game_dict:
         for game_key, game_info in game_dict.items():
-            game_name = flavor_mapping.get(game_key.upper(), "unknown")
+            # Handle the "prometheus" situation
+            if game_key == "prometheus":
+                game_key = "Pro"
+                decky_plugin.logger.info(f"Re-mapped game_key 'prometheus' to 'Pro'")
+
+            game_name = flavor_mapping.get(game_key, "unknown")
+
             if game_name == "unknown":
-                continue
+                # Try to match with uppercase version of the key
+                game_name = flavor_mapping.get(game_key.upper(), "unknown")
+                if game_name == "unknown":
+                    decky_plugin.logger.info(f"Skipping unknown game_key: {game_key}")
+                    continue
+
+            # Update game_key to its matched form
+            matched_key = next((k for k, v in flavor_mapping.items() if v == game_name), game_key)
 
             if game_name == "Overwatch":
                 game_name = "Overwatch 2"
 
             if game_info['ServerUid'] == "unknown":
+                decky_plugin.logger.info(f"Skipping game {game_key} due to unknown ServerUid")
                 continue
 
             if platform.system() == "Windows":
                 exe_path = 'C:\\Program Files (x86)\\Battle.net\\Battle.net.exe'
                 start_dir = 'C:\\Program Files (x86)\\Battle.net\\'
-                launch_options = '--exec="launch {}" battlenet://{}'.format(game_info['ServerUid'], game_info['ServerUid'])
+                launch_options = '--exec="launch {}" battlenet://{}'.format(matched_key, matched_key)
             else:
                 exe_path = '"{}/.local/share/Steam/steamapps/compatdata/{}/pfx/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"'.format(logged_in_home, bnet_launcher)
                 start_dir = '"{}/.local/share/Steam/steamapps/compatdata/{}/pfx/drive_c/Program Files (x86)/Battle.net/"'.format(logged_in_home, bnet_launcher)
-                launch_options = 'STEAM_COMPAT_DATA_PATH="{}/.local/share/Steam/steamapps/compatdata/{}" %command% --exec="launch {}" battlenet://{}'.format(logged_in_home, bnet_launcher, game_key, game_key)
+                launch_options = 'STEAM_COMPAT_DATA_PATH="{}/.local/share/Steam/steamapps/compatdata/{}" %command% --exec="launch {}" battlenet://{}'.format(logged_in_home, bnet_launcher, matched_key, matched_key)
 
             decky_plugin.logger.info(f"Creating new entry: exe_path={exe_path}, start_dir={start_dir}, launch_options={launch_options}")
             create_new_entry(exe_path, game_name, launch_options, start_dir, "Battle.net")
