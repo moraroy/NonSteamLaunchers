@@ -676,16 +676,16 @@
   */
   const StartFreshModal = ({ closeModal, serverAPI }) => {
       const [progress, setProgress] = React.useState({ percent: 0, status: '', description: '' });
+      const [firstConfirm, setFirstConfirm] = React.useState(false);
       const handleStartFreshClick = async () => {
           console.log('handleStartFreshClick called');
           setProgress({ percent: 0, status: 'wiping...if there is enough toilet paper...', description: '' });
-          // Call the install method on the server-side plugin with the appropriate arguments
           try {
               const result = await serverAPI.callPluginMethod("install", {
                   selected_options: '',
                   install_chrome: false,
                   separate_app_ids: false,
-                  start_fresh: true // Pass true for the start_fresh parameter
+                  start_fresh: true
               });
               if (result) {
                   setProgress({ percent: 100, status: 'NSL has been wiped. Remember to delete your shortcuts!', description: '' });
@@ -703,14 +703,16 @@
           }
           closeModal();
       };
-      return ((progress.status != '' && progress.percent < 100) ?
+      return ((progress.status !== '' && progress.percent < 100) ?
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Starting Fresh"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Removing all launchers and installed games from NonSteamLaunchers"),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }))) :
-          window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Are You Sure?", strDescription: "Starting fresh will wipe all installed launchers and their games along with your game saves and and NSL files. This is irreversible! You'll need to manually remove any shortcuts created.", strOKButtonText: "Yes, wipe!", strCancelButtonText: "No, go back!", onOK: handleStartFreshClick, onCancel: closeModal }));
+          firstConfirm ?
+              window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Oops... That Might Have Been a Mistake", strDescription: "This is your last chance! By continuing, you will be totally deleting the prefixes, which include the launchers and the games you downloaded, as well as your game saves. If you aren't sure if your game saves are backed up or if you have downloaded a very large game and would not like to have to re-download, please DO NOT CONTINUE.", strOKButtonText: "Yes, I'm sure!", strCancelButtonText: "No, go back!", onOK: handleStartFreshClick, onCancel: () => setFirstConfirm(false) }) :
+              window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Are You Sure?", strDescription: "Starting fresh will wipe all installed launchers and their games along with your game saves and NSL files. This is irreversible! You'll need to manually remove any shortcuts created.", strOKButtonText: "Yes, wipe!", strCancelButtonText: "No, go back!", onOK: () => setFirstConfirm(true), onCancel: closeModal }));
   };
 
   const initialOptions = [
