@@ -750,10 +750,13 @@
       const [isFocused, setIsFocused] = React.useState(false);
       const [isLoading, setIsLoading] = React.useState(false);
       const [isManualScanComplete, setIsManualScanComplete] = React.useState(false);
+      const [isAutoScanDisabled, setIsAutoScanDisabled] = React.useState(false);
       const handleScanClick = async () => {
           setIsLoading(true); // Set loading state to true
+          setIsAutoScanDisabled(true); // Disable the auto-scan toggle
           await scan(() => setIsManualScanComplete(true)); // Perform the scan action and set completion state
           setIsLoading(false); // Set loading state to false
+          setIsAutoScanDisabled(false); // Re-enable the auto-scan toggle
       };
       React.useEffect(() => {
           if (isManualScanComplete) {
@@ -775,7 +778,7 @@
                           console.log(`Autoscan is ${settings.autoscan}`);
                           autoscan();
                       }
-                  } }),
+                  }, disabled: isAutoScanDisabled }),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleScanClick, disabled: isLoading || settings.autoscan }, isLoading ? 'Scanning...' : 'Manual Scan')),
           window.SP_REACT.createElement("div", { style: {
                   backgroundColor: "transparent",

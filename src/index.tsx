@@ -64,12 +64,17 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isManualScanComplete, setIsManualScanComplete] = useState(false);
+  const [isAutoScanDisabled, setIsAutoScanDisabled] = useState(false);
+
 
   const handleScanClick = async () => {
     setIsLoading(true); // Set loading state to true
+    setIsAutoScanDisabled(true); // Disable the auto-scan toggle
     await scan(() => setIsManualScanComplete(true)); // Perform the scan action and set completion state
     setIsLoading(false); // Set loading state to false
+    setIsAutoScanDisabled(false); // Re-enable the auto-scan toggle
   };
+  
 
   useEffect(() => {
     if (isManualScanComplete) {
@@ -111,6 +116,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               autoscan();
             }
           }}
+          disabled={isAutoScanDisabled}
         />
         <ButtonItem layout="below" onClick={handleScanClick} disabled={isLoading || settings.autoscan}>
           {isLoading ? 'Scanning...' : 'Manual Scan'}
