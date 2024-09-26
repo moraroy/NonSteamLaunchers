@@ -60,8 +60,8 @@ def itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry):
     for game in itchgames:
         base_path, executable, game_title = game
         if platform.system() == "Windows":
-            exe_path = "\"" + os.path.join(base_path, executable) + "\""
-            start_dir = "\"" + base_path + "\""
+            exe_path = os.path.join(base_path, executable)
+            start_dir = base_path
             launchoptions = ""
         else:
             base_path_linux = base_path.replace("C:\\", logged_in_home + "/.local/share/Steam/steamapps/compatdata/" + itchio_launcher + "/pfx/drive_c/").replace("\\", "/")
