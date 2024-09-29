@@ -41,7 +41,7 @@ class Plugin:
         decky_plugin.logger.info("This is _main being called")
         self.settings = SettingsManager(name="config", settings_directory=decky_plugin.DECKY_PLUGIN_SETTINGS_DIR)
         decky_user_home = decky_plugin.DECKY_USER_HOME
-        defaultSettings = {"autoscan": True, "customSites": ""}
+        defaultSettings = {"autoscan": False, "customSites": ""}
 
         async def handleAutoScan(request):
             await asyncio.sleep(5)

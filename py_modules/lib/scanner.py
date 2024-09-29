@@ -131,7 +131,6 @@ def check_if_shortcut_exists(display_name, exe_path, start_dir, launch_options):
     else:
         vdf_path = f"{logged_in_home}/.steam/root/userdata/{steamid3}/config/shortcuts.vdf"
     
-    decky_plugin.logger.info(f"Checking if shortcut exists in VDF path: {vdf_path}")
 
     # Check if the shortcuts file exists
     if os.path.exists(vdf_path):
@@ -176,11 +175,6 @@ def create_new_entry(exe, appname, launchoptions, startingdir, launcher):
     if not exe or not appname or not startingdir:
         decky_plugin.logger.info(f"Skipping creation for {appname}. Missing fields: exe={exe}, appname={appname}, startingdir={startingdir}")
         return
-
-    decky_plugin.logger.info(f"Creating new entry for {appname}")
-    decky_plugin.logger.info(f"exe: {exe}")
-    decky_plugin.logger.info(f"startingdir: {startingdir}")
-    decky_plugin.logger.info(f"launchoptions: {launchoptions}")
 
     if check_if_shortcut_exists(appname, exe, startingdir, launchoptions):
         return
