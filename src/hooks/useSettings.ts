@@ -1,52 +1,51 @@
-import { useEffect, useState } from 'react';
-import { ServerAPI } from 'decky-frontend-lib';
+import { useEffect, useState } from 'react'
+
+import { ServerAPI } from 'decky-frontend-lib'
 
 export type Settings = {
-  autoscan: boolean;
-  customSites: string;
-};
+  autoscan: boolean
+  customSites: string
+}
 
 export const useSettings = (serverApi: ServerAPI) => {
   const [settings, setSettings] = useState<Settings>({
     autoscan: false,
-    customSites: ''
-  });
+    customSites: ""
+  })
 
   useEffect(() => {
     const getData = async () => {
-      try {
-        const savedSettings = (
-          await serverApi.callPluginMethod('get_setting', {
-            key: 'settings',
-            default: settings
-          })
-        ).result as Settings;
-        setSettings(savedSettings);
-      } catch (error) {
-        console.error('Failed to fetch settings:', error);
-      }
-    };
-    getData();
-  }, [serverApi, settings]);
+      const savedSettings = (
+        await serverApi.callPluginMethod('get_setting', {
+          key: 'settings',
+          default: settings
+        })
+      ).result as Settings
+      setSettings(savedSettings)
+    }
+    getData()
+  }, [])
 
-  const updateSettings = async (key: keyof Settings, value: Settings[keyof Settings]) => {
+  async function updateSettings(
+    key: keyof Settings,
+    value: Settings[keyof Settings]
+  ) {
     setSettings((oldSettings) => {
-      const newSettings = { ...oldSettings, [key]: value };
+      const newSettings = { ...oldSettings, [key]: value }
       serverApi.callPluginMethod('set_setting', {
         key: 'settings',
         value: newSettings
-      });
-      return newSettings;
-    });
-  };
+      })
+      return newSettings
+    })
+  }
 
-  const setAutoScan = (value: Settings['autoscan']) => {
-    updateSettings('autoscan', value);
-  };
+  function setAutoScan(value: Settings['autoscan']) {
+    updateSettings('autoscan', value)
+  }
 
-  const setCustomSites = (value: Settings['customSites']) => {
-    updateSettings('customSites', value);
-  };
-
-  return { settings, setAutoScan, setCustomSites };
-};
+  function setCustomSites(value: Settings['customSites']) {
+    updateSettings('customSites', value)
+  }
+  return { settings, setAutoScan, setCustomSites }
+}

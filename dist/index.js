@@ -333,24 +333,19 @@
   const useSettings = (serverApi) => {
       const [settings, setSettings] = React.useState({
           autoscan: false,
-          customSites: ''
+          customSites: ""
       });
       React.useEffect(() => {
           const getData = async () => {
-              try {
-                  const savedSettings = (await serverApi.callPluginMethod('get_setting', {
-                      key: 'settings',
-                      default: settings
-                  })).result;
-                  setSettings(savedSettings);
-              }
-              catch (error) {
-                  console.error('Failed to fetch settings:', error);
-              }
+              const savedSettings = (await serverApi.callPluginMethod('get_setting', {
+                  key: 'settings',
+                  default: settings
+              })).result;
+              setSettings(savedSettings);
           };
           getData();
-      }, [serverApi, settings]);
-      const updateSettings = async (key, value) => {
+      }, []);
+      async function updateSettings(key, value) {
           setSettings((oldSettings) => {
               const newSettings = { ...oldSettings, [key]: value };
               serverApi.callPluginMethod('set_setting', {
@@ -359,13 +354,13 @@
               });
               return newSettings;
           });
-      };
-      const setAutoScan = (value) => {
+      }
+      function setAutoScan(value) {
           updateSettings('autoscan', value);
-      };
-      const setCustomSites = (value) => {
+      }
+      function setCustomSites(value) {
           updateSettings('customSites', value);
-      };
+      }
       return { settings, setAutoScan, setCustomSites };
   };
 
