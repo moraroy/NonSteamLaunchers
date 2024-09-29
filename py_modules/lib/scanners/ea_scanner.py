@@ -14,7 +14,6 @@ def get_ea_app_game_info(installed_games, game_directory_path):
             xml_file_path = f"{game_directory_path}/{game}/__Installer/installerdata.xml"
 
         if not os.path.exists(xml_file_path):
-            decky_plugin.logger.info(f"XML file not found: {xml_file_path}")
             continue
 
         xml_file = ET.parse(xml_file_path)
@@ -48,16 +47,11 @@ def ea_scanner(logged_in_home, ea_app_launcher, create_new_entry):
         game_directory_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/EA Games/"
         ea_launcher_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/EALaunchHelper.exe"
 
-    decky_plugin.logger.info(f"Game directory path: {game_directory_path}")
-    decky_plugin.logger.info(f"EA Launcher path: {ea_launcher_path}")
-
     if not os.path.isdir(game_directory_path):
         decky_plugin.logger.info("EA App game data not found. Skipping EA App Scanner.")
     else:
         installed_games = os.listdir(game_directory_path)  # Get a list of game folders
-        decky_plugin.logger.info(f"Installed games: {installed_games}")
         game_dict = get_ea_app_game_info(installed_games, game_directory_path)
-        decky_plugin.logger.info(f"Found games: {game_dict}")
 
         for game, ea_ids in game_dict.items():
             if platform.system() == "Windows":
@@ -70,4 +64,3 @@ def ea_scanner(logged_in_home, ea_app_launcher, create_new_entry):
                 start_dir = f'"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{ea_app_launcher}/pfx/drive_c/Program Files/Electronic Arts/EA Desktop/EA Desktop/"'
 
             create_new_entry(exe_path, game, launch_options, start_dir, "EA App")
-            decky_plugin.logger.info(f"Created new entry for game: {game}")
