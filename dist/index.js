@@ -350,7 +350,7 @@
           };
           getData();
       }, [serverApi, settings]);
-      const updateSettings = React.useCallback(async (key, value) => {
+      const updateSettings = async (key, value) => {
           setSettings((oldSettings) => {
               const newSettings = { ...oldSettings, [key]: value };
               serverApi.callPluginMethod('set_setting', {
@@ -359,13 +359,13 @@
               });
               return newSettings;
           });
-      }, [serverApi]);
-      const setAutoScan = React.useCallback((value) => {
+      };
+      const setAutoScan = (value) => {
           updateSettings('autoscan', value);
-      }, [updateSettings]);
-      const setCustomSites = React.useCallback((value) => {
+      };
+      const setCustomSites = (value) => {
           updateSettings('customSites', value);
-      }, [updateSettings]);
+      };
       return { settings, setAutoScan, setCustomSites };
   };
 
