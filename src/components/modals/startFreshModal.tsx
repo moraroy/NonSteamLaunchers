@@ -68,7 +68,7 @@ export const StartFreshModal: VFC<startFreshModalProps> = ({ closeModal, serverA
         firstConfirm ?
             <ConfirmModal
                 strTitle="Oops... That Might Have Been a Mistake"
-                strDescription="This is your last chance! By continuing, you will be totally deleting the prefixes, which include the launchers and the games you downloaded, as well as your game saves. If you aren't sure if your game saves are backed up or if you have downloaded a very large game and would not like to have to re-download, please DO NOT CONTINUE."
+                strDescription="This is your last chance! By continuing, you will be totally deleting the prefixes, which include the launchers and the games you downloaded, as well as your game saves. If you aren't sure if your game saves are backed up or if you have downloaded a very large game and would not like to have to re-download, please DO NOT CONTINUE. Everything will be wiped!"
                 strOKButtonText="Yes, I'm sure!"
                 strCancelButtonText="No, go back!"
                 onOK={handleStartFreshClick}

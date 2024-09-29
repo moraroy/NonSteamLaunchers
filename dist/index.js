@@ -333,19 +333,24 @@
   const useSettings = (serverApi) => {
       const [settings, setSettings] = React.useState({
           autoscan: false,
-          customSites: ""
+          customSites: ''
       });
       React.useEffect(() => {
           const getData = async () => {
-              const savedSettings = (await serverApi.callPluginMethod('get_setting', {
-                  key: 'settings',
-                  default: settings
-              })).result;
-              setSettings(savedSettings);
+              try {
+                  const savedSettings = (await serverApi.callPluginMethod('get_setting', {
+                      key: 'settings',
+                      default: settings
+                  })).result;
+                  setSettings(savedSettings);
+              }
+              catch (error) {
+                  console.error('Failed to fetch settings:', error);
+              }
           };
           getData();
-      }, []);
-      async function updateSettings(key, value) {
+      }, [serverApi, settings]);
+      const updateSettings = React.useCallback(async (key, value) => {
           setSettings((oldSettings) => {
               const newSettings = { ...oldSettings, [key]: value };
               serverApi.callPluginMethod('set_setting', {
@@ -354,13 +359,13 @@
               });
               return newSettings;
           });
-      }
-      function setAutoScan(value) {
+      }, [serverApi]);
+      const setAutoScan = React.useCallback((value) => {
           updateSettings('autoscan', value);
-      }
-      function setCustomSites(value) {
+      }, [updateSettings]);
+      const setCustomSites = React.useCallback((value) => {
           updateSettings('customSites', value);
-      }
+      }, [updateSettings]);
       return { settings, setAutoScan, setCustomSites };
   };
 
@@ -711,7 +716,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }))) :
           firstConfirm ?
-              window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Oops... That Might Have Been a Mistake", strDescription: "This is your last chance! By continuing, you will be totally deleting the prefixes, which include the launchers and the games you downloaded, as well as your game saves. If you aren't sure if your game saves are backed up or if you have downloaded a very large game and would not like to have to re-download, please DO NOT CONTINUE.", strOKButtonText: "Yes, I'm sure!", strCancelButtonText: "No, go back!", onOK: handleStartFreshClick, onCancel: () => setFirstConfirm(false) }) :
+              window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Oops... That Might Have Been a Mistake", strDescription: "This is your last chance! By continuing, you will be totally deleting the prefixes, which include the launchers and the games you downloaded, as well as your game saves. If you aren't sure if your game saves are backed up or if you have downloaded a very large game and would not like to have to re-download, please DO NOT CONTINUE. Everything will be wiped!", strOKButtonText: "Yes, I'm sure!", strCancelButtonText: "No, go back!", onOK: handleStartFreshClick, onCancel: () => setFirstConfirm(false) }) :
               window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Are You Sure?", strDescription: "Starting fresh will wipe all installed launchers and their games along with your game saves and NSL files. This is irreversible! You'll need to manually remove any shortcuts created.", strOKButtonText: "Yes, wipe!", strCancelButtonText: "No, go back!", onOK: () => setFirstConfirm(true), onCancel: closeModal }));
   };
 

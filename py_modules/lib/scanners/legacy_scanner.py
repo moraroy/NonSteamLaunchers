@@ -45,7 +45,6 @@ def legacy_games_scanner(logged_in_home, legacy_launcher, create_new_entry):
                 with open(app_info_path, 'r') as file:
                     lines = file.read().split('\n')
                     game_name = lines[1].strip()
-            else:
 
             if os.path.exists(exe_path):
                 game_exe_reg = re.search(r'\[Software\\\\Legacy Games\\\\' + re.escape(game_dir) + r'\].*?"GameExe"="([^"]*)"', user_reg, re.DOTALL | re.IGNORECASE)
