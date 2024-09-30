@@ -66,17 +66,18 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
     </ModalRoot> :
     <ModalRoot>
       <DialogHeader>Restore Game Save Backups</DialogHeader>
-      <DialogBodyText>
-        This feature will restore your game save backups all at once.
-
-        **Please ensure that all necessary launchers are installed first, but do not download the actual games.** This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves.
-
-        - Some games from their launchers don't have cloud save backups.
-        - NSL uses a program called Ludusavi to backup your local game saves and attempts to restore them for you.
-        - However, some games from their launchers won't have local game saves because the launchers themselves take care of the local save and cloud save. This varies on a game-to-game basis.
-
-        Once ready, proceed to press restore.
-      </DialogBodyText>
+      <DialogBody>
+        <DialogBodyText>This feature will restore your game save backups all at once.</DialogBodyText>
+        <DialogBodyText>
+          <strong>Please ensure that all necessary launchers are installed first, but do not download the actual games.</strong> This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves.
+        </DialogBodyText>
+        <DialogBodyText>Some games from their launchers don't have cloud save backups:</DialogBodyText>
+        <ul>
+          <li>NSL uses a program called Ludusavi to backup your local game saves and attempts to restore them for you.</li>
+          <li>However, some games from their launchers won't have local game saves because the launchers themselves take care of the local save and cloud save. This varies on a game-to-game basis.</li>
+        </ul>
+        <DialogBodyText>Once ready, proceed to press restore.</DialogBodyText>
+      </DialogBody>
       <DialogBody>
         <ButtonItem layout="below" onClick={handleRestoreClick}>
           Restore Game Saves

@@ -754,7 +754,16 @@
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel"))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Restore Game Save Backups"),
-              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "This feature will restore your game save backups all at once. **Please ensure that all necessary launchers are installed first, but do not download the actual games.** This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves. - Some games from their launchers don't have cloud save backups. - NSL uses a program called Ludusavi to backup your local game saves and attempts to restore them for you. - However, some games from their launchers won't have local game saves because the launchers themselves take care of the local save and cloud save. This varies on a game-to-game basis. Once ready, proceed to press restore."),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
+                  window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "This feature will restore your game save backups all at once."),
+                  window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null,
+                      window.SP_REACT.createElement("strong", null, "Please ensure that all necessary launchers are installed first, but do not download the actual games."),
+                      " This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves."),
+                  window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Some games from their launchers don't have cloud save backups:"),
+                  window.SP_REACT.createElement("ul", null,
+                      window.SP_REACT.createElement("li", null, "NSL uses a program called Ludusavi to backup your local game saves and attempts to restore them for you."),
+                      window.SP_REACT.createElement("li", null, "However, some games from their launchers won't have local game saves because the launchers themselves take care of the local save and cloud save. This varies on a game-to-game basis.")),
+                  window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Once ready, proceed to press restore.")),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleRestoreClick }, "Restore Game Saves"),
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel"))));
