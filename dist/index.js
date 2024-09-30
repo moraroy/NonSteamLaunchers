@@ -752,7 +752,7 @@
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
                   window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
                   window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel"))) :
-          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { style: { fontSize: '14px', width: '600px' } },
+          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, { style: { fontSize: '12px', width: '600px' } },
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Restore Game Save Backups"),
               window.SP_REACT.createElement("div", { style: { maxHeight: '400px', overflowY: 'auto', padding: '10px' } },
                   window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "This feature will restore your game save backups all at once."),

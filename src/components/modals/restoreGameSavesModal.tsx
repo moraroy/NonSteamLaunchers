@@ -64,7 +64,7 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
         </ButtonItem>
       </DialogBody>
     </ModalRoot> :
-    <ModalRoot style={{ fontSize: '14px', width: '600px' }}>
+    <ModalRoot style={{ fontSize: '12px', width: '600px' }}>
       <DialogHeader>Restore Game Save Backups</DialogHeader>
       <div style={{ maxHeight: '400px', overflowY: 'auto', padding: '10px' }}>
         <DialogBodyText>This feature will restore your game save backups all at once.</DialogBodyText>
