@@ -49,7 +49,7 @@ class Plugin:
             await ws.prepare(request)
             decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', defaultSettings)['autoscan']}")
 
-            debounce_interval = 30  # Increase debounce interval to 30 seconds
+            debounce_interval = 30
             last_scan_time = 0
 
             try:
@@ -72,7 +72,7 @@ class Plugin:
                                     decky_plugin.logger.info(f"Sending game data to client")
                                     await ws.send_json(game)
 
-                        await asyncio.sleep(1)  # Sleep for a short interval to reduce CPU usage
+                        await asyncio.sleep(1)
 
                     decky_plugin.logger.info("Exiting AutoScan loop")
 
