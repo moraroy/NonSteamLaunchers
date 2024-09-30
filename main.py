@@ -301,9 +301,24 @@ class Plugin:
         # Log the selected_options_list
         decky_plugin.logger.info(f"selected_option_nice: {selected_option_nice}")
 
+        if selected_options == "NSLGameSaves":
+            if shutil.which("flatpak"):
+                decky_plugin.logger.info("Running restore...")
+                config_path = os.path.expanduser("~/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/")
+                process = await asyncio.create_subprocess_exec(
+                    "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", config_path, "restore", "--force",
+                    stdout=asyncio.subprocess.DEVNULL,
+                    stderr=asyncio.subprocess.STDOUT
+                )
+
+                await process.wait()
+                decky_plugin.logger.info("Restore completed")
+            else:
+                decky_plugin.logger.warning("Flatpak not found, skipping restore process")
+            return True
+
         # Make the script executable
         script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
-
         os.chmod(script_path, 0o755)
 
         # Temporarily disable access control for the X server
@@ -311,8 +326,6 @@ class Plugin:
 
         # Construct the command to run
         command_suffix = ' '.join(([f'"{operation if operation == "Uninstall" else ""} {selected_option_nice}"'] if selected_option_nice != '' else []) + ([f'"Chrome"'] if install_chrome else []) + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + [f'"DeckyPlugin"'])
-
-        # Construct the command to run
         command = f"{script_path} {command_suffix}"
 
         # Log the command for debugging
@@ -322,9 +335,6 @@ class Plugin:
         env = os.environ.copy()
         env['DISPLAY'] = ':0'
         env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
-
-        # Temporarily disable access control for the X server
-        run(['xhost', '+'])
 
         # Run the command in a new xterm window
         xterm_command = f"xterm -e {command}"
@@ -339,7 +349,4 @@ class Plugin:
         # Log the exit code for debugging
         decky_plugin.logger.info(f"Command exit code: {exit_code}")
 
-        if exit_code == 0:
-            return True
-        else:
-            return False
+        return exit_code == 0
