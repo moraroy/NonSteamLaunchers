@@ -66,19 +66,19 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
     </ModalRoot> :
     <ModalRoot style={{ fontSize: '14px', width: '600px' }}>
       <DialogHeader>Restore Game Save Backups</DialogHeader>
-      <DialogBody style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: '400px', overflowY: 'auto', padding: '10px' }}>
         <DialogBodyText>This feature will restore your game save backups all at once.</DialogBodyText>
         <DialogBodyText>
           <strong>Please ensure that all necessary launchers are installed first, but do not download the actual games.</strong> This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves.
         </DialogBodyText>
         <DialogBodyText>Some games from their launchers don't have cloud save backups:</DialogBodyText>
         <ul>
-          <li>NSL uses a program called Ludusavi to backup your local game saves and will attempt to restore them for you.</li>
+          <li>NSL uses a program called Ludusavi to backup your local game saves and attempts to restore them for you.</li>
           <li>However, some games from their launchers won't have local game saves because the launchers themselves take care of the local save and cloud save. This varies on a game-to-game basis.</li>
-          <li style={{ wordWrap: 'break-word' }}>Ludusavi may also not pick up your game saves and may need to be configured manually here: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
+          <li style={{ wordWrap: 'break-word' }}>Ludusavi may not pick up your game saves and may need to be configured manually here: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
         </ul>
         <DialogBodyText>Once ready, proceed to press restore.</DialogBodyText>
-      </DialogBody>
+      </div>
       <DialogBody>
         <ButtonItem layout="below" onClick={handleRestoreClick}>
           Restore Game Saves
