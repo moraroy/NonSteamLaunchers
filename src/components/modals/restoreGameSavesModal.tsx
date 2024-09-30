@@ -75,6 +75,7 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
         <ul>
           <li>NSL uses a program called Ludusavi to backup your local game saves and attempts to restore them for you.</li>
           <li>However, some games from their launchers won't have local game saves because the launchers themselves take care of the local save and cloud save. This varies on a game-to-game basis.</li>
+          <li>Ludusavi may not pick up your game saves and may need to be configured manually here: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
         </ul>
         <DialogBodyText>Once ready, proceed to press restore.</DialogBodyText>
       </DialogBody>
