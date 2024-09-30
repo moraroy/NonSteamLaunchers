@@ -34,8 +34,6 @@ def camel_to_title(s):
     # Convert the first character of each word to uppercase and join the words with spaces
     return ' '.join(word.capitalize() for word in words)
 
-scan_lock = asyncio.Lock()
-
 class Plugin:
     async def _main(self):
         decky_plugin.logger.info("This is _main being called")
@@ -48,10 +46,17 @@ class Plugin:
             ws = web.WebSocketResponse()
             await ws.prepare(request)
             decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', defaultSettings)['autoscan']}")
+
+            debounce_interval = 10  # Set debounce interval to 10 seconds
+            last_scan_time = 0
+
             try:
-                async with scan_lock:
-                    while self.settings.getSetting('settings', defaultSettings)['autoscan']:
+                while self.settings.getSetting('settings', defaultSettings)['autoscan']:
+                    current_time = asyncio.get_event_loop().time()
+                    if current_time - last_scan_time >= debounce_interval:
                         decky_shortcuts = scan()
+                        last_scan_time = current_time
+
                         if not decky_shortcuts:
                             decky_plugin.logger.info(f"No shortcuts to send")
                         else:
@@ -64,22 +69,9 @@ class Plugin:
                                 decky_plugin.logger.info(f"Sending game data to client")
                                 await ws.send_json(game)
 
-                        if shutil.which("flatpak"):
-                            decky_plugin.logger.info("Running Auto Scan Game Save backup...")
-                            process = await asyncio.create_subprocess_exec(
-                                "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                                stdout=asyncio.subprocess.DEVNULL,
-                                stderr=asyncio.subprocess.STDOUT
-                            )
+                    await asyncio.sleep(1)  # Sleep for a short interval to reduce CPU usage
 
-                            await process.wait()
-                            decky_plugin.logger.info("Backup Auto Scan Game Save completed")
-                        else:
-                            decky_plugin.logger.warning("Flatpak not found, skipping backup process")
-
-                        await asyncio.sleep(15)  # Increase the sleep interval to reduce scan frequency
-
-                    decky_plugin.logger.info("Exiting AutoScan loop")
+                decky_plugin.logger.info("Exiting AutoScan loop")
 
             except Exception as e:
                 decky_plugin.logger.error(f"Error during AutoScan: {e}")
@@ -94,32 +86,31 @@ class Plugin:
             await ws.prepare(request)
             decky_plugin.logger.info(f"Called Manual Scan")
             try:
-                async with scan_lock:
-                    decky_shortcuts = scan()
-                    if not decky_shortcuts:
-                        decky_plugin.logger.info(f"No shortcuts to send")
-                    else:
-                        for game in decky_shortcuts.values():
-                            if game.get('appname') is None or game.get('exe') is None:
-                                continue
-                            decky_plugin.logger.info(f"Sending game data to client")
-                            await ws.send_json(game)
+                decky_shortcuts = scan()
+                if not decky_shortcuts:
+                    decky_plugin.logger.info(f"No shortcuts to send")
+                else:
+                    for game in decky_shortcuts.values():
+                        if game.get('appname') is None or game.get('exe') is None:
+                            continue
+                        decky_plugin.logger.info(f"Sending game data to client")
+                        await ws.send_json(game)
 
-                    if shutil.which("flatpak"):
-                        decky_plugin.logger.info("Running Manual Scan Game Save backup...")
-                        process = await asyncio.create_subprocess_exec(
-                            "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                            stdout=asyncio.subprocess.DEVNULL,
-                            stderr=asyncio.subprocess.STDOUT
-                        )
+                if shutil.which("flatpak"):
+                    decky_plugin.logger.info("Running Manual Scan Game Save backup...")
+                    process = await asyncio.create_subprocess_exec(
+                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                        stdout=asyncio.subprocess.DEVNULL,
+                        stderr=asyncio.subprocess.STDOUT
+                    )
 
-                        await process.wait()
-                        decky_plugin.logger.info("Backup Manual Scan Game Save completed")
-                    else:
-                        decky_plugin.logger.warning("Flatpak not found, skipping backup process")
+                    await process.wait()
+                    decky_plugin.logger.info("Backup Manual Scan Game Save completed")
+                else:
+                    decky_plugin.logger.warning("Flatpak not found, skipping backup process")
 
-                    # Send a message indicating the manual scan has completed
-                    await ws.send_json({"status": "Manual scan completed"})
+                # Send a message indicating the manual scan has completed
+                await ws.send_json({"status": "Manual scan completed"})
 
             except Exception as e:
                 decky_plugin.logger.error(f"Error during Manual Scan: {e}")
