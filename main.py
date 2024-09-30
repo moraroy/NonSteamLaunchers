@@ -18,6 +18,7 @@ import logging
 import re
 import asyncio
 import subprocess
+import shutil
 from aiohttp import web
 from decky_plugin import DECKY_PLUGIN_DIR, DECKY_USER_HOME
 from py_modules.lib.scanner import scan, addCustomSite
@@ -33,47 +34,45 @@ def camel_to_title(s):
     # Convert the first character of each word to uppercase and join the words with spaces
     return ' '.join(word.capitalize() for word in words)
 
-scan_lock = asyncio.Lock()
-
 class Plugin:
+    scan_lock = asyncio.Lock()
+
     async def _main(self):
         decky_plugin.logger.info("This is _main being called")
         self.settings = SettingsManager(name="config", settings_directory=decky_plugin.DECKY_PLUGIN_SETTINGS_DIR)
         decky_user_home = decky_plugin.DECKY_USER_HOME
-        defaultSettings = {"autoscan": True, "customSites": ""}
+        defaultSettings = {"autoscan": False, "customSites": ""}
 
         async def handleAutoScan(request):
             await asyncio.sleep(5)
             ws = web.WebSocketResponse()
             await ws.prepare(request)
             decky_plugin.logger.info(f"AutoScan: {self.settings.getSetting('settings', defaultSettings)['autoscan']}")
+
+            debounce_interval = 30
+            last_scan_time = 0
+
             try:
-                async with scan_lock:
+                async with self.scan_lock:
                     while self.settings.getSetting('settings', defaultSettings)['autoscan']:
-                        decky_shortcuts = scan()
-                        if not decky_shortcuts:
-                            decky_plugin.logger.info(f"No shortcuts to send")
-                        else:
-                            for game in decky_shortcuts.values():
-                                if game.get('appname') is None or game.get('exe') is None:
-                                    continue
-                                if ws.closed:
-                                    decky_plugin.logger.info("WebSocket connection closed")
-                                    break
-                                decky_plugin.logger.info(f"Sending game data to client")
-                                await ws.send_json(game)
+                        current_time = asyncio.get_event_loop().time()
+                        if current_time - last_scan_time >= debounce_interval:
+                            decky_shortcuts = scan()
+                            last_scan_time = current_time
 
-                        decky_plugin.logger.info("Running Auto Scan Game Save backup...")
-                        process = await asyncio.create_subprocess_exec(
-                            "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                            stdout=asyncio.subprocess.DEVNULL,
-                            stderr=asyncio.subprocess.STDOUT
-                        )
+                            if not decky_shortcuts:
+                                decky_plugin.logger.info(f"No shortcuts to send")
+                            else:
+                                for game in decky_shortcuts.values():
+                                    if game.get('appname') is None or game.get('exe') is None:
+                                        continue
+                                    if ws.closed:
+                                        decky_plugin.logger.info("WebSocket connection closed")
+                                        break
+                                    decky_plugin.logger.info(f"Sending game data to client")
+                                    await ws.send_json(game)
 
-                        await process.wait()
-                        decky_plugin.logger.info("Backup Auto Scan Game Save completed")
-
-                        await asyncio.sleep(15)  # Increase the sleep interval to reduce scan frequency
+                        await asyncio.sleep(1)
 
                     decky_plugin.logger.info("Exiting AutoScan loop")
 
@@ -90,7 +89,7 @@ class Plugin:
             await ws.prepare(request)
             decky_plugin.logger.info(f"Called Manual Scan")
             try:
-                async with scan_lock:
+                async with self.scan_lock:
                     decky_shortcuts = scan()
                     if not decky_shortcuts:
                         decky_plugin.logger.info(f"No shortcuts to send")
@@ -101,15 +100,18 @@ class Plugin:
                             decky_plugin.logger.info(f"Sending game data to client")
                             await ws.send_json(game)
 
-                    decky_plugin.logger.info("Running Manual Scan Game Save backup...")
-                    process = await asyncio.create_subprocess_exec(
-                        "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
-                        stdout=asyncio.subprocess.DEVNULL,
-                        stderr=asyncio.subprocess.STDOUT
-                    )
+                    if shutil.which("flatpak"):
+                        decky_plugin.logger.info("Running Manual Scan Game Save backup...")
+                        process = await asyncio.create_subprocess_exec(
+                            "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                            stdout=asyncio.subprocess.DEVNULL,
+                            stderr=asyncio.subprocess.STDOUT
+                        )
 
-                    await process.wait()
-                    decky_plugin.logger.info("Backup Manual Scan Game Save completed")
+                        await process.wait()
+                        decky_plugin.logger.info("Backup Manual Scan Game Save completed")
+                    else:
+                        decky_plugin.logger.warning("Flatpak not found, skipping backup process")
 
                     # Send a message indicating the manual scan has completed
                     await ws.send_json({"status": "Manual scan completed"})
@@ -121,6 +123,7 @@ class Plugin:
                 await ws.close()
 
             return ws
+
 
         async def handleCustomSite(request):
             ws = web.WebSocketResponse()
@@ -256,16 +259,18 @@ class Plugin:
             decky_plugin.logger.info("No changes made, skipping daemon reload")
 
 
-        decky_plugin.logger.info("Running Migration Game Save backup...")
-        # Run the Ludusavi backup command
-        process = subprocess.Popen(
-            ["flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT
-        )
-        # Wait for the process to complete
-        process.wait()
-        decky_plugin.logger.info("Backup Migration Game Save Scan completed")
+        if shutil.which("flatpak"):
+            decky_plugin.logger.info("Running Auto Scan Game Save backup...")
+            process = await asyncio.create_subprocess_exec(
+                "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", f"{decky_user_home}/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/", "backup", "--force",
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.STDOUT
+            )
+
+            await process.wait()
+            decky_plugin.logger.info("Backup Auto Scan Game Save completed")
+        else:
+            decky_plugin.logger.warning("Flatpak not found, skipping backup process")
 
 
         
@@ -300,9 +305,24 @@ class Plugin:
         # Log the selected_options_list
         decky_plugin.logger.info(f"selected_option_nice: {selected_option_nice}")
 
+        if selected_options == "NSLGameSaves":
+            if shutil.which("flatpak"):
+                decky_plugin.logger.info("Running restore...")
+                config_path = os.path.expanduser("~/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/")
+                process = await asyncio.create_subprocess_exec(
+                    "flatpak", "run", "com.github.mtkennerly.ludusavi", "--config", config_path, "restore", "--force",
+                    stdout=asyncio.subprocess.DEVNULL,
+                    stderr=asyncio.subprocess.STDOUT
+                )
+
+                await process.wait()
+                decky_plugin.logger.info("Restore completed")
+            else:
+                decky_plugin.logger.warning("Flatpak not found, skipping restore process")
+            return True
+
         # Make the script executable
         script_path = os.path.join(DECKY_PLUGIN_DIR, 'NonSteamLaunchers.sh')
-
         os.chmod(script_path, 0o755)
 
         # Temporarily disable access control for the X server
@@ -310,8 +330,6 @@ class Plugin:
 
         # Construct the command to run
         command_suffix = ' '.join(([f'"{operation if operation == "Uninstall" else ""} {selected_option_nice}"'] if selected_option_nice != '' else []) + ([f'"Chrome"'] if install_chrome else []) + ([f'"SEPARATE APP IDS - CHECK THIS TO SEPARATE YOUR PREFIX"'] if separate_app_ids else []) + ([f'"Start Fresh"'] if start_fresh else []) + [f'"DeckyPlugin"'])
-
-        # Construct the command to run
         command = f"{script_path} {command_suffix}"
 
         # Log the command for debugging
@@ -321,9 +339,6 @@ class Plugin:
         env = os.environ.copy()
         env['DISPLAY'] = ':0'
         env['XAUTHORITY'] = os.path.join(os.environ['HOME'], '.Xauthority')
-
-        # Temporarily disable access control for the X server
-        run(['xhost', '+'])
 
         # Run the command in a new xterm window
         xterm_command = f"xterm -e {command}"
@@ -338,7 +353,4 @@ class Plugin:
         # Log the exit code for debugging
         decky_plugin.logger.info(f"Command exit code: {exit_code}")
 
-        if exit_code == 0:
-            return True
-        else:
-            return False
+        return exit_code == 0

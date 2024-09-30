@@ -5,20 +5,16 @@ import { notify } from "./notify";
 export async function createShortcut(game: any) {
   const { appid, appname, exe, StartDir, LaunchOptions, CompatTool, Grid, WideGrid, Hero, Logo, Icon, LauncherIcon, Launcher } = game;
   
-  // Separate the executable path and arguments
-  const match = exe.match(/"([^"]+)"/);
-  if (!match) {
-    throw new Error(`Invalid exe format: ${exe}`);
-  }
-
-  const formattedStartDir = StartDir.replace(/"/g, '');
-  const launchOptions = LaunchOptions.split(" ").slice(1).join(" ");
+  // No need to format exe and StartDir here as it's already done in Python
+  const formattedExe = exe;
+  const formattedStartDir = StartDir;
+  const launchOptions = LaunchOptions;
 
   console.log(`Creating shortcut ${appname}`);
-  console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${exe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
+  console.log(`Game details: Name= ${appname}, ID=${appid}, exe=${formattedExe}, StartDir=${formattedStartDir}, launchOptions=${launchOptions}`);
 
   // Use the addShortcut method directly
-  const appId = await SteamClient.Apps.AddShortcut(appname, exe, formattedStartDir, launchOptions);
+  const appId = await SteamClient.Apps.AddShortcut(appname, formattedExe, formattedStartDir, launchOptions);
   if (appId) {
     const defaultIconUrl = "https://raw.githubusercontent.com/moraroy/NonSteamLaunchersDecky/main/assets/logo.png";
     const gameIconUrl = Icon ? `data:image/x-icon;base64,${Icon}` : defaultIconUrl;  // Use the base64-encoded icon or default icon
@@ -33,9 +29,15 @@ export async function createShortcut(game: any) {
     
     console.log(`AppID for ${appname} = ${appId}`);
     SteamClient.Apps.SetShortcutName(appId, appname);
-    SteamClient.Apps.SetAppLaunchOptions(appId, LaunchOptions);
-    SteamClient.Apps.SetShortcutExe(appId, exe);
-    SteamClient.Apps.SetShortcutStartDir(appId, StartDir);
+    SteamClient.Apps.SetAppLaunchOptions(appId, launchOptions);
+    SteamClient.Apps.SetShortcutExe(appId, formattedExe);
+    SteamClient.Apps.SetShortcutStartDir(appId, formattedStartDir);
+
+    // Explicitly set the icon for the shortcut
+    if (Icon) {
+      SteamClient.Apps.SetShortcutIcon(appId, `data:image/x-icon;base64,${Icon}`);
+    }
+
     let AvailableCompatTools = await SteamClient.Apps.GetAvailableCompatTools(appId);
     let CompatToolExists: boolean = AvailableCompatTools.some((e: { strToolName: any; }) => e.strToolName === CompatTool);
     if (CompatTool && CompatToolExists) {
@@ -47,7 +49,7 @@ export async function createShortcut(game: any) {
     SteamClient.Apps.SetCustomArtworkForApp(appId, Logo, 'png', 2);
     SteamClient.Apps.SetCustomArtworkForApp(appId, Grid, 'png', 0);
     SteamClient.Apps.SetCustomArtworkForApp(appId, WideGrid, 'png', 3);
-    SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
+    //SteamClient.Apps.AddUserTagToApps([appId], "NonSteamLaunchers");
     return true;
   } else {
     console.log(`Failed to create shortcut for ${appname}`);

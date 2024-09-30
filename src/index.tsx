@@ -17,6 +17,7 @@ import { useSettings } from './hooks/useSettings'
 import { LauncherInstallModal } from "./components/modals/launcherInstallModal";
 import { StreamingInstallModal } from "./components/modals/streamingInstallModal";
 import { StartFreshModal } from "./components/modals/startFreshModal";
+import { RestoreGameSavesModal } from "./components/modals/restoreGameSavesModal";
 import { autoscan, scan } from "./hooks/scan";
 
 const initialOptions = [
@@ -64,12 +65,17 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isManualScanComplete, setIsManualScanComplete] = useState(false);
+  const [isAutoScanDisabled, setIsAutoScanDisabled] = useState(false);
+
 
   const handleScanClick = async () => {
     setIsLoading(true); // Set loading state to true
+    setIsAutoScanDisabled(true); // Disable the auto-scan toggle
     await scan(() => setIsManualScanComplete(true)); // Perform the scan action and set completion state
     setIsLoading(false); // Set loading state to false
+    setIsAutoScanDisabled(false); // Re-enable the auto-scan toggle
   };
+  
 
   useEffect(() => {
     if (isManualScanComplete) {
@@ -95,11 +101,15 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         <ButtonItem layout="below" onClick={() => showModal(<StartFreshModal serverAPI={serverAPI} />)}>
           Start Fresh
         </ButtonItem>
+        {/* <ButtonItem layout="below" onClick={() => showModal(<RestoreGameSavesModal serverAPI={serverAPI} />)}>
+          Restore Game Saves
+        </ButtonItem> */}
       </PanelSection>
+
       
       <PanelSection title="Game Scanner">
         <PanelSectionRow style={{ fontSize: "12px", marginBottom: "10px" }}>
-          NSL can automatically detect and add shortcuts for the games you install in your non-steam launchers in real time. Below, you can enable automatic scanning or trigger a manual scan. During the scan, your game saves will be backed up here: /home/deck/NSLGameSaves.
+          NSL can automatically detect and add shortcuts for the games you install in your non-steam launchers in real time. Below, you can enable automatic scanning or trigger a manual scan. During a manual scan only, your game saves will be backed up here: /home/deck/NSLGameSaves.
         </PanelSectionRow>
         <ToggleField
           label="Auto Scan Games"
@@ -111,6 +121,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
               autoscan();
             }
           }}
+          disabled={isAutoScanDisabled}
         />
         <ButtonItem layout="below" onClick={handleScanClick} disabled={isLoading || settings.autoscan}>
           {isLoading ? 'Scanning...' : 'Manual Scan'}

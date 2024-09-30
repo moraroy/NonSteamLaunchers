@@ -1,66 +1,68 @@
-import gzip, os, re, json, decky_plugin
+import gzip
+import os
+import json
+import sqlite3
+import decky_plugin
+import platform
+
+
+def convert_unix_to_windows_path(unix_path):
+    return unix_path.replace('/c/', 'C:\\').replace('/', '\\')
+
 
 def itchio_games_scanner(logged_in_home, itchio_launcher, create_new_entry):
-    itch_db_location = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/pfx/drive_c/users/steamuser/AppData/Roaming/itch/db/butler.db-wal"
-    decky_plugin.logger.info(f"Checking if {itch_db_location} exists...")
+    if platform.system() == "Windows":
+        itch_db_location = convert_unix_to_windows_path(f"{logged_in_home}\\AppData\\Roaming\\itch\\db\\butler.db")
+    else:
+        itch_db_location = os.path.join(logged_in_home, ".local", "share", "Steam", "steamapps", "compatdata", itchio_launcher, "pfx", "drive_c", "users", "steamuser", "AppData", "Roaming", "itch", "db", "butler.db")
+
     if not os.path.exists(itch_db_location):
-        decky_plugin.logger.info(f"Path not found: {itch_db_location}. Aborting Ichio scan...")
+        decky_plugin.logger.info(f"Path not found: {itch_db_location}. Aborting Itch.io scan...")
         return
 
-    decky_plugin.logger.info("Opening and reading the database file...")
-    with open(itch_db_location, 'rb') as f:
-        shortcut_bytes = f.read()
+    conn = sqlite3.connect(itch_db_location)
+    cursor = conn.cursor()
 
-    decky_plugin.logger.info("Parsing the database file...")
-    paths = parse_butler_db(shortcut_bytes)
+    # Parse the 'caves' table
+    cursor.execute("SELECT * FROM caves;")
+    caves = cursor.fetchall()
 
-    decky_plugin.logger.info("Converting paths to games...")
-    itchgames = [dbpath_to_game(logged_in_home, itchio_launcher, path) for path in paths if dbpath_to_game(logged_in_home, itchio_launcher, path) is not None]
-    # Remove duplicates
-    itchgames = list(set(itchgames))
-    decky_plugin.logger.info(f"Found {len(itchgames)} unique games.")
+    # Parse the 'games' table
+    cursor.execute("SELECT * FROM games;")
+    games = cursor.fetchall()
+
+    # Create a dictionary to store game information
+    games_dict = {game[0]: game for game in games}
+
+    # Match game_id between 'caves' and 'games' tables
+    itchgames = []
+    for cave in caves:
+        game_id = cave[1]
+        if game_id in games_dict:
+            game_info = games_dict[game_id]
+            base_path = json.loads(cave[11])['basePath']
+            candidates = json.loads(cave[11])['candidates']
+            executable_path = candidates[0]['path']
+            if executable_path.endswith('.html'):
+                decky_plugin.logger.info(f"Skipping browser game: {game_info[2]}")
+                continue
+            game_title = game_info[2]
+            itchgames.append((base_path, executable_path, game_title))
+
     for game in itchgames:
-        linux_path, executable, game_title = game
-        exe_path = f"\"{os.path.join(linux_path, executable)}\""
-        start_dir = f"\"{linux_path}\""
-        launchoptions = f"STEAM_COMPAT_DATA_PATH=\"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/\" %command%"
+        base_path, executable, game_title = game
+        if platform.system() == "Windows":
+            exe_path = os.path.join(base_path, executable)
+            start_dir = base_path
+            launchoptions = ""
+        else:
+            base_path_linux = base_path.replace("C:\\", logged_in_home + "/.local/share/Steam/steamapps/compatdata/" + itchio_launcher + "/pfx/drive_c/").replace("\\", "/")
+            exe_path = "\"" + os.path.join(base_path_linux, executable).replace("\\", "/") + "\""
+            start_dir = "\"" + base_path_linux + "\""
+            launchoptions = "STEAM_COMPAT_DATA_PATH=\"" + logged_in_home + "/.local/share/Steam/steamapps/compatdata/" + itchio_launcher + "/\" %command%"
         create_new_entry(exe_path, game_title, launchoptions, start_dir, "itch.io")
 
-def parse_butler_db(content):
-    decky_plugin.logger.info("Finding matches in the database content...")
-    pattern = rb'\{"basePath":"(.*?)","totalSize".*?"candidates":\[(.*?)\]\}'
-    matches = re.findall(pattern, content)
-    decky_plugin.logger.info(f"Found {len(matches)} matches.")
+    conn.close()
 
-    decky_plugin.logger.info("Converting matches to database paths...")
-    db_paths = []
-    for match in matches:
-        base_path = match[0].decode(errors='ignore')
-        candidates_json = b'[' + match[1] + b']'
-        decky_plugin.logger.info(f"Candidates JSON: {candidates_json}")
-        try:
-            candidates = json.loads(candidates_json.decode(errors='ignore'))
-            paths = [candidate['path'] for candidate in candidates]
-            db_paths.append((base_path, paths))
-        except json.JSONDecodeError as e:
-            decky_plugin.logger.error(f"JSON decoding error: {e}. Skipping this entry and continuing...")
-            continue
-    decky_plugin.logger.info(f"Converted {len(matches)} matches to {len(db_paths)} database paths.")
-    return db_paths
 
-def dbpath_to_game(logged_in_home, itchio_launcher, paths):
-    # Convert the Windows-style path from the database to a Unix-style path
-    db_path = paths[0].replace("\\\\", "/").replace("C:", "")
-    linux_path = f"{logged_in_home}/.local/share/Steam/steamapps/compatdata/{itchio_launcher}/pfx/drive_c" + db_path
-    receipt_path = os.path.join(linux_path, ".itch", "receipt.json.gz")
-    if not os.path.exists(receipt_path):
-        return None
-    for executable in paths[1]:
-        exe_path = os.path.join(linux_path, executable)
-        if os.access(exe_path, os.X_OK):  # check if file is executable
-            with gzip.open(receipt_path, 'rb') as f:
-                receipt_str = f.read().decode()
-                receipt = json.loads(receipt_str)
-                return (linux_path, executable, receipt['game']['title'])
-
-#End of Itchio Scanner
+# End of Itchio Scanner
