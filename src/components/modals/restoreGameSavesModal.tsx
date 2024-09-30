@@ -67,17 +67,17 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
     <ModalRoot style={{ width: '600px' }}>
       <DialogHeader>Restore Game Save Backups</DialogHeader>
       <DialogBody>
-        <DialogBodyText style={{ fontSize: '12px' }}>Restore all your game save backups at once.</DialogBodyText>
-        <DialogBodyText style={{ fontSize: '12px' }}>
-          <strong>Ensure all necessary launchers are installed, but do not download the games.</strong> This avoids conflicts. Proceed only if you have wiped everything using Start Fresh and backed up your game saves at /home/deck/NSLGameSaves.
+        <DialogBodyText style={{ fontSize: '11px' }}>This feature will restore all your game save backups at once.</DialogBodyText>
+        <DialogBodyText style={{ fontSize: '11px' }}>
+          <strong>Ensure all necessary launchers are installed, but do not download the games.</strong> This will avoid local conflicts. Proceed only if you have wiped everything using Start Fresh and backed up your game saves at /home/deck/NSLGameSaves.
         </DialogBodyText>
-        <DialogBodyText style={{ fontSize: '12px' }}>Some games don't have cloud save backups:</DialogBodyText>
+        <DialogBodyText style={{ fontSize: '11px' }}>Some games don't have local save backups:</DialogBodyText>
         <ul>
-          <li style={{ fontSize: '12px' }}>NSL uses Ludusavi to backup and restore your local game saves.</li>
-          <li style={{ fontSize: '12px' }}>Some launchers handle local and cloud saves themselves, varying by game.</li>
-          <li style={{ fontSize: '12px', wordWrap: 'break-word' }}>Ludusavi may need manual configuration here: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
+          <li style={{ fontSize: '11px' }}>NSL uses Ludusavi to backup and restore your local game saves.</li>
+          <li style={{ fontSize: '11px' }}>Some launchers handle local and cloud saves themselves so this will vary on a game to game basis.</li>
+          <li style={{ fontSize: '11px', wordWrap: 'break-word' }}>Ludusavi may need manual configuration here if more paths are needed: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
         </ul>
-        <DialogBodyText style={{ fontSize: '12px' }}>Press restore when ready.</DialogBodyText>
+        <DialogBodyText style={{ fontSize: '11px' }}>Press restore when ready.</DialogBodyText>
       </DialogBody>
       <DialogBody>
         <ButtonItem layout="below" onClick={handleRestoreClick}>
