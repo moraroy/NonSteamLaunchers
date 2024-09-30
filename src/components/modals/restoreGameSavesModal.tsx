@@ -82,12 +82,14 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
         </div>
       </DialogBody>
       <DialogBody>
-        <ButtonItem layout="below" onClick={handleRestoreClick}>
-          Restore Game Saves
-        </ButtonItem>
-        <ButtonItem layout="below" onClick={closeModal}>
-          Cancel
-        </ButtonItem>
+        <div style={{ fontSize: '8px' }}>
+          <ButtonItem layout="below" onClick={handleRestoreClick}>
+            Restore Game Saves
+          </ButtonItem>
+          <ButtonItem layout="below" onClick={closeModal}>
+            Cancel
+          </ButtonItem>
+        </div>
       </DialogBody>
     </ModalRoot>
   );

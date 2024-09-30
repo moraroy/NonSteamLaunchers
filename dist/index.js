@@ -767,8 +767,9 @@
                           window.SP_REACT.createElement("li", { style: { wordWrap: 'break-word' } }, "Ludusavi may not pick up your game saves and may need to be configured manually here: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml")),
                       window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Once ready, proceed to press restore."))),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
-                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleRestoreClick }, "Restore Game Saves"),
-                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel"))));
+                  window.SP_REACT.createElement("div", { style: { fontSize: '8px' } },
+                      window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleRestoreClick }, "Restore Game Saves"),
+                      window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel")))));
   };
 
   const initialOptions = [
