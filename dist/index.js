@@ -715,6 +715,43 @@
               window.SP_REACT.createElement(deckyFrontendLib.ConfirmModal, { strTitle: "Are You Sure?", strDescription: "Starting fresh will wipe all installed launchers and their games along with your game saves and NSL files. This is irreversible! You'll need to manually remove any shortcuts created.", strOKButtonText: "Yes, wipe!", strCancelButtonText: "No, go back!", onOK: () => setFirstConfirm(true), onCancel: closeModal }));
   };
 
+  const RestoreGameSavesModal = ({ closeModal, serverAPI }) => {
+      const [progress, setProgress] = React.useState({ percent: 0, status: '', description: '' });
+      const handleRestoreClick = async () => {
+          console.log('handleRestoreClick called');
+          setProgress({ percent: 0, status: 'Restoring game saves...', description: '' });
+          try {
+              const result = await serverAPI.callPluginMethod("NSLGameSaves", {});
+              if (result) {
+                  setProgress({ percent: 100, status: 'Game saves restored successfully!', description: '' });
+                  notify.toast("Game saves restored successfully!", "Your game saves have been restored.");
+              }
+              else {
+                  setProgress({ percent: 100, status: 'Restore failed.', description: '' });
+                  notify.toast("Restore failed", "Failed to restore game saves. Check your logs.");
+              }
+          }
+          catch (error) {
+              setProgress({ percent: 100, status: 'Restore failed.', description: '' });
+              notify.toast("Restore Failed", "Failed to restore game saves. Check your logs.");
+              console.error('Error calling restore method on server-side plugin:', error);
+          }
+          closeModal();
+      };
+      return ((progress.status !== '' && progress.percent < 100) ?
+          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
+              window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Restoring Game Saves"),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Restoring your game save backups..."),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
+                  window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
+                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }))) :
+          window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
+              window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Restore Game Save Backups"),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "This feature will restore your game save backups all at once. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves. Also, ensure the necessary launchers are installed first to avoid local game conflicts. Once ready, proceed to press restore."),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleRestoreClick }, "Restore Game Saves"))));
+  };
+
   const initialOptions = [
       { name: 'epicGames', label: 'Epic Games', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/164fbf608021ece8933758ee2b28dd7d.jpg' },
       { name: 'gogGalaxy', label: 'Gog Galaxy', URL: '', streaming: false, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/ce016f59ecc2366a43e1c96a4774d167.jpg' },
@@ -771,7 +808,8 @@
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => deckyFrontendLib.showModal(window.SP_REACT.createElement(LauncherInstallModal, { serverAPI: serverAPI, launcherOptions: launcherOptions })) }, "Game Launchers"),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => deckyFrontendLib.showModal(window.SP_REACT.createElement(StreamingInstallModal, { serverAPI: serverAPI, streamingOptions: streamingOptions })) }, "Streaming Sites"),
               window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => deckyFrontendLib.showModal(window.SP_REACT.createElement(CustomSiteModal, { serverAPI: serverAPI })) }, "Custom Website Shortcut"),
-              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => deckyFrontendLib.showModal(window.SP_REACT.createElement(StartFreshModal, { serverAPI: serverAPI })) }, "Start Fresh")),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => deckyFrontendLib.showModal(window.SP_REACT.createElement(StartFreshModal, { serverAPI: serverAPI })) }, "Start Fresh"),
+              window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: () => deckyFrontendLib.showModal(window.SP_REACT.createElement(RestoreGameSavesModal, { serverAPI: serverAPI })) }, "Restore Game Saves")),
           window.SP_REACT.createElement(deckyFrontendLib.PanelSection, { title: "Game Scanner" },
               window.SP_REACT.createElement(deckyFrontendLib.PanelSectionRow, { style: { fontSize: "12px", marginBottom: "10px" } }, "NSL can automatically detect and add shortcuts for the games you install in your non-steam launchers in real time. Below, you can enable automatic scanning or trigger a manual scan. During a manual scan only, your game saves will be backed up here: /home/deck/NSLGameSaves."),
               window.SP_REACT.createElement(deckyFrontendLib.ToggleField, { label: "Auto Scan Games", checked: settings.autoscan, onChange: (value) => {
