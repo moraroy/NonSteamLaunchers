@@ -721,7 +721,13 @@
           console.log('handleRestoreClick called');
           setProgress({ percent: 0, status: 'Restoring game saves...', description: '' });
           try {
-              const result = await serverAPI.callPluginMethod("NSLGameSaves", {});
+              const result = await serverAPI.callPluginMethod("install", {
+                  selected_options: "NSLGameSaves",
+                  operation: "Install",
+                  install_chrome: false,
+                  separate_app_ids: false,
+                  start_fresh: false
+              });
               if (result) {
                   setProgress({ percent: 100, status: 'Game saves restored successfully!', description: '' });
                   notify.toast("Game saves restored successfully!", "Your game saves have been restored.");
