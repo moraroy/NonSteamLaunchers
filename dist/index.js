@@ -744,12 +744,14 @@
               window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "Restoring your game save backups..."),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
                   window.SP_REACT.createElement(deckyFrontendLib.SteamSpinner, null),
-                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }))) :
+                  window.SP_REACT.createElement(deckyFrontendLib.ProgressBarWithInfo, { layout: "inline", bottomSeparator: "none", sOperationText: progress.status, description: progress.description, nProgress: progress.percent }),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel"))) :
           window.SP_REACT.createElement(deckyFrontendLib.ModalRoot, null,
               window.SP_REACT.createElement(deckyFrontendLib.DialogHeader, null, "Restore Game Save Backups"),
-              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "This feature will restore your game save backups all at once. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves. Also, ensure the necessary launchers are installed first to avoid local game conflicts. Once ready, proceed to press restore."),
+              window.SP_REACT.createElement(deckyFrontendLib.DialogBodyText, null, "This feature will restore your game save backups all at once. **Please ensure that all necessary launchers are installed first, but do not download the actual games.** This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves. Once ready, proceed to press restore."),
               window.SP_REACT.createElement(deckyFrontendLib.DialogBody, null,
-                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleRestoreClick }, "Restore Game Saves"))));
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: handleRestoreClick }, "Restore Game Saves"),
+                  window.SP_REACT.createElement(deckyFrontendLib.ButtonItem, { layout: "below", onClick: closeModal }, "Cancel"))));
   };
 
   const initialOptions = [

@@ -53,16 +53,22 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
           description={progress.description}
           nProgress={progress.percent}
         />
+        <ButtonItem layout="below" onClick={closeModal}>
+          Cancel
+        </ButtonItem>
       </DialogBody>
     </ModalRoot> :
     <ModalRoot>
       <DialogHeader>Restore Game Save Backups</DialogHeader>
       <DialogBodyText>
-        This feature will restore your game save backups all at once. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves. Also, ensure the necessary launchers are installed first to avoid local game conflicts. Once ready, proceed to press restore.
+        This feature will restore your game save backups all at once. **Please ensure that all necessary launchers are installed first, but do not download the actual games.** This will help avoid any local game conflicts. Only proceed if you have wiped everything using Start Fresh and have made sure your game saves were backed up at /home/deck/NSLGameSaves. Once ready, proceed to press restore.
       </DialogBodyText>
       <DialogBody>
         <ButtonItem layout="below" onClick={handleRestoreClick}>
           Restore Game Saves
+        </ButtonItem>
+        <ButtonItem layout="below" onClick={closeModal}>
+          Cancel
         </ButtonItem>
       </DialogBody>
     </ModalRoot>
