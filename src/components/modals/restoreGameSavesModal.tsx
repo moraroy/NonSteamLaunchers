@@ -6,7 +6,7 @@ import {
   ModalRoot,
   SteamSpinner,
   ProgressBarWithInfo,
-  ButtonItem
+  DialogButton
 } from "decky-frontend-lib";
 import { useState, VFC } from "react";
 import { notify } from "../../hooks/notify";
@@ -59,33 +59,35 @@ export const RestoreGameSavesModal: VFC<RestoreGameSavesModalProps> = ({ closeMo
           description={progress.description}
           nProgress={progress.percent}
         />
-        <ButtonItem layout="below" onClick={closeModal}>
+        <DialogButton onClick={closeModal} style={{ width: '25px' }}>
           Cancel
-        </ButtonItem>
+        </DialogButton>
       </DialogBody>
     </ModalRoot> :
     <ModalRoot style={{ width: '600px' }}>
       <DialogHeader>Restore Game Save Backups</DialogHeader>
       <DialogBody>
-        <DialogBodyText style={{ fontSize: '12px' }}>This feature will restore all your game save backups at once.</DialogBodyText>
-        <DialogBodyText style={{ fontSize: '12px' }}>
+        <DialogBodyText style={{ fontSize: '14px' }}>This feature will restore all your game save backups at once.</DialogBodyText>
+        <DialogBodyText style={{ fontSize: '14px' }}>
           <strong>Ensure all necessary launchers are installed, but do not download the games.</strong> This will avoid local conflicts. Only continue if you have wiped everything using Start Fresh and backed up your game saves at /home/deck/NSLGameSaves.
         </DialogBodyText>
-        <DialogBodyText style={{ fontSize: '12px' }}>Some games don't have local save backups:</DialogBodyText>
+        <DialogBodyText style={{ fontSize: '14px' }}>Some games don't have local save backups:</DialogBodyText>
         <ul>
-          <li style={{ fontSize: '11px' }}>NSL uses Ludusavi to backup and restore your local game saves.</li>
-          <li style={{ fontSize: '11px' }}>Some launchers handle local and cloud saves themselves so this will vary on a game to game basis.</li>
-          <li style={{ fontSize: '11px', wordWrap: 'break-word' }}>Ludusavi may need manual configuration here if more paths are needed: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
+          <li style={{ fontSize: '12px' }}>NSL uses Ludusavi to backup and restore your local game saves.</li>
+          <li style={{ fontSize: '12px' }}>Some launchers handle local and cloud saves themselves so this will vary on a game to game basis.</li>
+          <li style={{ fontSize: '12px', wordWrap: 'break-word' }}>Ludusavi may need manual configuration here if more paths are needed: /home/deck/.var/app/com.github.mtkennerly.ludusavi/config/ludusavi/NSLconfig/config.yaml</li>
         </ul>
-        <DialogBodyText style={{ fontSize: '12px' }}>Press restore when ready.</DialogBodyText>
+        <DialogBodyText style={{ fontSize: '14px' }}>Press restore when ready.</DialogBodyText>
       </DialogBody>
       <DialogBody>
-        <ButtonItem layout="below" onClick={handleRestoreClick}>
-          Restore Game Saves
-        </ButtonItem>
-        <ButtonItem layout="below" onClick={closeModal}>
-          Cancel
-        </ButtonItem>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <DialogButton onClick={handleRestoreClick}>
+            Restore Game Saves
+          </DialogButton>
+          <DialogButton onClick={closeModal}>
+            Cancel
+          </DialogButton>
+        </div>
       </DialogBody>
     </ModalRoot>
   );
