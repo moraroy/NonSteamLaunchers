@@ -22,9 +22,9 @@ export async function createShortcut(game: any) {
 
     // Pass both icons to the notification
     if (launcherIconUrl) {
-      notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl, launcherIconUrl });
+      notify.toast(appname, "has been added to your library!", { gameIconUrl, launcherIconUrl });
     } else {
-      notify.toast("New Shortcut Created", `${appname} has been added to your library!`, { gameIconUrl });
+      notify.toast(appname, "has been added to your library!", { gameIconUrl });
     }
     
     console.log(`AppID for ${appname} = ${appId}`);
