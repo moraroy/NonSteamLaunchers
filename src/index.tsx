@@ -38,6 +38,8 @@ const initialOptions = [
   { name: 'fortnite', label: 'Fortnite (xCloud)', URL: 'https://www.xbox.com/en-US/play/games/fortnite/BT5P2X999VH2/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/560cc70f255b94b8408709e810914593.jpg' },
   { name: 'geforceNow', label: 'GeForce Now', URL: 'https://play.geforcenow.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/5e7e6e76699ea804c65b0c37974c660c.jpg' },
   { name: 'amazonLuna', label: 'Amazon Luna', URL: 'https://luna.amazon.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/5966577c1d725b37c26c3f7aa493dd9c.jpg' },
+  { name: 'webRcade', label: 'WebRcade', URL: 'https://play.webrcade.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/f9b8cc42051c6d1c1ddaf5260118d585.jpg' },
+  { name: 'webRcadeeditor', label: 'WebRcade (Editor)', URL: 'https://editor.webrcade.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/f9b8cc42051c6d1c1ddaf5260118d585.jpg' },
   { name: 'netflix', label: 'Netflix', URL: 'https://www.netflix.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/119f6887f5ebfd6d5b40213819263e68.jpg' },
   { name: 'hulu', label: 'Hulu', URL: 'https://www.hulu.com/welcome', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/4bbddbaea593148384a27a8dcf498d30.jpg' },
   { name: 'disneyPlus', label: 'Disney+', URL: 'https://www.disneyplus.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/0dad24dc5419076f64f2ba93833b354e.png' },
