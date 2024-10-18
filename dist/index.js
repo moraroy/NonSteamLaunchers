@@ -796,6 +796,8 @@
       { name: 'disneyPlus', label: 'Disney+', URL: 'https://www.disneyplus.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/0dad24dc5419076f64f2ba93833b354e.png' },
       { name: 'amazonPrimeVideo', label: 'Amazon Prime Video', URL: 'https://www.amazon.com/primevideo', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/hero_thumb/5e7cefa9b606dcd7b0faa082d82cdb1d.jpg' },
       { name: 'youtube', label: 'Youtube', URL: 'https://www.youtube.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/786929ce1b2e187510aca9b04a0f7254.jpg' },
+      { name: 'crunchyroll', label: 'Crunchyroll', URL: 'https://www.crunchyroll.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/b51869faee0c2357dc5c2c34e4229a80.jpg' },
+      { name: 'appletv+', label: 'Apple TV+', URL: 'https://tv.apple.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/b1ffc0577d7fc6b6b6c8e481bf28e641.jpg' },
       { name: 'twitch', label: 'Twitch', URL: 'https://www.twitch.tv/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg' }
   ];
   const Content = ({ serverAPI }) => {
