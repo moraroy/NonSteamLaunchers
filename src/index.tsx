@@ -47,7 +47,6 @@ const initialOptions = [
   { name: 'youtube', label: 'Youtube', URL: 'https://www.youtube.com', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/786929ce1b2e187510aca9b04a0f7254.jpg' },
   { name: 'crunchyroll', label: 'Crunchyroll', URL: 'https://www.crunchyroll.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/b51869faee0c2357dc5c2c34e4229a80.jpg' },
   { name: 'appletv+', label: 'Apple TV+', URL: 'https://tv.apple.com/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/b1ffc0577d7fc6b6b6c8e481bf28e641.jpg' },
-
   { name: 'twitch', label: 'Twitch', URL: 'https://www.twitch.tv/', streaming: true, enabled: false, urlimage: 'https://cdn2.steamgriddb.com/thumb/accbfd0ef1051b082dc4ae223cf07da7.jpg' }
 ];
 
